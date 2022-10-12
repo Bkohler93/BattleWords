@@ -1,16 +1,15 @@
-# battle_words
+# BattleWords App (name pending)
 
-A new Flutter project.
+Mobile game where players try to find hidden words on a 8x8 grid by uncovering individual tiles or guessing words.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is written in Flutter.
 
-A few resources to get you started if this is your first Flutter project:
+To get started be sure you have Flutter SDK installed. If you don't have this installed, follow the guide at
+https://docs.flutter.dev/get-started/install for your operating system.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Once Flutter has been installed, run `flutter pub get` to get the latest verison of all dependencies in the project.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Next step is to run `flutter run` within the top level directory of the project. This will open the application
+in a default simulator (Android or iOS).
