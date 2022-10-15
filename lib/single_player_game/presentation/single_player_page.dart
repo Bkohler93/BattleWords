@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SinglePlayerPage extends ConsumerWidget {
   const SinglePlayerPage({required this.title}): super(key: key);
