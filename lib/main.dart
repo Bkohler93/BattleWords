@@ -1,3 +1,4 @@
+import 'package:battle_words/single_player_game/presentation/single_player_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: SinglePlayerPage(),
     );
   }
 }

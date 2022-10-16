@@ -35,9 +35,9 @@ void main() {
 
     test('Hidden words have hardcoded values', () {
       List<HiddenWord> expectedHiddenWords = [
-        HiddenWord(word: "banana"),
-        HiddenWord(word: "sauce"),
-        HiddenWord(word: "pickle"),
+        HiddenWord(word: HARD_CODED_WORDS[0]),
+        HiddenWord(word: HARD_CODED_WORDS[1]),
+        HiddenWord(word: HARD_CODED_WORDS[2]),
       ];
       expect(singlePlayerGame.hiddenWords[0].word, expectedHiddenWords[0].word);
       expect(singlePlayerGame.hiddenWords[1].word, expectedHiddenWords[1].word);

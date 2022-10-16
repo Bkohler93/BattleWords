@@ -30,9 +30,9 @@ class SinglePlayerGame {
     );
 
     List<HiddenWord> hiddenWords = [
-      HiddenWord(word: "banana"),
-      HiddenWord(word: "sauce"),
-      HiddenWord(word: "pickle")
+      HiddenWord(word: HARD_CODED_WORDS[0]),
+      HiddenWord(word: HARD_CODED_WORDS[1]),
+      HiddenWord(word: HARD_CODED_WORDS[2])
     ];
 
     int movesRemaining = START_NUM_OF_MOVES;
