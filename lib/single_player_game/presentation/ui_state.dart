@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SinglePlayerGameController extends StateNotifier<SinglePlayerGame> {
   SinglePlayerGameController(super.state);
 
-  void flipGameBoardTile() {
-    state = state.flipTile(row: 3, col: 3);
+  void flipGameBoardTile({required row, required col}) {
+    state = state.flipTile(row: row, col: col);
   }
 
   void reduceMovesRemaining() {

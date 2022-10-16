@@ -5,6 +5,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WordStatusIndicatorRow extends ConsumerWidget {
+  const WordStatusIndicatorRow({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<HiddenWord> hiddenWords = ref.read(singlePlayerGameControllerProvider).hiddenWords;
