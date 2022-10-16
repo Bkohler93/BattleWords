@@ -61,7 +61,7 @@ class SinglePlayerGame {
     throw UnimplementedError("Implement toMap for SinglePlayerGame");
   }
 
-  bool isTileUncovered(int row, int col) {
+  bool isTileUncovered({required int row, required int col}) {
     return gameBoard[row][col].isCovered;
   }
 }
@@ -75,7 +75,7 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
     );
   }
 
-  SinglePlayerGame flipTile(int row, int col) {
+  SinglePlayerGame flipTile({required int row, required int col}) {
     SinglePlayerGame singlePlayerGameCopy = SinglePlayerGame.from(this);
 
     singlePlayerGameCopy.gameBoard[row][col] = singlePlayerGameCopy.gameBoard[row][col].flip();
@@ -84,6 +84,7 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
   }
 }
 
+@immutable
 class SinglePlayerGameTile {
   final int col;
   final int row;
@@ -91,6 +92,14 @@ class SinglePlayerGameTile {
 
   const SinglePlayerGameTile({required this.row, required this.col, bool? isCovered})
       : isCovered = isCovered ?? false;
+
+  factory SinglePlayerGameTile.from(SinglePlayerGameTile gameTile) {
+    return SinglePlayerGameTile(
+      row: gameTile.row,
+      col: gameTile.col,
+      isCovered: gameTile.isCovered,
+    );
+  }
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {

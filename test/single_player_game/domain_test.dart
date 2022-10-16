@@ -18,9 +18,9 @@ void main() {
       var row = 0;
       var col = 0;
 
-      singlePlayerGame = singlePlayerGame.flipTile(row, col);
+      singlePlayerGame = singlePlayerGame.flipTile(row: row, col: col);
 
-      expect(singlePlayerGame.isTileUncovered(row, col), true);
+      expect(singlePlayerGame.isTileUncovered(row: row, col: col), true);
     });
 
     test('Reduce number of moves remaining', () {
