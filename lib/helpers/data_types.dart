@@ -1,4 +1,4 @@
-import 'package:battle_words/single_player_game/domain/game_board_state.dart';
+import 'package:battle_words/single_player_game/domain/single_player_state.dart';
 
 typedef GameBoard = List<List<SinglePlayerGameTile>>;
 typedef GameBoardRow = List<SinglePlayerGameTile>;

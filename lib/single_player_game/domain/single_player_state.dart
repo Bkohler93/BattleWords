@@ -1,14 +1,16 @@
 import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/helpers/data_types.dart';
+import 'package:flutter/material.dart';
 
 enum GameResult { playing, win, loss }
 
+@immutable
 class SinglePlayerGame {
-  late final GameBoard gameBoard;
-  late final List<HiddenWord> hiddenWords;
-  late final int movesRemaining;
+  final GameBoard gameBoard;
+  final List<HiddenWord> hiddenWords;
+  final int movesRemaining;
 
-  SinglePlayerGame({
+  const SinglePlayerGame({
     required this.gameBoard,
     required this.hiddenWords,
     required this.movesRemaining,
