@@ -1,6 +1,6 @@
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/single_player_game/data/single_player_repository.dart';
-import 'package:battle_words/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/data/single_player_repository.dart';
+import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

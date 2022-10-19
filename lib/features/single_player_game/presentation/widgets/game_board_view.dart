@@ -1,12 +1,12 @@
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/single_player_game/domain/single_player_state.dart';
-import 'package:battle_words/single_player_game/presentation/ui_state.dart';
-import 'package:battle_words/single_player_game/presentation/widgets/game_board_tile.dart';
+import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/ui_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GameBoardView extends ConsumerWidget {
-  const GameBoardView({Key? key});
+  const GameBoardView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

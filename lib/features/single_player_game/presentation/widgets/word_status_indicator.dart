@@ -1,7 +1,6 @@
-import 'package:battle_words/single_player_game/domain/single_player_state.dart';
-import 'package:battle_words/single_player_game/presentation/ui_state.dart';
+import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/ui_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WordStatusIndicatorRow extends ConsumerWidget {
@@ -55,7 +54,7 @@ class CirclePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
-    canvas.drawCircle(Offset(0, 0), 5, dotPaint);
+    canvas.drawCircle(const Offset(0, 0), 5, dotPaint);
   }
 
   @override

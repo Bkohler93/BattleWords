@@ -1,11 +1,10 @@
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/main.dart';
-import 'package:battle_words/single_player_game/domain/single_player_state.dart';
-import 'package:battle_words/single_player_game/presentation/single_player_page.dart';
-import 'package:battle_words/single_player_game/presentation/ui_state.dart';
-import 'package:battle_words/single_player_game/presentation/widgets/game_board_tile.dart';
-import 'package:battle_words/single_player_game/presentation/widgets/game_board_view.dart';
-import 'package:battle_words/single_player_game/presentation/widgets/word_status_indicator.dart';
+import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/single_player_page.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/ui_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_tile.dart';
+import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_view.dart';
+import 'package:battle_words/features/single_player_game/presentation/widgets/word_status_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,7 +46,7 @@ void main() {
     });
 
     testWidgets('single player page has a game board and word status indicators', (tester) async {
-      await tester.pumpWidget(createWidgetForTesting(child: SinglePlayerPage()));
+      await tester.pumpWidget(createWidgetForTesting(child: const SinglePlayerPage()));
 
       //allow any animations to settle
       await tester.pumpAndSettle();
@@ -71,9 +70,8 @@ void main() {
       int row = 0;
       int col = 0;
       await tester.pumpWidget(createWidgetForTesting(
-          child: GameBoardTileWidget(
-        singlePlayerGameTile: SinglePlayerGameTile(row: row, col: col),
-      )));
+          child: const GameBoardTileWidget(
+              singlePlayerGameTile: SinglePlayerGameTile(col: 0, row: 0))));
 
       await tester.pumpAndSettle();
 

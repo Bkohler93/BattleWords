@@ -1,4 +1,4 @@
-import 'package:battle_words/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* expose repositories for rest of application to use */
