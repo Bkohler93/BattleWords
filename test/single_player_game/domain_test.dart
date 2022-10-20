@@ -5,9 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Test SinglePlayerGame models', () {
-    SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
-
     test('All properties of game board  are correct types', () {
+      SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
       expect(singlePlayerGame.gameBoard, isA<GameBoard>());
 
       expect(singlePlayerGame.hiddenWords, isA<List<HiddenWord>>());
@@ -15,15 +14,18 @@ void main() {
     });
 
     test('Uncovering top left tile results in that tile being uncovered', () {
+      SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
       var row = 0;
       var col = 0;
-
+      print(singlePlayerGame.gameBoard[row][col].isCovered);
       singlePlayerGame = singlePlayerGame.flipTile(row: row, col: col);
+      print(singlePlayerGame.gameBoard[row][col].isCovered);
 
-      expect(singlePlayerGame.isTileUncovered(row: row, col: col), true);
+      expect(singlePlayerGame.isTileCovered(row: row, col: col), false);
     });
 
     test('Reduce number of moves remaining', () {
+      SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
       expect(singlePlayerGame.movesRemaining, START_NUM_OF_MOVES,
           reason: "Expect maximum number of moves at start");
 
@@ -34,6 +36,7 @@ void main() {
     });
 
     test('Hidden words have hardcoded values', () {
+      SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
       List<HiddenWord> expectedHiddenWords = [
         HiddenWord(word: HARD_CODED_WORDS[0]),
         HiddenWord(word: HARD_CODED_WORDS[1]),

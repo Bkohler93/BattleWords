@@ -15,12 +15,14 @@ class GameBoardView extends ConsumerWidget {
     List<Widget> gameBoard = List<Widget>.generate(
       GAME_BOARD_SIZE,
       (row) => Row(
-          children: List<Widget>.generate(
-        GAME_BOARD_SIZE,
-        (col) => GameBoardTileWidget(
-          singlePlayerGameTile: SinglePlayerGameTile.from(gameState.gameBoard[row][col]),
+        children: List<Widget>.generate(
+          GAME_BOARD_SIZE,
+          (col) => GameBoardTileWidget(
+            row: row,
+            col: col,
+          ),
         ),
-      )),
+      ),
       growable: false,
     );
 

@@ -61,7 +61,7 @@ class SinglePlayerGame {
     throw UnimplementedError("Implement toMap for SinglePlayerGame");
   }
 
-  bool isTileUncovered({required int row, required int col}) {
+  bool isTileCovered({required int row, required int col}) {
     return gameBoard[row][col].isCovered;
   }
 }
@@ -91,7 +91,7 @@ class SinglePlayerGameTile {
   final bool isCovered;
 
   const SinglePlayerGameTile({required this.row, required this.col, bool? isCovered})
-      : isCovered = isCovered ?? false;
+      : isCovered = isCovered ?? true;
 
   factory SinglePlayerGameTile.from(SinglePlayerGameTile gameTile) {
     return SinglePlayerGameTile(
@@ -109,7 +109,7 @@ extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
 }
 
 class HiddenWord {
-  HiddenWord({required this.word, this.found = false});
+  const HiddenWord({required this.word, this.found = false});
 
   final String word;
   final bool found;
