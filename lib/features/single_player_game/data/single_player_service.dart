@@ -8,13 +8,27 @@ class SinglePlayerGameService {
   SinglePlayerGameService(this.ref);
   final Ref ref;
 
+  SinglePlayerGame createSinglePlayerGame() {
+    // get hidden words
+
+    // arrange words on board
+
+    // set moves remaining
+
+    // set single player game in database
+
+    // send single player game to controller
+
+    throw UnimplementedError("implement createSinglePlayerGame in SinglePlayerGameService");
+  }
+
   // ignore: unused_element
-  Future<SinglePlayerGame> _fetchSinglePlayerGameService() {
+  Future<SinglePlayerGame> _fetchSinglePlayerGame() {
     return ref.read(singlePlayerGameRepositoryProvider).getSinglePlayerGame();
   }
 
   // ignore: unused_element
-  Future<void> _setSinglePlayerGameService() {
+  Future<void> _setSinglePlayerGame() {
     throw UnimplementedError("Implement _getSinglePlayerGameService");
 
     // ignore: dead_code

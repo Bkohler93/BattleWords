@@ -1,6 +1,7 @@
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/single_player_game/data/single_player_repository.dart';
 import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
-import 'package:battle_words/features/single_player_game/presentation/controllers/ui_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,7 @@ class GameBoardView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final SinglePlayerGame gameState = ref.read(singlePlayerGameControllerProvider);
+    final gameBoardState = ref.read(singlePlayerGameRepositoryProvider).mockSinglePlayerGame();
 
     List<Widget> gameBoard = List<Widget>.generate(
       GAME_BOARD_SIZE,
@@ -18,8 +19,7 @@ class GameBoardView extends ConsumerWidget {
         children: List<Widget>.generate(
           GAME_BOARD_SIZE,
           (col) => GameBoardTileWidget(
-            row: row,
-            col: col,
+            singlePlayerGameTile: gameBoardState.gameBoard[row][col],
           ),
         ),
       ),

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Test trivial single player repository with no external data sources', () {
-    final NewSinglePlayerGameRepository gameRepository = NewSinglePlayerGameRepository();
+    final SinglePlayerGameRepository gameRepository = SinglePlayerGameRepository();
 
     test('Retrieve a newly generated game', () async {
       final SinglePlayerGame game = await gameRepository.getSinglePlayerGame();

@@ -3,30 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* expose repositories for rest of application to use */
 final singlePlayerGameRepositoryProvider = Provider<SinglePlayerGameRepository>((ref) {
-  return NewSinglePlayerGameRepository();
+  return SinglePlayerGameRepository();
 });
 
 /* 
   This is an interface for the single player game repository
   Future expansions on this project may have to retrieve game states from external API calls. Implement a new repository in this case.
   */
-//!
-abstract class SinglePlayerGameRepository {
-  Future<SinglePlayerGame> getSinglePlayerGame({int? id});
+abstract class ISinglePlayerGameRepository {
+  Future<SinglePlayerGame> getSinglePlayerGame();
   Future<void> saveSinglePlayerGame();
+  SinglePlayerGame mockSinglePlayerGame();
 }
 
-class NewSinglePlayerGameRepository implements SinglePlayerGameRepository {
+class SinglePlayerGameRepository implements ISinglePlayerGameRepository {
   @override
-  //!id used for retrieving from database when implemented later
-  Future<SinglePlayerGame> getSinglePlayerGame({int? id}) {
-    final SinglePlayerGame game = SinglePlayerGame.generate();
-
-    return Future.value(game);
+  Future<SinglePlayerGame> getSinglePlayerGame() {
+    throw UnimplementedError("implement getSingleplayerGame from SinglePlayerGameRepository");
+    // retrieve single player save from db
   }
 
   @override
   Future<void> saveSinglePlayerGame() {
     throw UnimplementedError("saveSinglePlayerGame has not been implemented");
+    // save single player game state in db
   }
+
+  @override
+  SinglePlayerGame mockSinglePlayerGame() {
+    return SinglePlayerGame.generate();
+  }
+
+  void loadSinglePlayerGame() {}
 }

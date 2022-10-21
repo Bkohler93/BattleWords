@@ -1,5 +1,5 @@
 import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
-import 'package:battle_words/features/single_player_game/presentation/controllers/ui_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
