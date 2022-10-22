@@ -1,4 +1,6 @@
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
+import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 
@@ -82,35 +84,4 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
 
     return singlePlayerGameCopy;
   }
-}
-
-@immutable
-class SinglePlayerGameTile {
-  final int col;
-  final int row;
-  final bool isCovered;
-
-  const SinglePlayerGameTile({required this.row, required this.col, bool? isCovered})
-      : isCovered = isCovered ?? true;
-
-  factory SinglePlayerGameTile.from(SinglePlayerGameTile gameTile) {
-    return SinglePlayerGameTile(
-      row: gameTile.row,
-      col: gameTile.col,
-      isCovered: gameTile.isCovered,
-    );
-  }
-}
-
-extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
-  SinglePlayerGameTile flip() {
-    return SinglePlayerGameTile(row: row, col: col, isCovered: !isCovered);
-  }
-}
-
-class HiddenWord {
-  const HiddenWord({required this.word, this.found = false});
-
-  final String word;
-  final bool found;
 }

@@ -1,5 +1,7 @@
-import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/domain/game.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/game_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
@@ -29,10 +31,7 @@ class GameBoardTileWidget extends ConsumerWidget {
           ),
         ),
         onTap: () {
-          ref.read(singlePlayerGameControllerProvider.notifier).flipGameBoardTile(
-                row: singlePlayerGameTile.row,
-                col: singlePlayerGameTile.col,
-              );
+          ref.read(singlePlayerGameControllerProvider).
         },
       ),
     );

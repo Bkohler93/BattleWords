@@ -38,6 +38,7 @@ dependencies:
   flutter_riverpod: ^2.0.2
   sizer: ^2.0.15
   objectbox: ^1.6.2
+  equatable: ^2.0.0
 
 dev_dependencies:
   flutter_test:

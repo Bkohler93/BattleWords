@@ -1,5 +1,6 @@
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/domain/game.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/presentation/single_player_page.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_tile.dart';
@@ -31,7 +32,7 @@ void main() {
       test('provider creates a valid single player state', () {
         final container = ProviderContainer();
 
-        final singlePlayerGameState = container.read(singlePlayerGameControllerProvider);
+        final singlePlayerGameState = container.read(singlePlayerGameControllerProvider).value!;
 
         //test properties of state provided by provider
         final movesRemaining = singlePlayerGameState.movesRemaining;
@@ -82,15 +83,21 @@ void main() {
                 ),
               )));
 
-          bool isCovered =
-              container.read(singlePlayerGameControllerProvider).gameBoard[row][col].isCovered;
+          bool isCovered = container
+              .read(singlePlayerGameControllerProvider)
+              .value!
+              .gameBoard[row][col]
+              .isCovered;
 
           expect(isCovered, true, reason: "game tile isCovered property starts as true");
 
           await tester.tap(find.byType(GestureDetector));
 
-          isCovered =
-              container.read(singlePlayerGameControllerProvider).gameBoard[row][col].isCovered;
+          isCovered = container
+              .read(singlePlayerGameControllerProvider)
+              .value!
+              .gameBoard[row][col]
+              .isCovered;
 
           expect(isCovered, false,
               reason: "game tile isCovered property changes to false after game tile taps");

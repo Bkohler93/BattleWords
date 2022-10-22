@@ -1,6 +1,7 @@
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/helpers/data_types.dart';
-import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

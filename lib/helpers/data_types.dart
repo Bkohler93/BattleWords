@@ -1,4 +1,5 @@
-import 'package:battle_words/features/single_player_game/domain/single_player_state.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
+import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:flutter/material.dart';
 
 typedef GameBoard = List<List<SinglePlayerGameTile>>;
