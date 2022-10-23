@@ -5,21 +5,32 @@ class SinglePlayerGameTile {
   final int col;
   final int row;
   final bool isCovered;
+  final String letter;
 
-  const SinglePlayerGameTile({required this.row, required this.col, bool? isCovered})
-      : isCovered = isCovered ?? true;
+  const SinglePlayerGameTile({
+    required this.row,
+    required this.col,
+    this.isCovered = true,
+    this.letter = '',
+  });
 
   factory SinglePlayerGameTile.from(SinglePlayerGameTile gameTile) {
     return SinglePlayerGameTile(
       row: gameTile.row,
       col: gameTile.col,
       isCovered: gameTile.isCovered,
+      letter: gameTile.letter,
     );
   }
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
   SinglePlayerGameTile flip() {
-    return SinglePlayerGameTile(row: row, col: col, isCovered: !isCovered);
+    return SinglePlayerGameTile(
+      row: row,
+      col: col,
+      isCovered: !isCovered,
+      letter: letter,
+    );
   }
 }

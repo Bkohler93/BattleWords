@@ -2,13 +2,53 @@
 
 import 'package:battle_words/features/single_player_game/data/game_repository.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SinglePlayerGameService {
   SinglePlayerGameService(this.ref);
   final Ref ref;
 
-  Future<SinglePlayerGame> flipGameBoardTile({required row, required col}) {}
+  Future<SinglePlayerGame> flipGameBoardTile(
+      {required int row, required int col, required SinglePlayerGame singlePlayerGame}) {
+    final SinglePlayerGameTile gameTile = singlePlayerGame.gameBoard[row][col];
+
+    if (!gameTile.isCovered) {
+      return Future.value(SinglePlayerGame.from(singlePlayerGame));
+    }
+
+    //! check if all words have been uncovered, return with GameResult.win
+
+    //! reduce moves remaining
+    singlePlayerGame = singlePlayerGame.flipTile(col: col, row: row);
+
+    singlePlayerGame = _findUncoveredWords(singlePlayerGame: singlePlayerGame);
+
+    singlePlayerGame = _checkIfWin(singlePlayerGame: singlePlayerGame);
+
+    if (singlePlayerGame.gameResult != GameResult.win) {
+      singlePlayerGame = _reduceMovesRemaining(singlePlayerGame: singlePlayerGame);
+    }
+
+    return _setSinglePlayerGame(singlePlayerGame: singlePlayerGame);
+  }
+
+  Future<SinglePlayerGame> handleWordGuess({required SinglePlayerGame singlePlayerGame}) {
+    throw UnimplementedError("Not implemented handling word guesses yet");
+  }
+
+  SinglePlayerGame _reduceMovesRemaining({required SinglePlayerGame singlePlayerGame}) {
+    //reduce moves remaining
+    singlePlayerGame = singlePlayerGame.reduceMovesRemaining();
+
+    //check if 0, set GameResult to GameResult.win
+    if (singlePlayerGame.movesRemaining == 0) {
+      singlePlayerGame = singlePlayerGame.setGameResult(GameResult.loss);
+    }
+
+    // set in database
+    return SinglePlayerGame.from(singlePlayerGame);
+  }
 
   Future<SinglePlayerGame> createSinglePlayerGame() {
     // get hidden words
@@ -29,11 +69,20 @@ class SinglePlayerGameService {
   }
 
   // ignore: unused_element
-  Future<void> _setSinglePlayerGame() {
-    throw UnimplementedError("Implement _getSinglePlayerGameService");
+  Future<SinglePlayerGame> _setSinglePlayerGame({required SinglePlayerGame singlePlayerGame}) {
+    return Future.value(SinglePlayerGame.from(singlePlayerGame));
 
     // ignore: dead_code
     final gameService = ref.read(singlePlayerGameRepositoryProvider).getSinglePlayerGame();
+  }
+
+  //! implement this, lots of logic involved.
+  SinglePlayerGame _findUncoveredWords({required SinglePlayerGame singlePlayerGame}) {
+    return singlePlayerGame;
+  }
+
+  SinglePlayerGame _checkIfWin({required SinglePlayerGame singlePlayerGame}) {
+    return SinglePlayerGame.from(singlePlayerGame);
   }
 }
 

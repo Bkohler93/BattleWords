@@ -13,10 +13,14 @@ class GameBoardTileWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    int row = singlePlayerGameTile.row;
+    int col = singlePlayerGameTile.col;
+
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: GestureDetector(
         child: Container(
+          child: singlePlayerGameTile.isCovered ? Text("") : Text("${singlePlayerGameTile.letter}"),
           alignment: Alignment.center,
           width: 10.w,
           height: 6.h,
@@ -31,7 +35,7 @@ class GameBoardTileWidget extends ConsumerWidget {
           ),
         ),
         onTap: () {
-          ref.read(singlePlayerGameControllerProvider).
+          ref.read(singlePlayerGameControllerProvider.notifier).handleTileTap(row: row, col: col);
         },
       ),
     );

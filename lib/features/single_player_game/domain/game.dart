@@ -11,11 +11,13 @@ class SinglePlayerGame {
   final GameBoard gameBoard;
   final List<HiddenWord> hiddenWords;
   final int movesRemaining;
+  final GameResult gameResult;
 
   const SinglePlayerGame({
     required this.gameBoard,
     required this.hiddenWords,
     required this.movesRemaining,
+    required this.gameResult,
   });
 
   //TODO
@@ -42,7 +44,10 @@ class SinglePlayerGame {
     int movesRemaining = START_NUM_OF_MOVES;
 
     return SinglePlayerGame(
-        gameBoard: gameBoard, movesRemaining: movesRemaining, hiddenWords: hiddenWords);
+        gameBoard: gameBoard,
+        movesRemaining: movesRemaining,
+        hiddenWords: hiddenWords,
+        gameResult: GameResult.playing);
   }
 
   factory SinglePlayerGame.from(SinglePlayerGame singlePlayerGame) {
@@ -55,7 +60,10 @@ class SinglePlayerGame {
     int movesRemainingCopy = singlePlayerGame.movesRemaining;
 
     return SinglePlayerGame(
-        gameBoard: gameBoardCopy, hiddenWords: hiddenWordsCopy, movesRemaining: movesRemainingCopy);
+        gameBoard: gameBoardCopy,
+        hiddenWords: hiddenWordsCopy,
+        movesRemaining: movesRemainingCopy,
+        gameResult: singlePlayerGame.gameResult);
   }
 
   //TODO
@@ -74,6 +82,7 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
       gameBoard: copyGameBoard(gameBoard),
       hiddenWords: copyHiddenWords(hiddenWords),
       movesRemaining: movesRemaining - 1,
+      gameResult: gameResult,
     );
   }
 
@@ -83,5 +92,14 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
     singlePlayerGameCopy.gameBoard[row][col] = singlePlayerGameCopy.gameBoard[row][col].flip();
 
     return singlePlayerGameCopy;
+  }
+
+  SinglePlayerGame setGameResult(GameResult result) {
+    return SinglePlayerGame(
+      gameBoard: copyGameBoard(gameBoard),
+      hiddenWords: copyHiddenWords(hiddenWords),
+      movesRemaining: movesRemaining,
+      gameResult: result,
+    );
   }
 }

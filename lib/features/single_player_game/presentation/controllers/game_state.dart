@@ -12,6 +12,8 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
       : super(const AsyncLoading()) {
     _fetchNewGame();
   }
+  final MockSinglePlayerGameRepository repository;
+  final SinglePlayerGameService singlePlayerGameService;
 
   Future<void> _fetchNewGame() async {
     state = const AsyncLoading();
@@ -21,16 +23,18 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
     });
   }
 
-  final MockSinglePlayerGameRepository repository;
-  final SinglePlayerGameService singlePlayerGameService;
-
   void handleTileTap({required row, required col}) async {
-    state = singlePlayerGameService.uncoverGameTile()
-  }
+    final singlePlayerGame = state.value!;
+    state = const AsyncLoading();
 
-  // void reduceMovesRemaining() {
-  //   state = state.reduceMovesRemaining();
-  // }
+    state = await AsyncValue.guard(() async {
+      return await singlePlayerGameService.flipGameBoardTile(
+        singlePlayerGame: singlePlayerGame,
+        row: row,
+        col: col,
+      );
+    });
+  }
 }
 
 final singlePlayerGameControllerProvider =

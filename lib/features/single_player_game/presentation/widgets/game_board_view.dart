@@ -5,10 +5,12 @@ import 'package:battle_words/features/single_player_game/presentation/controller
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sizer/sizer.dart';
 
 class GameBoardView extends ConsumerWidget {
-  const GameBoardView({super.key, required this.singlePlayerGame});
+  GameBoardView({super.key, required this.singlePlayerGame});
   final SinglePlayerGame singlePlayerGame;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     List<Widget> gameBoard = List<Widget>.generate(
@@ -26,7 +28,10 @@ class GameBoardView extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Column(children: gameBoard),
+      child: Column(
+        children: gameBoard,
+        verticalDirection: VerticalDirection.up,
+      ),
     );
   }
 }

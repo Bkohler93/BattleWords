@@ -18,9 +18,7 @@ void main() {
       SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
       var row = 0;
       var col = 0;
-      print(singlePlayerGame.gameBoard[row][col].isCovered);
       singlePlayerGame = singlePlayerGame.flipTile(row: row, col: col);
-      print(singlePlayerGame.gameBoard[row][col].isCovered);
 
       expect(singlePlayerGame.isTileCovered(row: row, col: col), false);
     });
