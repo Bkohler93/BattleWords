@@ -5,7 +5,7 @@ import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('Test SinglePlayerGame models', () {
+  group('Test SinglePlayerGame model', () {
     test('All properties of game board  are correct types', () {
       SinglePlayerGame singlePlayerGame = SinglePlayerGame.generate();
       expect(singlePlayerGame.gameBoard, isA<GameBoard>());

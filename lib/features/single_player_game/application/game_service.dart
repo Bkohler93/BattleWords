@@ -6,8 +6,8 @@ import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SinglePlayerGameService {
-  SinglePlayerGameService(this.ref);
-  final Ref ref;
+  SinglePlayerGameService({required this.singlePlayerGameRepository});
+  final MockSinglePlayerGameRepository singlePlayerGameRepository;
 
   Future<SinglePlayerGame> flipGameBoardTile(
       {required int row, required int col, required SinglePlayerGame singlePlayerGame}) {
@@ -29,7 +29,6 @@ class SinglePlayerGameService {
     if (singlePlayerGame.gameResult != GameResult.win) {
       singlePlayerGame = _reduceMovesRemaining(singlePlayerGame: singlePlayerGame);
     }
-
     return _setSinglePlayerGame(singlePlayerGame: singlePlayerGame);
   }
 
@@ -60,12 +59,12 @@ class SinglePlayerGameService {
     // set single player game in database
 
     // send single player game to controller
-    return ref.read(singlePlayerGameRepositoryProvider).getSinglePlayerGame();
+    return singlePlayerGameRepository.getSinglePlayerGame();
   }
 
   // ignore: unused_element
   Future<SinglePlayerGame> _fetchSinglePlayerGame() {
-    return ref.read(singlePlayerGameRepositoryProvider).getSinglePlayerGame();
+    return singlePlayerGameRepository.getSinglePlayerGame();
   }
 
   // ignore: unused_element
@@ -73,7 +72,7 @@ class SinglePlayerGameService {
     return Future.value(SinglePlayerGame.from(singlePlayerGame));
 
     // ignore: dead_code
-    final gameService = ref.read(singlePlayerGameRepositoryProvider).getSinglePlayerGame();
+    final gameService = singlePlayerGameRepository.getSinglePlayerGame();
   }
 
   //! implement this, lots of logic involved.
@@ -87,5 +86,6 @@ class SinglePlayerGameService {
 }
 
 final singlePlayerGameServiceProvider = Provider<SinglePlayerGameService>((ref) {
-  return SinglePlayerGameService(ref);
+  return SinglePlayerGameService(
+      singlePlayerGameRepository: ref.watch(singlePlayerGameRepositoryProvider));
 });

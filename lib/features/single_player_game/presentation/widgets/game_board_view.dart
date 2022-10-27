@@ -16,6 +16,7 @@ class GameBoardView extends ConsumerWidget {
     List<Widget> gameBoard = List<Widget>.generate(
       GAME_BOARD_SIZE,
       (row) => Row(
+        mainAxisSize: MainAxisSize.min,
         children: List<Widget>.generate(
           GAME_BOARD_SIZE,
           (col) => GameBoardTileWidget(
@@ -26,11 +27,14 @@ class GameBoardView extends ConsumerWidget {
       growable: false,
     );
 
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: gameBoard,
-        verticalDirection: VerticalDirection.up,
+    return Container(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          verticalDirection: VerticalDirection.up,
+          children: gameBoard,
+        ),
       ),
     );
   }

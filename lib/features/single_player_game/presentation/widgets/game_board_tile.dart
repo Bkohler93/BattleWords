@@ -22,8 +22,8 @@ class GameBoardTileWidget extends ConsumerWidget {
         child: Container(
           child: singlePlayerGameTile.isCovered ? Text("") : Text("${singlePlayerGameTile.letter}"),
           alignment: Alignment.center,
-          width: 10.w,
-          height: 6.h,
+          width: 11.w,
+          height: 7.h,
           decoration: BoxDecoration(
             border: Border.all(
               color: singlePlayerGameTile.isCovered ? Colors.black38 : Colors.red,

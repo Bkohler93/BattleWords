@@ -14,6 +14,7 @@ class WordStatusIndicatorRow extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: List<Widget>.generate(
           singlePlayerGame.hiddenWords.length,
           (index) => WordStatusIndicator(hiddenWord: singlePlayerGame.hiddenWords[index]),
