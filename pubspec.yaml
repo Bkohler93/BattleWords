@@ -39,10 +39,13 @@ dependencies:
   sizer: ^2.0.15
   objectbox: ^1.6.2
   equatable: ^2.0.0
+  objectbox_flutter_libs: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.0.0
+  objectbox_generator: any
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -91,3 +94,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+objectbox:
+  # Writes objectbox-model.json and objectbox.g.dart to lib/features/single_player_game/data/sources/objectbox
+  output_dir:
+    lib: features/single_player_game/data/sources/objectbox
+    test: test/single_player_game/data/sources/objectbox
