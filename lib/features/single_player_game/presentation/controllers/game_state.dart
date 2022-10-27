@@ -1,5 +1,5 @@
 import 'package:battle_words/features/single_player_game/application/game_service.dart';
-import 'package:battle_words/features/single_player_game/data/game_repository.dart';
+import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

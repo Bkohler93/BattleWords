@@ -1,6 +1,6 @@
 // ignore_for_file: unused_local_variable
 
-import 'package:battle_words/features/single_player_game/data/game_repository.dart';
+import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
