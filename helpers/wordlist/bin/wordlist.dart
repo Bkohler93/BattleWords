@@ -3,6 +3,7 @@ import "dart:io";
 import 'package:path/path.dart' as p;
 
 import '../common/constants.dart';
+import '../common/values..dart';
 
 void main(List<String> arguments) async {
   // 1. read in arguments for txt file name
@@ -13,21 +14,29 @@ void main(List<String> arguments) async {
   File myFile = File(filePath);
   final allWords = await myFile.readAsLines();
 
-  // 3. filter out three letter words, four letter words, and five letter words
+  // 3. Filter
+
+  // filter out three letter words, four letter words, and five letter words
   allWords.retainWhere((word) =>
       word.length == WORD_LENGTH_SM ||
       word.length == WORD_LENGTH_MED ||
       word.length == WORD_LENGTH_LG);
 
-  // 4. filter out words with no vowel
+  // filter out words with no vowel
   allWords.retainWhere((word) => word.contains(RegExp('a|e|i|o|u')) || word.contains(RegExp('y')));
 
-  // 5. filter out roman numerals
+  // filter out roman numerals
   allWords.retainWhere((word) =>
       word == 'div' ||
       word == 'dix' ||
       word == 'mix' ||
       !word.contains(RegExp("^[ivxlcdm]{3,5}\$")));
+
+  // filter out words with three or more letters in a row.. this word list isnt looking so good
+  allWords.retainWhere((word) => !word.contains(RegExp("^([a-z])\\1\\1\$")));
+
+  // filter out words from word_filter list
+  allWords.retainWhere((word) => words.any((item) => item != word));
 
   // 6. Create map of words with their lengths
   final wordMap = {
