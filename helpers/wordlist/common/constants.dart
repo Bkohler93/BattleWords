@@ -1,0 +1,3 @@
+const WORD_LENGTH_SM = 3;
+const WORD_LENGTH_MED = 4;
+const WORD_LENGTH_LG = 5;

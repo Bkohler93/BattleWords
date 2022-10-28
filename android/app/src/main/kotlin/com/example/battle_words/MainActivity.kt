@@ -1,6 +1,0 @@
-package com.example.battle_words
-
-import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity: FlutterActivity() {
-}
