@@ -24,6 +24,7 @@ class SinglePlayerGameTile {
   }
 
   bool isEmpty() => letter.isEmpty;
+  bool isNotEmpty() => letter.isNotEmpty;
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {

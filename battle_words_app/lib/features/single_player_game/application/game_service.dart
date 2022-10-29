@@ -122,19 +122,7 @@ class SinglePlayerGameService {
             //check if at top left
             if (tempRow == 0 && tempCol == 0) {
               //check if tiles right and lower are empty
-              if (gameBoard[tempRow + 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, right: true, below: true)) {
                 placeable = false;
                 break;
               }
@@ -143,19 +131,7 @@ class SinglePlayerGameService {
             //check if at top right
             else if (tempRow == 0 && tempCol == GAME_BOARD_SIZE - 1) {
               //check if tiles left and below are empty
-              if (gameBoard[tempRow + 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol - 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, left: true, below: true)) {
                 placeable = false;
                 break;
               }
@@ -164,19 +140,7 @@ class SinglePlayerGameService {
             //check if at bottom left
             else if (tempRow == GAME_BOARD_SIZE - 1 && tempCol == 0) {
               //check if tiles above and right are empty
-              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, above: true, right: true)) {
                 placeable = false;
                 break;
               }
@@ -185,19 +149,7 @@ class SinglePlayerGameService {
             //check if at bottom right
             else if (tempRow == GAME_BOARD_SIZE - 1 && tempCol == GAME_BOARD_SIZE - 1) {
               //be sure tiles above and left are empty
-              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol - 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, above: true, left: true)) {
                 placeable = false;
                 break;
               }
@@ -206,20 +158,8 @@ class SinglePlayerGameService {
             //check if at top
             else if (tempRow == 0) {
               //make sure tile below, left, and right are empty
-              if (gameBoard[tempRow + 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol - 1].isEmpty() &&
-                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
+                  below: true, left: true, right: true)) {
                 placeable = false;
                 break;
               }
@@ -228,20 +168,8 @@ class SinglePlayerGameService {
             //check if at bottom
             else if (tempRow == GAME_BOARD_SIZE - 1) {
               //make sure tile above, left, and right are empty
-              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol - 1].isEmpty() &&
-                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
+                  above: true, left: true, right: true)) {
                 placeable = false;
                 break;
               }
@@ -250,20 +178,8 @@ class SinglePlayerGameService {
             //check if at right
             else if (tempCol == GAME_BOARD_SIZE - 1) {
               //make sure tile above, left, and below are empty
-              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol - 1].isEmpty() &&
-                  gameBoard[tempRow + 1][tempCol].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
+                  above: true, left: true, below: true)) {
                 placeable = false;
                 break;
               }
@@ -272,20 +188,8 @@ class SinglePlayerGameService {
             //check if at left
             else if (tempCol == 0) {
               //make sure tile above, right, and below are empty
-              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol + 1].isEmpty() &&
-                  gameBoard[tempRow + 1][tempCol].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
+                  above: true, right: true, below: true)) {
                 placeable = false;
                 break;
               }
@@ -294,30 +198,25 @@ class SinglePlayerGameService {
             //in middle of board somewhere
             else {
               //make sure tile above, below, right, and left are empoty
-              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow + 1][tempCol].isEmpty() &&
-                  gameBoard[tempRow][tempCol + 1].isEmpty() &&
-                  gameBoard[tempRow][tempCol - 1].isEmpty()) {
-                switch (direction) {
-                  case Direction.horizontal:
-                    tempCol++;
-                    break;
-                  case Direction.vertical:
-                    tempRow++;
-                    break;
-                }
-
-                continue;
-              } else {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
+                  above: true, below: true, right: true, left: true)) {
                 placeable = false;
                 break;
               }
             }
           } else if (gameBoard[tempRow][tempCol].letter == hiddenWord.word[i]) {
-            continue;
+            //spot is fine for a word
           } else {
             placeable = false;
             break;
+          }
+          switch (direction) {
+            case Direction.horizontal:
+              tempCol++;
+              break;
+            case Direction.vertical:
+              tempRow++;
+              break;
           }
         }
 
@@ -342,6 +241,21 @@ class SinglePlayerGameService {
     }
 
     return gameBoard;
+  }
+
+  bool _tileHasAdjacentTiles(
+    GameBoard gameBoard,
+    int tempRow,
+    int tempCol, {
+    right = false,
+    left = false,
+    below = false,
+    above = false,
+  }) {
+    return ((above ? gameBoard[tempRow - 1][tempCol].isNotEmpty() : false) ||
+        (below ? gameBoard[tempRow + 1][tempCol].isNotEmpty() : false) ||
+        (right ? gameBoard[tempRow][tempCol + 1].isNotEmpty() : false) ||
+        (left ? gameBoard[tempRow][tempCol - 1].isNotEmpty() : false));
   }
 
   Direction _randomDirection() {
