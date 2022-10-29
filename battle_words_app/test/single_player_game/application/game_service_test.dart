@@ -1,8 +1,9 @@
+import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/home_screen/data/database_repository.dart';
 import 'package:battle_words/features/single_player_game/application/game_service.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -13,8 +14,8 @@ void main() {
       int col = 0;
       int row = 0;
 
-      final singlePlayerGameService =
-          SinglePlayerGameService(singlePlayerGameRepository: mockRepository);
+      final singlePlayerGameService = SinglePlayerGameService(
+          singlePlayerGameRepository: mockRepository, objectBoxRepository: ObjectBoxRepository());
 
       expect(game.gameBoard[col][row].isCovered, true);
 
@@ -28,8 +29,9 @@ void main() {
       final mockRepository = MockSinglePlayerGameRepository();
       final game = SinglePlayerGame.generate();
 
-      final singlePlayerGameService =
-          SinglePlayerGameService(singlePlayerGameRepository: mockRepository);
+      final singlePlayerGameService = SinglePlayerGameService(
+          singlePlayerGameRepository: mockRepository,
+          objectBoxRepository: MockObjectBoxRepository());
 
       expect(game.movesRemaining, START_NUM_OF_MOVES,
           reason: "Expect maximum number of moves at start");
@@ -44,8 +46,9 @@ void main() {
     test('create a new single player game returns a single player game', () async {
       final mockRepository = MockSinglePlayerGameRepository();
 
-      final singlePlayerGameService =
-          SinglePlayerGameService(singlePlayerGameRepository: mockRepository);
+      final singlePlayerGameService = SinglePlayerGameService(
+          singlePlayerGameRepository: mockRepository,
+          objectBoxRepository: MockObjectBoxRepository());
 
       final game = await singlePlayerGameService.createSinglePlayerGame();
 

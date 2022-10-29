@@ -10,10 +10,11 @@ Future<void> main(List<String> arguments) async {
 
   final wordBox = store.box<Word>();
 
-  final query = (wordBox.query(Word_.length.equals(3))).build();
+  final query = (wordBox.query(Word_.length.equals(5))).build();
   final results = query.find();
+  print(results.length);
 
-  print(results[Random().nextInt(results.length - 1)]);
+  // print(results[Random().nextInt(results.length - 1)]);
 
   store.close();
 }

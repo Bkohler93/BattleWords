@@ -5,24 +5,27 @@ import 'dart:convert';
 
 Future<void> main(List<String> arguments) async {
   final store = openStore();
+  final fileName = arguments[0];
 
   final wordBox = store.box<Word>();
+  final numRemoved = wordBox.removeAll();
 
-  await fillDatabase(store, wordBox);
+  print('=== Deleted $numRemoved while clearing database.');
+
+  await fillDatabase(store, wordBox, fileName);
 
   store.close();
 }
 
-Future<void> fillDatabase(Store store, Box<Word> wordBox) async {
+Future<void> fillDatabase(Store store, Box<Word> wordBox, String fileName) async {
   //get file
-  String filePath = '${Directory.current.path}/words_alpha.txt';
+  String filePath = '${Directory.current.path}/wordlists/$fileName';
   final myFile = File(filePath);
   final wordString = await myFile.readAsString();
   final words = jsonDecode(wordString);
-  print(words);
   final List<Word> modelWords = [];
 
   words.forEach((word, length) => modelWords.add(Word(text: word, length: length)));
-
+  print(modelWords[0]);
   final ids = wordBox.putMany(modelWords);
 }

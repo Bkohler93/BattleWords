@@ -14,8 +14,6 @@ void main(List<String> arguments) async {
   File myFile = File(filePath);
   final allWords = await myFile.readAsLines();
 
-  // 3. Filter
-
   // filter out three letter words, four letter words, and five letter words
   allWords.retainWhere((word) =>
       word.length == WORD_LENGTH_SM ||
@@ -52,4 +50,6 @@ void main(List<String> arguments) async {
 
   // 9. write json to file
   outFile.writeAsString(jsonWords);
+
+  print("=== wrote to /output_lists");
 }
