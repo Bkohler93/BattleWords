@@ -1,5 +1,7 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:math';
+
 import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
@@ -8,6 +10,8 @@ import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/helpers/data_types.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+enum Direction { horizontal, vertical }
 
 final singlePlayerGameServiceProvider = Provider<SinglePlayerGameService>((ref) {
   return SinglePlayerGameService(
@@ -65,31 +69,283 @@ class SinglePlayerGameService {
     // get hidden words
     final List<HiddenWord> hiddenWords = await objectBoxRepository.getRandomWords();
 
-    // create gameboard
-    GameBoard gameBoard = List.generate(GAME_BOARD_SIZE,
-        (row) => List.generate(GAME_BOARD_SIZE, (col) => SinglePlayerGameTile(col: col, row: row)));
-
     //arrange words on board
-    gameBoard = _arrangeGameBoard(gameBoard, hiddenWords);
+    GameBoard gameBoard = _arrangeGameBoard(hiddenWords);
 
     // set moves remaining
+    int movesRemaining = START_NUM_OF_MOVES;
 
     // set single player game in database
 
     // send single player game to controller
-    return singlePlayerGameRepository.getSinglePlayerGame();
+    return SinglePlayerGame(
+        gameBoard: gameBoard,
+        movesRemaining: movesRemaining,
+        hiddenWords: hiddenWords,
+        gameResult: GameResult.playing);
   }
 
-  GameBoard _arrangeGameBoard(GameBoard gameBoard, List<HiddenWord> hiddenWords) {
-    for (var hiddenWord in hiddenWords) {}
-
-    return List.generate(
-      GAME_BOARD_SIZE,
-      (row) => List.generate(
+  GameBoard _arrangeGameBoard(List<HiddenWord> hiddenWords) {
+    GameBoard gameBoard = List.generate(
         GAME_BOARD_SIZE,
-        (col) => SinglePlayerGameTile(col: col, row: row),
-      ),
-    );
+        (row) => List.generate(
+              GAME_BOARD_SIZE,
+              (col) => SinglePlayerGameTile(col: col, row: row),
+            ));
+
+    for (var hiddenWord in hiddenWords) {
+      //loop until word is cleared for placement.
+      bool placeable = false; //assume word cannot be placed
+
+      while (!placeable) {
+        placeable = true; //assume word can be placed
+
+        //get random acceptable index, determine L->R or T->B
+        final int col = Random().nextInt(GAME_BOARD_SIZE);
+        late final int row;
+        late Direction direction;
+        int directionLimiter = GAME_BOARD_SIZE - hiddenWord.length;
+
+        if (col > directionLimiter) {
+          row = Random().nextInt(directionLimiter);
+          direction = Direction.vertical;
+        } else {
+          row = Random().nextInt(GAME_BOARD_SIZE);
+          direction = row > directionLimiter ? Direction.horizontal : _randomDirection();
+        }
+
+        //check if other letters are already present/nearby from other words
+        int tempCol = col;
+        int tempRow = row;
+        for (var i = 0; i < hiddenWord.length; i++) {
+          if (gameBoard[tempRow][tempCol].isEmpty()) {
+            //check if at top left
+            if (tempRow == 0 && tempCol == 0) {
+              //check if tiles right and lower are empty
+              if (gameBoard[tempRow + 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at top right
+            else if (tempRow == 0 && tempCol == GAME_BOARD_SIZE - 1) {
+              //check if tiles left and below are empty
+              if (gameBoard[tempRow + 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol - 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at bottom left
+            else if (tempRow == GAME_BOARD_SIZE - 1 && tempCol == 0) {
+              //check if tiles above and right are empty
+              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at bottom right
+            else if (tempRow == GAME_BOARD_SIZE - 1 && tempCol == GAME_BOARD_SIZE - 1) {
+              //be sure tiles above and left are empty
+              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol - 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at top
+            else if (tempRow == 0) {
+              //make sure tile below, left, and right are empty
+              if (gameBoard[tempRow + 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol - 1].isEmpty() &&
+                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at bottom
+            else if (tempRow == GAME_BOARD_SIZE - 1) {
+              //make sure tile above, left, and right are empty
+              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol - 1].isEmpty() &&
+                  gameBoard[tempRow][tempCol + 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at right
+            else if (tempCol == GAME_BOARD_SIZE - 1) {
+              //make sure tile above, left, and below are empty
+              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol - 1].isEmpty() &&
+                  gameBoard[tempRow + 1][tempCol].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //check if at left
+            else if (tempCol == 0) {
+              //make sure tile above, right, and below are empty
+              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol + 1].isEmpty() &&
+                  gameBoard[tempRow + 1][tempCol].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+
+            //in middle of board somewhere
+            else {
+              //make sure tile above, below, right, and left are empoty
+              if (gameBoard[tempRow - 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow + 1][tempCol].isEmpty() &&
+                  gameBoard[tempRow][tempCol + 1].isEmpty() &&
+                  gameBoard[tempRow][tempCol - 1].isEmpty()) {
+                switch (direction) {
+                  case Direction.horizontal:
+                    tempCol++;
+                    break;
+                  case Direction.vertical:
+                    tempRow++;
+                    break;
+                }
+
+                continue;
+              } else {
+                placeable = false;
+                break;
+              }
+            }
+          } else if (gameBoard[tempRow][tempCol].letter == hiddenWord.word[i]) {
+            continue;
+          } else {
+            placeable = false;
+            break;
+          }
+        }
+
+        //place word
+        if (placeable) {
+          var tempRow = row;
+          var tempCol = col;
+          for (var i = 0; i < hiddenWord.length; i++) {
+            switch (direction) {
+              case Direction.horizontal:
+                gameBoard[tempRow][tempCol] =
+                    gameBoard[tempRow][tempCol++].setLetter(hiddenWord.word[i]);
+                break;
+              case Direction.vertical:
+                gameBoard[tempRow][tempCol] =
+                    gameBoard[tempRow++][tempCol].setLetter(hiddenWord.word[i]);
+                break;
+            }
+          }
+        }
+      }
+    }
+
+    return gameBoard;
+  }
+
+  Direction _randomDirection() {
+    return Random().nextInt(2) == 1 ? Direction.horizontal : Direction.horizontal;
   }
 
   // ignore: unused_element

@@ -35,6 +35,7 @@ class GameBoardTileWidget extends ConsumerWidget {
           ),
         ),
         onTap: () {
+          print('=== row: $row, col: $col');
           ref.read(singlePlayerGameControllerProvider.notifier).handleTileTap(row: row, col: col);
         },
       ),

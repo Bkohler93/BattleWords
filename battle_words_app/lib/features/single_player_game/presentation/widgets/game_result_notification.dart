@@ -1,17 +1,14 @@
+import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-class GameResultNotification extends StatefulWidget {
+class GameResultNotification extends ConsumerWidget {
   const GameResultNotification({super.key, required this.result});
   final String result;
 
   @override
-  State<GameResultNotification> createState() => _GameResultNotificationState();
-}
-
-class _GameResultNotificationState extends State<GameResultNotification> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     print("Building gameresult notification");
     return Container(
       height: 30.h,
@@ -23,13 +20,16 @@ class _GameResultNotificationState extends State<GameResultNotification> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              widget.result,
+              result,
               style: TextStyle(color: Colors.white),
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: FloatingActionButton.extended(
-                onPressed: () => Navigator.of(context).push,
+                onPressed: () {
+                  ref.read(singlePlayerGameControllerProvider.notifier).resetGameState();
+                  Navigator.of(context).pop();
+                },
                 label: Text("Main Menu"),
               ),
             )

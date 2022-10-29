@@ -22,6 +22,8 @@ class SinglePlayerGameTile {
       letter: gameTile.letter,
     );
   }
+
+  bool isEmpty() => letter.isEmpty;
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
@@ -31,6 +33,15 @@ extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
       col: col,
       isCovered: !isCovered,
       letter: letter,
+    );
+  }
+
+  SinglePlayerGameTile setLetter(String newLetter) {
+    return SinglePlayerGameTile(
+      col: col,
+      row: row,
+      isCovered: isCovered,
+      letter: newLetter,
     );
   }
 }

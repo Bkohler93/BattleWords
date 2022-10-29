@@ -23,6 +23,14 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
     });
   }
 
+  Future<void> resetGameState() async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      return SinglePlayerGame.generate();
+    });
+  }
+
   void handleTileTap({required row, required col}) async {
     final singlePlayerGame = state.value!;
     state = const AsyncLoading();
