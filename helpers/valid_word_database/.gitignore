@@ -7,4 +7,3 @@ build/
 
 # objectbox
 lib/objectbox.g.dart
-lib/objectbox-model.json	
