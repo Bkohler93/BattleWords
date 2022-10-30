@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
+import 'package:battle_words/features/single_player_game/data/repositories/hidden_words.dart';
+import 'package:battle_words/features/single_player_game/data/sources/hidden_words.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
@@ -16,13 +18,14 @@ enum Direction { horizontal, vertical }
 final singlePlayerGameServiceProvider = Provider<SinglePlayerGameService>((ref) {
   return SinglePlayerGameService(
       singlePlayerGameRepository: ref.watch(singlePlayerGameRepositoryProvider),
-      objectBox: ref.watch(objectBoxProvider));
+      hiddenWordsRepository: ref.watch(hiddenWordsRepositoryProvider));
 });
 
 class SinglePlayerGameService {
-  SinglePlayerGameService({required this.singlePlayerGameRepository, required this.objectBox});
+  SinglePlayerGameService(
+      {required this.singlePlayerGameRepository, required this.hiddenWordsRepository});
   final MockSinglePlayerGameRepository singlePlayerGameRepository;
-  final ObjectBox objectBox;
+  final IHiddenWordsRepository hiddenWordsRepository;
 
   Future<SinglePlayerGame> flipGameBoardTile(
       {required int row, required int col, required SinglePlayerGame singlePlayerGame}) {
@@ -66,7 +69,7 @@ class SinglePlayerGameService {
 
   Future<SinglePlayerGame> createSinglePlayerGame() async {
     // get hidden words
-    final List<HiddenWord> hiddenWords = await objectBox.getRandomWords();
+    final List<HiddenWord> hiddenWords = await hiddenWordsRepository.fetchHiddenWords();
 
     //arrange words on board
     GameBoard gameBoard = _arrangeGameBoard(hiddenWords);

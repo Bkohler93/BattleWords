@@ -2,6 +2,7 @@ import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/features/single_player_game/application/game_service.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
+import 'package:battle_words/features/single_player_game/data/repositories/hidden_words.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,12 +10,14 @@ void main() {
   group('Test SinglePlayerGame service', () {
     test('Flipping game board tile returns new board with uncovered tile', () async {
       final mockRepository = MockSinglePlayerGameRepository();
+      final mockHiddenWordsRepository = MockHiddenWordsRepository();
       final game = SinglePlayerGame.generate();
       int col = 0;
       int row = 0;
 
       final singlePlayerGameService = SinglePlayerGameService(
-          singlePlayerGameRepository: mockRepository, objectBox: ObjectBox());
+          singlePlayerGameRepository: mockRepository,
+          hiddenWordsRepository: mockHiddenWordsRepository);
 
       expect(game.gameBoard[col][row].isCovered, true);
 
@@ -26,10 +29,12 @@ void main() {
 
     test('Reduce number of moves remaining after flipping game board tile', () async {
       final mockRepository = MockSinglePlayerGameRepository();
+      final mockHiddenWordsRepository = MockHiddenWordsRepository();
       final game = SinglePlayerGame.generate();
 
       final singlePlayerGameService = SinglePlayerGameService(
-          singlePlayerGameRepository: mockRepository, objectBox: ObjectBox());
+          singlePlayerGameRepository: mockRepository,
+          hiddenWordsRepository: mockHiddenWordsRepository);
 
       expect(game.movesRemaining, START_NUM_OF_MOVES,
           reason: "Expect maximum number of moves at start");
@@ -43,9 +48,11 @@ void main() {
 
     test('create a new single player game returns a single player game', () async {
       final mockRepository = MockSinglePlayerGameRepository();
+      final mockHiddenWordsRepository = MockHiddenWordsRepository();
 
       final singlePlayerGameService = SinglePlayerGameService(
-          singlePlayerGameRepository: mockRepository, objectBox: ObjectBox());
+          singlePlayerGameRepository: mockRepository,
+          hiddenWordsRepository: mockHiddenWordsRepository);
 
       final game = await singlePlayerGameService.createSinglePlayerGame();
 
