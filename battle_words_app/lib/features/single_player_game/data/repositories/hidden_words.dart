@@ -24,7 +24,11 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
 class MockHiddenWordsRepository implements IHiddenWordsRepository {
   @override
   Future<List<HiddenWord>> fetchHiddenWords() {
-    return Future.value(
-        [HiddenWord(word: "sauce"), HiddenWord(word: "nope"), HiddenWord(word: "you")]);
+    final List<Word> words = [
+      Word(length: 3, text: 'you'),
+      Word(length: 4, text: "ball"),
+      Word(length: 5, text: "sauce")
+    ];
+    return Future.value(words.map((word) => HiddenWord(word: word.text)).toList());
   }
 }

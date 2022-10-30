@@ -58,5 +58,29 @@ void main() {
 
       expect(game, isA<SinglePlayerGame>());
     });
+
+    test('_arrangeGameBoard returns a GameBoard instance with filled in hiddenWords', () async {
+      final mockRepository = MockSinglePlayerGameRepository();
+      final mockHiddenWordsRepository = MockHiddenWordsRepository();
+
+      final singlePlayerGameService = SinglePlayerGameService(
+          singlePlayerGameRepository: mockRepository,
+          hiddenWordsRepository: mockHiddenWordsRepository);
+
+      final game = await singlePlayerGameService.createSinglePlayerGame();
+
+      int testTotalLetters = 3 + 4 + 5; // lenghts of each word
+      int totalLetters = 0;
+
+      for (int i = 0; i < GAME_BOARD_SIZE; i++) {
+        for (int j = 0; j < GAME_BOARD_SIZE; j++) {
+          if (game.gameBoard[i][j].isNotEmpty()) {
+            totalLetters++;
+          }
+        }
+      }
+
+      expect(totalLetters, testTotalLetters);
+    });
   });
 }

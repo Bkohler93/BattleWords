@@ -9,5 +9,16 @@ void main() {
       expect(hiddenWord.found, false);
       expect(hiddenWord.word, "sauce");
     });
+
+    test(
+        'constructor results in a length property equal to the length of the string entered as word property',
+        () {
+      final hiddenWord = HiddenWord(word: "sauce");
+
+      final expected = 5;
+      final test = hiddenWord.length;
+
+      expect(test, expected);
+    });
   });
 }

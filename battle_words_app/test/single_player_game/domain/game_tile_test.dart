@@ -29,5 +29,52 @@ void main() {
 
       expect(gameTileFlipped.isCovered, false);
     });
+
+    test("calling setLetter on a game tile results in that game tile's letter being changed", () {
+      var gameTile = SinglePlayerGameTile(row: 0, col: 0, letter: '');
+
+      gameTile = gameTile.setLetter("a");
+
+      final expected = 'a';
+      final test = gameTile.letter;
+
+      expect(test, expected);
+    });
+
+    test("calling isEmpty on a game tile with an empty string returns true", () {
+      final gameTile = SinglePlayerGameTile(col: 0, row: 0, letter: '');
+
+      final expected = true;
+      final test = gameTile.isEmpty();
+
+      expect(test, expected);
+    });
+
+    test("calling isEmpty on a game tile with a nonempty string returns false", () {
+      final gameTile = SinglePlayerGameTile(col: 0, row: 0, letter: 'a');
+
+      final expected = false;
+      final test = gameTile.isEmpty();
+
+      expect(test, expected);
+    });
+
+    test("calling isNotEmpty on a game tile with an empty string returns false", () {
+      final gameTile = SinglePlayerGameTile(col: 0, row: 0, letter: '');
+
+      final expected = false;
+      final test = gameTile.isNotEmpty();
+
+      expect(test, expected);
+    });
+
+    test("calling isNotEmpty on a game tile with a nonempty string returns true", () {
+      final gameTile = SinglePlayerGameTile(col: 0, row: 0, letter: 'a');
+
+      final expected = true;
+      final test = gameTile.isNotEmpty();
+
+      expect(test, expected);
+    });
   });
 }

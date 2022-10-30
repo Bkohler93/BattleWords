@@ -1,4 +1,5 @@
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/helpers/data_types.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
@@ -44,6 +45,25 @@ void main() {
       expect(singlePlayerGame.hiddenWords[0].word, expectedHiddenWords[0].word);
       expect(singlePlayerGame.hiddenWords[1].word, expectedHiddenWords[1].word);
       expect(singlePlayerGame.hiddenWords[2].word, expectedHiddenWords[2].word);
+    });
+
+    test('isTileCovered returns true on a tile that is covered.', () {
+      final singlePlayerGame = SinglePlayerGame.generate();
+
+      final expected = true;
+      final test = singlePlayerGame.isTileCovered(row: 0, col: 0);
+
+      expect(test, expected);
+    });
+
+    test('isTileCovered returns false on a tile that is not covered.', () {
+      var singlePlayerGame = SinglePlayerGame.generate();
+
+      final expected = false;
+      singlePlayerGame = singlePlayerGame.flipTile(row: 0, col: 0);
+      final test = singlePlayerGame.isTileCovered(row: 0, col: 0);
+
+      expect(test, expected);
     });
   });
 }
