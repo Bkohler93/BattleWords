@@ -16,14 +16,13 @@ enum Direction { horizontal, vertical }
 final singlePlayerGameServiceProvider = Provider<SinglePlayerGameService>((ref) {
   return SinglePlayerGameService(
       singlePlayerGameRepository: ref.watch(singlePlayerGameRepositoryProvider),
-      objectBoxRepository: ref.watch(objectBoxRepositoryProvider));
+      objectBox: ref.watch(objectBoxProvider));
 });
 
 class SinglePlayerGameService {
-  SinglePlayerGameService(
-      {required this.singlePlayerGameRepository, required this.objectBoxRepository});
+  SinglePlayerGameService({required this.singlePlayerGameRepository, required this.objectBox});
   final MockSinglePlayerGameRepository singlePlayerGameRepository;
-  final IObjectBoxRepository objectBoxRepository;
+  final ObjectBox objectBox;
 
   Future<SinglePlayerGame> flipGameBoardTile(
       {required int row, required int col, required SinglePlayerGame singlePlayerGame}) {
@@ -67,7 +66,7 @@ class SinglePlayerGameService {
 
   Future<SinglePlayerGame> createSinglePlayerGame() async {
     // get hidden words
-    final List<HiddenWord> hiddenWords = await objectBoxRepository.getRandomWords();
+    final List<HiddenWord> hiddenWords = await objectBox.getRandomWords();
 
     //arrange words on board
     GameBoard gameBoard = _arrangeGameBoard(hiddenWords);
@@ -90,7 +89,7 @@ class SinglePlayerGameService {
         GAME_BOARD_SIZE,
         (row) => List.generate(
               GAME_BOARD_SIZE,
-              (col) => SinglePlayerGameTile(col: col, row: row),
+              (col) => SinglePlayerGameTile(col: col, row: row, isCovered: false),
             ));
 
     for (var hiddenWord in hiddenWords) {

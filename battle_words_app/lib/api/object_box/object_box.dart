@@ -4,35 +4,35 @@ import 'dart:math';
 
 import 'package:battle_words/api/object_box/models/word.dart';
 import 'package:battle_words/api/object_box/objectbox.g.dart';
+import 'package:battle_words/constants/api.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:objectbox/objectbox.dart';
+import 'package:path_provider/path_provider.dart';
 
-final objectBoxRepositoryProvider = Provider<ObjectBoxRepository>((ref) => ObjectBoxRepository());
+final objectBoxProvider = Provider<ObjectBox>((ref) => ObjectBox());
 
-abstract class IObjectBoxRepository {
-  Future<void> _ensureDbOpen();
-  Word _getRandomWordOfLength(final int length);
-  Future<List<HiddenWord>> getRandomWords();
-  Future<void> populateDatabase();
-}
-
-class ObjectBoxRepository implements IObjectBoxRepository {
-  ObjectBoxRepository();
+class ObjectBox {
+  ObjectBox();
   Store? store;
   late final Box<Word> wordBox;
+  bool notReset = true;
 
-  @override
   Future<void> _ensureDbOpen() async {
+    if (notReset) {
+      Directory dir = await getApplicationDocumentsDirectory();
+      Directory(dir.path + '/objectbox/')
+          .delete(recursive: true)
+          .then((FileSystemEntity value) => print("DB Deleted: ${value.existsSync()}"));
+      notReset = false;
+    }
+
     if (store == null) {
       store = await openStore();
       wordBox = store!.box<Word>();
     }
   }
 
-  @override
   Word _getRandomWordOfLength(final int length) {
     //query for words of length 'length'
     final query = (wordBox.query(
@@ -60,11 +60,7 @@ class ObjectBoxRepository implements IObjectBoxRepository {
     await _ensureDbOpen();
 
     if (wordBox.isEmpty()) {
-      final wordString = await rootBundle.loadString("assets/wordlists/google-10000-english.txt");
-      //get file
-      // String filePath = '${Directory.current.path}resources/google-10000-english.txt';
-      // final myFile = File(filePath);
-      // final wordString = await myFile.readAsString();
+      final wordString = await rootBundle.loadString("assets/wordlists/$HIDDEN_WORDS_SOURCE");
       final words = jsonDecode(wordString);
       final List<Word> modelWords = [];
 
@@ -74,33 +70,5 @@ class ObjectBoxRepository implements IObjectBoxRepository {
     } else {
       print("=== database already populated");
     }
-  }
-}
-
-class MockObjectBoxRepository implements IObjectBoxRepository {
-  @override
-  Future<void> _ensureDbOpen() {
-    return Future.delayed(Duration(milliseconds: 50));
-  }
-
-  @override
-  Word _getRandomWordOfLength(int length) {
-    return length == 5
-        ? Word(text: "sauce", length: 5)
-        : length == 4
-            ? Word(text: 'bear', length: 4)
-            : Word(text: 'you', length: 3);
-  }
-
-  @override
-  Future<List<HiddenWord>> getRandomWords() {
-    return Future.value(
-        [for (var i = 3; i > 0; i--) HiddenWord(word: _getRandomWordOfLength(i).text)]);
-  }
-
-  @override
-  Future<void> populateDatabase() {
-    // TODO: implement populateDatabase
-    throw UnimplementedError();
   }
 }

@@ -20,7 +20,9 @@ class GameBoardTileWidget extends ConsumerWidget {
       padding: const EdgeInsets.all(3.0),
       child: GestureDetector(
         child: Container(
-          child: singlePlayerGameTile.isCovered ? Text("") : Text("${singlePlayerGameTile.letter}"),
+          child: singlePlayerGameTile.isCovered
+              ? Text("")
+              : Text("${singlePlayerGameTile.letter.toUpperCase()}"),
           alignment: Alignment.center,
           width: 11.w,
           height: 7.h,

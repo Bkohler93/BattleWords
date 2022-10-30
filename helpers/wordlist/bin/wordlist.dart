@@ -3,7 +3,7 @@ import "dart:io";
 import 'package:path/path.dart' as p;
 
 import '../common/constants.dart';
-import '../common/values..dart';
+import '../common/values.dart';
 
 void main(List<String> arguments) async {
   // 1. read in arguments for txt file name
@@ -12,7 +12,9 @@ void main(List<String> arguments) async {
 
   // 2. read in txt file,
   File myFile = File(filePath);
-  final allWords = await myFile.readAsLines();
+  List<String> allWords = await myFile.readAsLines();
+
+  allWords = allWords.map((word) => word.toLowerCase()).toList();
 
   // filter out three letter words, four letter words, and five letter words
   allWords.retainWhere((word) =>

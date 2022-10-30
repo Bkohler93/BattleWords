@@ -1,6 +1,5 @@
 import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/features/home_screen/data/database_repository.dart';
 import 'package:battle_words/features/single_player_game/application/game_service.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
@@ -15,7 +14,7 @@ void main() {
       int row = 0;
 
       final singlePlayerGameService = SinglePlayerGameService(
-          singlePlayerGameRepository: mockRepository, objectBoxRepository: ObjectBoxRepository());
+          singlePlayerGameRepository: mockRepository, objectBox: ObjectBox());
 
       expect(game.gameBoard[col][row].isCovered, true);
 
@@ -30,8 +29,7 @@ void main() {
       final game = SinglePlayerGame.generate();
 
       final singlePlayerGameService = SinglePlayerGameService(
-          singlePlayerGameRepository: mockRepository,
-          objectBoxRepository: MockObjectBoxRepository());
+          singlePlayerGameRepository: mockRepository, objectBox: ObjectBox());
 
       expect(game.movesRemaining, START_NUM_OF_MOVES,
           reason: "Expect maximum number of moves at start");
@@ -47,8 +45,7 @@ void main() {
       final mockRepository = MockSinglePlayerGameRepository();
 
       final singlePlayerGameService = SinglePlayerGameService(
-          singlePlayerGameRepository: mockRepository,
-          objectBoxRepository: MockObjectBoxRepository());
+          singlePlayerGameRepository: mockRepository, objectBox: ObjectBox());
 
       final game = await singlePlayerGameService.createSinglePlayerGame();
 

@@ -27,7 +27,7 @@ class GameResultNotification extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: FloatingActionButton.extended(
                 onPressed: () {
-                  ref.read(singlePlayerGameControllerProvider.notifier).resetGameState();
+                  // ref.read(singlePlayerGameControllerProvider.notifier).resetGameState();
                   Navigator.of(context).pop();
                 },
                 label: Text("Main Menu"),

@@ -67,7 +67,9 @@ flutter:
 
   # Assets to be loaded asynchronously
   assets:
-    - assets/wordlists/google-10000-english.txt
+    # - assets/wordlists/google-10000-english.txt
+    - assets/wordlists/raun_scrabble.txt
+    # - assets/wordlists/word_list.txt
   # - assets/databases/data.mdb
   # - assets/databases/lock.mdb
 
