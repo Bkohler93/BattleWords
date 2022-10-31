@@ -285,4 +285,9 @@ class SinglePlayerGameService {
   SinglePlayerGame _checkIfWin({required SinglePlayerGame singlePlayerGame}) {
     return SinglePlayerGame.from(singlePlayerGame);
   }
+
+  Future<SinglePlayerGame> handleExactMatch(
+      {required String word, required SinglePlayerGame singlePlayerGame}) {
+    throw UnimplementedError("implement handleExactMatch");
+  }
 }

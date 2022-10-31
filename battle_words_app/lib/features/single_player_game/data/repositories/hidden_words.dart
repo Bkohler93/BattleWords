@@ -17,6 +17,7 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
   @override
   Future<List<HiddenWord>> fetchHiddenWords() async {
     final List<Word> words = await hiddenWordsObjectBox.getRandomWords();
+    for (var word in words) print(word.text);
     return words.map((word) => HiddenWord(word: word.text)).toList();
   }
 }

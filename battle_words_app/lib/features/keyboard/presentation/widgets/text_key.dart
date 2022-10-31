@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 class TextKey extends StatelessWidget {
   const TextKey({
     Key? key,
-    required this.letter,
-    this.onTextInput,
+    required this.onTextInput,
     this.flex = 1,
+    required this.letter,
+    required this.status,
   }) : super(key: key);
-  final Letter letter;
+  final String letter;
+  final KeyboardLetterStatus status;
   // final String text;
-  final ValueSetter<String>? onTextInput;
+  final ValueSetter<String> onTextInput;
   final int flex;
 
   @override
@@ -28,19 +30,19 @@ class TextKey extends StatelessWidget {
             surfaceTintColor: Colors.black87,
             elevation: 5.0,
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
-            color: letter.status == LetterStatus.unchecked
+            color: status == KeyboardLetterStatus.unchecked
                 ? Colors.white
-                : letter.status == LetterStatus.complete
+                : status == KeyboardLetterStatus.complete
                     ? Colors.green.shade300
-                    : letter.status == LetterStatus.incomplete
+                    : status == KeyboardLetterStatus.incomplete
                         ? Colors.yellow.shade300
                         : Colors.red.shade300,
             child: InkWell(
               onTap: () {
-                onTextInput?.call(letter.text);
+                onTextInput.call(letter);
               },
               child: Container(
-                child: Center(child: Text(letter.text)),
+                child: Center(child: Text(letter)),
               ),
             ),
           ),

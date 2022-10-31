@@ -1,17 +1,7 @@
-enum LetterStatus { unchecked, complete, incomplete, dne }
+enum KeyboardLetterStatus { unchecked, complete, incomplete, empty, error }
 
-class Letter {
-  Letter({required this.text, required String strStatus}) {
-    if (strStatus == "unchecked") {
-      status = LetterStatus.unchecked;
-    } else if (strStatus == "incomplete") {
-      status = LetterStatus.incomplete;
-    } else if (strStatus == "dne") {
-      status = LetterStatus.dne;
-    } else if (strStatus == "complete") {
-      status = LetterStatus.complete;
-    }
-  }
+class KeyboardLetter {
+  KeyboardLetter({required this.text, required this.letterStatus});
   final String text;
-  late LetterStatus status;
+  final KeyboardLetterStatus letterStatus;
 }

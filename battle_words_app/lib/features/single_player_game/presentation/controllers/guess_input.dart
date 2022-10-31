@@ -1,7 +1,10 @@
+import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/keyboard_letters.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GuessInputController extends StateNotifier<String> {
-  GuessInputController() : super("");
+  GuessInputController({required this.ref}) : super("");
+  final ref;
 
   void backspace() {
     if (state.length == 0) {
@@ -16,16 +19,17 @@ class GuessInputController extends StateNotifier<String> {
   }
 
   void guess() {
-    throw UnimplementedError("Need to hook up outside Dictionary API to check if real world");
-
-    //TODO
     //  1.  check if any letters are entered, if not return
+    if (state.isEmpty) return;
     //  2.  check if the word is a real word (use outside to handle this), display error message that word is not real if so
+    ref.read(keyboardLettersControllerProvider.notifier).uncoverLetters(state);
     //  3.  Find any exact matches of word on board, uncover that word, update key letters
+    ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state);
     //  4.  Find any letters in the correct position and uncover them on the keyboard
+    state = "";
   }
 }
 
 final guessWordInputControllerProvider = StateNotifierProvider<GuessInputController, String>((ref) {
-  return GuessInputController();
+  return GuessInputController(ref: ref);
 });

@@ -55,7 +55,7 @@ void main() {
           hiddenWordsRepository: mockHiddenWordsRepository);
 
       final game = await singlePlayerGameService.createSinglePlayerGame();
-
+      print(game);
       expect(game, isA<SinglePlayerGame>());
     });
 

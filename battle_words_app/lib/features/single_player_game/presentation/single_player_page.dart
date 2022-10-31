@@ -2,6 +2,7 @@ import 'package:battle_words/features/keyboard/presentation/keyboard_glob.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/guess_input.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/keyboard_letters.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_result_notification.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/guess_input_display.dart';
@@ -45,23 +46,23 @@ class SinglePlayerPage extends ConsumerWidget {
                           Column(
                             children: [
                               GuessInputDisplay(),
-                              CustomKeyboard(
-                                onBackspace: () {
-                                  print("hit backspace");
-                                  ref.read(guessWordInputControllerProvider.notifier).backspace();
-                                },
-                                onGuess: () {
-                                  print("hit guess");
-                                  //! GuessWordInput widget method to guess the word
-                                  //ref.read(guessWordInputControllerProvider).guess();
-                                },
-                                onTextInput: (text) {
-                                  print("typed $text");
-                                  ref
-                                      .read(guessWordInputControllerProvider.notifier)
-                                      .tapTextKey(text);
-                                },
-                              ),
+                              Keyboard(
+                                  onBackspace: () {
+                                    print("hit backspace");
+                                    ref.read(guessWordInputControllerProvider.notifier).backspace();
+                                  },
+                                  onGuess: () {
+                                    print("hit guess");
+                                    //! GuessWordInput widget method to guess the word
+                                    ref.read(guessWordInputControllerProvider.notifier).guess();
+                                  },
+                                  onTextInput: (text) {
+                                    print("typed $text");
+                                    ref
+                                        .read(guessWordInputControllerProvider.notifier)
+                                        .tapTextKey(text);
+                                  },
+                                  letterMap: ref.watch(keyboardLettersControllerProvider)),
                             ],
                           ),
                         ],
