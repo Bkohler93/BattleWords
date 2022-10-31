@@ -22,8 +22,9 @@ class GuessInputController extends StateNotifier<String> {
     //  1.  check if any letters are entered, if not return
     if (state.isEmpty) return;
     //  2.  check if the word is a real word (use outside to handle this), display error message that word is not real if so
+    //! delete below, only to show that keyboard letters can change colors
     ref.read(keyboardLettersControllerProvider.notifier).uncoverLetters(state);
-    //  3.  Find any exact matches of word on board, uncover that word, update key letters
+    //  3.  send the guess to the singlePlayerController to process the guess
     ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state);
     //  4.  Find any letters in the correct position and uncover them on the keyboard
     state = "";

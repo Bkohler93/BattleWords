@@ -286,8 +286,30 @@ class SinglePlayerGameService {
     return SinglePlayerGame.from(singlePlayerGame);
   }
 
-  Future<SinglePlayerGame> handleExactMatch(
-      {required String word, required SinglePlayerGame singlePlayerGame}) {
-    throw UnimplementedError("implement handleExactMatch");
+  // Future<SinglePlayerGame> handleExactMatch(
+  //     {required String word, required SinglePlayerGame singlePlayerGame}) {
+  //   final singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
+
+  //   //
+  // }
+
+  fillGuessWordOnBoard({required SinglePlayerGame singlePlayerGame, required String word}) {
+    final singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
+
+    //1. Alter singlePlayerGameCopy so that any letters matching a position of word will cause the tile the letter is on to be flipped
+    for (var i = 0; i < word.length; i++) {
+      for (var hiddenWord in singlePlayerGame.hiddenWords) {
+        if (hiddenWord.word[i] == word[i]) {
+          //match!
+          //uncover correct tile on gameBoard
+
+          //change keyboard button's color to green or yellow
+        }
+      }
+    }
+
+    //2. check if all words are uncovered (win)
+
+    //3. reduce moves remaining, lose if at zero
   }
 }

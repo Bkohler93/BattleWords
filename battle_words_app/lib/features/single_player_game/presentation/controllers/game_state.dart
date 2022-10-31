@@ -45,16 +45,22 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
   }
 
   void handleWordGuess(String guessWord) async {
-    for (var word in state.value!.hiddenWords) {
-      if (word.word == guessWord) {
-        print("exact match");
-        state = await AsyncValue.guard(() async {
-          return singlePlayerGameService.handleExactMatch(
-              word: guessWord, singlePlayerGame: SinglePlayerGame.from(state.value!));
-        });
-        return;
-      }
-    }
+    final singlePlayerGame = state.value!;
+    state = await AsyncValue.guard(() async {
+      return await singlePlayerGameService.fillGuessWordOnBoard(
+          singlePlayerGame: singlePlayerGame, word: guessWord);
+    });
+
+    // for (var word in state.value!.hiddenWords) {
+    //   if (word.word == guessWord) {
+    //     print("exact match");
+    //     state = await AsyncValue.guard(() async {
+    //       return singlePlayerGameService.handleExactMatch(
+    //           word: guessWord, singlePlayerGame: SinglePlayerGame.from(state.value!));
+    //     });
+    //     return;
+    //   }
+    // }
   }
 }
 
