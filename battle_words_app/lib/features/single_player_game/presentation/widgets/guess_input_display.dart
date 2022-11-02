@@ -28,7 +28,7 @@ class GuessInputDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final guessInput = ref.watch(guessWordInputControllerProvider);
+    final guessInputState = ref.watch(guessWordInputControllerProvider);
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       alignment: Alignment.center,
@@ -41,7 +41,7 @@ class GuessInputDisplay extends ConsumerWidget {
               fontSize: 30,
             ),
           ),
-          ...buildDisplay(guessInput)
+          ...buildDisplay(guessInputState.guessWord)
         ],
       ),
     );

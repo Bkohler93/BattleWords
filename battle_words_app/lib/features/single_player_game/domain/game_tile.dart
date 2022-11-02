@@ -1,24 +1,24 @@
+import 'package:battle_words/features/single_player_game/domain/tile_coords.dart';
 import 'package:flutter/material.dart';
+
+enum TileStatus { hidden, empty, letterFound, wordFound }
 
 @immutable
 class SinglePlayerGameTile {
-  final int col;
-  final int row;
-  final bool isCovered;
+  final TileCoordinates coordinates;
+  final TileStatus tileStatus;
   final String letter;
 
   const SinglePlayerGameTile({
-    required this.row,
-    required this.col,
-    this.isCovered = true,
+    required this.coordinates,
+    this.tileStatus = TileStatus.hidden,
     this.letter = '',
   });
 
   factory SinglePlayerGameTile.from(SinglePlayerGameTile gameTile) {
     return SinglePlayerGameTile(
-      row: gameTile.row,
-      col: gameTile.col,
-      isCovered: gameTile.isCovered,
+      coordinates: gameTile.coordinates,
+      tileStatus: gameTile.tileStatus,
       letter: gameTile.letter,
     );
   }
@@ -28,20 +28,18 @@ class SinglePlayerGameTile {
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
-  SinglePlayerGameTile flip() {
+  SinglePlayerGameTile uncover(TileStatus status) {
     return SinglePlayerGameTile(
-      row: row,
-      col: col,
-      isCovered: !isCovered,
+      coordinates: coordinates,
+      tileStatus: status,
       letter: letter,
     );
   }
 
   SinglePlayerGameTile setLetter(String newLetter) {
     return SinglePlayerGameTile(
-      col: col,
-      row: row,
-      isCovered: isCovered,
+      coordinates: coordinates,
+      tileStatus: tileStatus,
       letter: newLetter,
     );
   }

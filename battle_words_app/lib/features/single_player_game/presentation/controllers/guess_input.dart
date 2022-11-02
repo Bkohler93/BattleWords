@@ -1,36 +1,43 @@
-import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/single_player_game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/keyboard_letters.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GuessInputController extends StateNotifier<String> {
-  GuessInputController({required this.ref}) : super("");
+class GuessInputState {
+  GuessInputState({this.guessWord = "", this.isValidWord = true});
+  String guessWord;
+  bool isValidWord;
+}
+
+class GuessInputController extends StateNotifier<GuessInputState> {
+  GuessInputController({required this.ref}) : super(GuessInputState(guessWord: ""));
   final ref;
 
   void backspace() {
-    if (state.length == 0) {
+    if (state.guessWord.isEmpty) {
       state = state;
     } else {
-      state = state.substring(0, state.length - 1);
+      state = GuessInputState(guessWord: state.guessWord.substring(0, state.guessWord.length - 1));
     }
   }
 
   void tapTextKey(String newChar) {
-    state = state + newChar;
+    state = GuessInputState(guessWord: state.guessWord + newChar);
   }
 
   void guess() {
-    //  1.  check if any letters are entered, if not return
-    if (state.isEmpty) return;
-    //  2.  check if the word is a real word (use outside to handle this), display error message that word is not real if so
-    //! delete below, only to show that keyboard letters can change colors
-    ref.read(keyboardLettersControllerProvider.notifier).uncoverLetters(state);
-    //  3.  send the guess to the singlePlayerController to process the guess
-    ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state);
-    //  4.  Find any letters in the correct position and uncover them on the keyboard
-    state = "";
+    if (state.guessWord.isEmpty) return;
+
+    //* uncovers all letters on keyboard, regardless of if they are on the board or not. Update this
+    //* to update keys with green/yello/grey on if they are present or not on the board.
+    //ref.read(keyboardLettersControllerProvider.notifier).uncoverLetters(state.guessWord);
+
+    // send guess word to the single player game controller to handle game state.
+    ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state.guessWord);
+    state = GuessInputState(guessWord: "");
   }
 }
 
-final guessWordInputControllerProvider = StateNotifierProvider<GuessInputController, String>((ref) {
+final guessWordInputControllerProvider =
+    StateNotifierProvider<GuessInputController, GuessInputState>((ref) {
   return GuessInputController(ref: ref);
 });

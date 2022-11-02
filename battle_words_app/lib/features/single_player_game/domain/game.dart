@@ -1,6 +1,7 @@
 import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
+import 'package:battle_words/features/single_player_game/domain/tile_coords.dart';
 import 'package:battle_words/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class SinglePlayerGame {
       GAME_BOARD_SIZE,
       (row) => List.generate(
         GAME_BOARD_SIZE,
-        (col) => SinglePlayerGameTile(row: row, col: col),
+        (col) => SinglePlayerGameTile(coordinates: TileCoordinates(col: col, row: row)),
       ),
       growable: false,
     );
@@ -72,7 +73,19 @@ class SinglePlayerGame {
   }
 
   bool isTileCovered({required int row, required int col}) {
-    return gameBoard[row][col].isCovered;
+    return gameBoard[row][col].tileStatus == TileStatus.hidden;
+  }
+
+  SinglePlayerGame copyWith(
+      {int? movesRemaining,
+      GameBoard? gameBoard,
+      List<HiddenWord>? hiddenWords,
+      GameResult? gameResult}) {
+    return SinglePlayerGame(
+        gameBoard: gameBoard ?? this.gameBoard,
+        movesRemaining: movesRemaining ?? this.movesRemaining,
+        hiddenWords: hiddenWords ?? this.hiddenWords,
+        gameResult: gameResult ?? this.gameResult);
   }
 }
 
@@ -88,8 +101,15 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
 
   SinglePlayerGame flipTile({required int row, required int col}) {
     SinglePlayerGame singlePlayerGameCopy = SinglePlayerGame.from(this);
-
-    singlePlayerGameCopy.gameBoard[row][col] = singlePlayerGameCopy.gameBoard[row][col].flip();
+    switch (singlePlayerGameCopy.gameBoard[row][col].letter) {
+      case "":
+        singlePlayerGameCopy.gameBoard[row][col] =
+            singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
+        break;
+      default:
+        singlePlayerGameCopy.gameBoard[row][col] =
+            singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.letterFound);
+    }
 
     return singlePlayerGameCopy;
   }

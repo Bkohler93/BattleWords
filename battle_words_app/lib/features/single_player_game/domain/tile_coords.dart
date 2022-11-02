@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class TileCoordinates extends Equatable {
-  const TileCoordinates({required this.row, required this.col});
+  const TileCoordinates({required this.col, required this.row});
 
-  final int row;
   final int col;
+  final int row;
 
   @override
-  List<Object?> get props => [row, col];
+  List<Object?> get props => [col, row];
 }

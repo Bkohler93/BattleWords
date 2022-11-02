@@ -4,6 +4,7 @@ import 'package:battle_words/features/single_player_game/application/game_servic
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/hidden_words.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
+import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -19,12 +20,12 @@ void main() {
           singlePlayerGameRepository: mockRepository,
           hiddenWordsRepository: mockHiddenWordsRepository);
 
-      expect(game.gameBoard[col][row].isCovered, true);
+      expect(game.gameBoard[col][row].tileStatus == TileStatus.hidden, false);
 
       final updatedGame = await singlePlayerGameService.flipGameBoardTile(
           col: col, row: row, singlePlayerGame: game);
 
-      expect(updatedGame.gameBoard[col][row].isCovered, false);
+      expect(updatedGame.gameBoard[col][row].tileStatus == TileStatus.hidden, false);
     });
 
     test('Reduce number of moves remaining after flipping game board tile', () async {

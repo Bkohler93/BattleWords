@@ -47,7 +47,7 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
   void handleWordGuess(String guessWord) async {
     final singlePlayerGame = state.value!;
     state = await AsyncValue.guard(() async {
-      return await singlePlayerGameService.fillGuessWordOnBoard(
+      return singlePlayerGameService.processWordGuess(
           singlePlayerGame: singlePlayerGame, word: guessWord);
     });
 

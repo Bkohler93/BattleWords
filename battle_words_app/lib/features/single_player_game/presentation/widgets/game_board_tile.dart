@@ -1,6 +1,6 @@
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
-import 'package:battle_words/features/single_player_game/presentation/controllers/game_state.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/single_player_game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/game_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,14 +13,14 @@ class GameBoardTileWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int row = singlePlayerGameTile.row;
-    int col = singlePlayerGameTile.col;
+    int row = singlePlayerGameTile.coordinates.row;
+    int col = singlePlayerGameTile.coordinates.col;
 
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: GestureDetector(
         child: Container(
-          child: singlePlayerGameTile.isCovered
+          child: singlePlayerGameTile.tileStatus == TileStatus.hidden
               ? Text("")
               : Text("${singlePlayerGameTile.letter.toUpperCase()}"),
           alignment: Alignment.center,
@@ -28,7 +28,13 @@ class GameBoardTileWidget extends ConsumerWidget {
           height: 7.h,
           decoration: BoxDecoration(
             border: Border.all(
-              color: singlePlayerGameTile.isCovered ? Colors.black38 : Colors.red,
+              color: singlePlayerGameTile.tileStatus == TileStatus.hidden
+                  ? Colors.black38
+                  : singlePlayerGameTile.tileStatus == TileStatus.letterFound
+                      ? Colors.green.shade100
+                      : singlePlayerGameTile.tileStatus == TileStatus.wordFound
+                          ? Colors.green.shade500
+                          : Colors.black12,
               width: 3,
             ),
             borderRadius: const BorderRadius.all(
