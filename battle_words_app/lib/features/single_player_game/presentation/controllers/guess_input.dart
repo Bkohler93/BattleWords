@@ -21,7 +21,8 @@ class GuessInputController extends StateNotifier<GuessInputState> {
   }
 
   void tapTextKey(String newChar) {
-    state = GuessInputState(guessWord: state.guessWord + newChar);
+    state =
+        state.guessWord.length > 5 ? state : GuessInputState(guessWord: state.guessWord + newChar);
   }
 
   void guess() {

@@ -21,7 +21,6 @@ class SinglePlayerPage extends ConsumerWidget {
     //watch and rebuild when state changes
     final gameState = ref.watch(singlePlayerGameControllerProvider);
     final keyboardLetterMap = ref.watch(keyboardLettersControllerProvider);
-    print(gameState);
 
     //display loading here as well using async methods when required
     return SafeArea(
@@ -50,16 +49,12 @@ class SinglePlayerPage extends ConsumerWidget {
                               GuessInputDisplay(),
                               Keyboard(
                                   onBackspace: () {
-                                    print("hit backspace");
                                     ref.read(guessWordInputControllerProvider.notifier).backspace();
                                   },
                                   onGuess: () {
-                                    print("hit guess");
-
                                     ref.read(guessWordInputControllerProvider.notifier).guess();
                                   },
                                   onTextInput: (text) {
-                                    print("typed $text");
                                     ref
                                         .read(guessWordInputControllerProvider.notifier)
                                         .tapTextKey(text);
