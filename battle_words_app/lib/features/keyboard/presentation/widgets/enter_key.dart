@@ -27,7 +27,7 @@ class EnterKey extends StatelessWidget {
                 onEnter?.call();
               },
               child: Container(
-                child: Center(child: Text("GUESS")),
+                child: Center(child: Text("ENTER")),
               ),
             ),
           ),

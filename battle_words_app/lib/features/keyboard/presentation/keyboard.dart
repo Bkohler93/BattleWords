@@ -23,36 +23,6 @@ class Keyboard extends StatelessWidget {
   final VoidCallback onGuess;
   final Map<String, KeyboardLetterStatus> letterMap;
 
-  //* may have to create a state provider for this to update when strStatus gets updated. Create enum for strStatus as well.. and change strStatus name.
-  // final letterMap = {
-  //   "q": Letter(strStatus: "unchecked", text: "q"),
-  //   "w": Letter(strStatus: "unchecked", text: "w"),
-  //   "e": Letter(strStatus: "unchecked", text: "e"),
-  //   "r": Letter(strStatus: "unchecked", text: "r"),
-  //   "t": Letter(strStatus: "unchecked", text: "t"),
-  //   "y": Letter(strStatus: "unchecked", text: "y"),
-  //   "u": Letter(strStatus: "unchecked", text: "u"),
-  //   "i": Letter(strStatus: "unchecked", text: "i"),
-  //   "o": Letter(strStatus: "unchecked", text: "o"),
-  //   "p": Letter(strStatus: "unchecked", text: "p"),
-  //   "a": Letter(strStatus: "unchecked", text: "a"),
-  //   "s": Letter(strStatus: "unchecked", text: "s"),
-  //   "d": Letter(strStatus: "unchecked", text: "d"),
-  //   "f": Letter(strStatus: "unchecked", text: "f"),
-  //   "g": Letter(strStatus: "unchecked", text: "g"),
-  //   "h": Letter(strStatus: "unchecked", text: "h"),
-  //   "j": Letter(strStatus: "unchecked", text: "j"),
-  //   "k": Letter(strStatus: "unchecked", text: "k"),
-  //   "l": Letter(strStatus: "unchecked", text: "l"),
-  //   "z": Letter(strStatus: "unchecked", text: "z"),
-  //   "x": Letter(strStatus: "unchecked", text: "x"),
-  //   "c": Letter(strStatus: "unchecked", text: "c"),
-  //   "v": Letter(strStatus: "unchecked", text: "v"),
-  //   "b": Letter(strStatus: "unchecked", text: "b"),
-  //   "n": Letter(strStatus: "unchecked", text: "n"),
-  //   "m": Letter(strStatus: "unchecked", text: "m"),
-  // };
-
   void _textInputHandler(String text) => onTextInput.call(text);
   void _backspaceHandler() => onBackspace.call();
   void _enterHandler() => onGuess.call();
