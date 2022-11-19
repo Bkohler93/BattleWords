@@ -29,16 +29,19 @@ class Keyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 4,
-      child: Column(
-        children: [
-          //build each row of keyboard
-          buildRowOne(),
-          buildRowTwo(),
-          buildRowThree(_enterHandler),
-          // buildRowFour(),
-        ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 12.0),
+      child: Container(
+        height: MediaQuery.of(context).size.height / 5,
+        child: Column(
+          children: [
+            //build each row of keyboard
+            buildRowOne(),
+            buildRowTwo(),
+            buildRowThree(_enterHandler),
+            // buildRowFour(),
+          ],
+        ),
       ),
     );
   }
