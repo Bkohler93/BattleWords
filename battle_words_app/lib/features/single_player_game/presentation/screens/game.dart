@@ -1,7 +1,8 @@
 import 'package:battle_words/common/widgets/page_layout.dart';
 import 'package:battle_words/features/keyboard/presentation/keyboard.dart';
-import 'package:battle_words/features/pause/presentation/button.dart';
+import 'package:battle_words/common/widgets/pause_button.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
+import 'package:battle_words/common/controllers/show_pause.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/single_player_game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/guess_input.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/keyboard_letters.dart';
@@ -18,11 +19,18 @@ class SinglePlayerPage extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  ///controls whether the pause menu is showing or not
+  void toggleIsPauseMenuShowing(WidgetRef ref) {
+    print("flipping pause menu");
+    ref.read(isPauseMenuShowingProvider.notifier).update((state) => !state);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //watch and rebuild when state changes
     final gameState = ref.watch(singlePlayerGameControllerProvider);
     final keyboardLetterMap = ref.watch(keyboardLettersControllerProvider);
+    bool _isPauseMenuShowing = ref.watch(isPauseMenuShowingProvider);
 
     //display loading here as well using async methods when required
     return PageLayout(
@@ -54,6 +62,8 @@ class SinglePlayerPage extends ConsumerWidget {
                             letterMap: keyboardLetterMap),
                       ],
                     ),
+
+                    /// displays end of game popup with return to main menu button
                     Positioned(
                       top: 30.h,
                       left: 25.w,
@@ -63,10 +73,14 @@ class SinglePlayerPage extends ConsumerWidget {
                               ? GameResultNotification(result: "Winner!")
                               : Text(""),
                     ),
+
                     Positioned(
                       top: 2.h,
                       right: 5.w,
-                      child: PauseButton(),
+                      child: PauseButton(
+                        updatePauseMenuVisibility: toggleIsPauseMenuShowing,
+                        ref: ref,
+                      ),
                     ),
                   ],
                 ),

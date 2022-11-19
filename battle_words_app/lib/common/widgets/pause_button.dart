@@ -4,12 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum PauseStatus { selected, unselected }
 
 class PauseButton extends StatefulWidget {
-  const PauseButton({super.key});
+  const PauseButton({super.key, required this.updatePauseMenuVisibility, required this.ref});
+  final Function(WidgetRef ref) updatePauseMenuVisibility;
+  final WidgetRef ref;
 
   @override
   State<PauseButton> createState() => _PauseButtonState();
 }
 
+/// controls current state of pause button (selected vs unselected)
+/// selected - pause menu is open, button is an X
+/// unselected - pause menu is closed, button is pause icon ||
 class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStateMixin {
   late PauseStatus _status;
 
@@ -20,7 +25,9 @@ class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStat
     super.initState();
   }
 
-  void togglePauseStatus() {
+  /// inverts the current status of button
+  void togglePauseStatus(WidgetRef ref) {
+    widget.updatePauseMenuVisibility(ref);
     if (_status == PauseStatus.selected) {
       setState(() {
         _status = PauseStatus.unselected;
@@ -34,12 +41,13 @@ class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    // sizedBox controls the size of the area users can tap on the gesture detector
     return SizedBox(
       width: 50,
       height: 50,
       child: GestureDetector(
         onTap: () {
-          togglePauseStatus();
+          togglePauseStatus(widget.ref);
         },
         child: PausePainterAnimation(status: _status),
       ),
@@ -55,6 +63,9 @@ class PausePainterAnimation extends StatefulWidget {
   State<PausePainterAnimation> createState() => PausePainterAnimationState();
 }
 
+/// maintains state of animation.
+/// _controller uses a ticker to control and move to next frames
+/// _animation holds the Tween (inbetween two values) to control current displacement to control icon manipulation
 class PausePainterAnimationState extends State<PausePainterAnimation>
     with SingleTickerProviderStateMixin {
   late Animation _animation;
@@ -66,7 +77,7 @@ class PausePainterAnimationState extends State<PausePainterAnimation>
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
 
     _animation = _controller.drive(
@@ -101,7 +112,7 @@ class PausePainterAnimationState extends State<PausePainterAnimation>
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: PausePainter(changeAmount: _animation.value),
-      child: SizedBox(
+      child: const SizedBox(
         width: 15,
         height: 15,
       ),
@@ -109,13 +120,13 @@ class PausePainterAnimationState extends State<PausePainterAnimation>
   }
 }
 
+///paints the button with current displacement amount to the canvas.
 class PausePainter extends CustomPainter {
   PausePainter({required this.changeAmount});
   final double changeAmount;
 
   @override
   void paint(Canvas canvas, Size size) {
-    print(size.width);
     //* change amount causes the bottom points of the pause icon to swap sides
     final rightP1 = Offset(size.width / 2, size.height / 2);
     final rightP2 = Offset(size.width / 2 - (changeAmount * 3), size.height / 2 + 15);

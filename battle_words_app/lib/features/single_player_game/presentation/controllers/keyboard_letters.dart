@@ -39,6 +39,8 @@ class KeyboardLettersController extends StateNotifier<Map<String, KeyboardLetter
   void uncoverLetters(String word) {
     var map = _copy(state);
 
+    //
+
     for (var i = 0; i < word.length; i++) {
       map[word[i]] = KeyboardLetterStatus.complete;
     }

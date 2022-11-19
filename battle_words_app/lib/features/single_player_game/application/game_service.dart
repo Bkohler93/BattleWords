@@ -307,7 +307,7 @@ class SinglePlayerGameService {
     var singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
     bool exactMatch = false;
 
-    //1. check if any letters were entered
+    //1. check if any letters were entered or if incorrect number of characters (3-5 only)
 
     //2. check if word is real -> display invalid word message if so
 
