@@ -9,6 +9,7 @@ import 'package:battle_words/features/single_player_game/presentation/controller
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_result_notification.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/guess_input_display.dart';
+import 'package:battle_words/features/single_player_game/presentation/widgets/pause_menu.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/word_status_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,7 @@ class SinglePlayerPage extends ConsumerWidget {
           : gameState.hasError
               ? const Text("UH OH")
               : Stack(
-                  //alignment: Alignment.center,
+                  alignment: Alignment.center,
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -82,6 +83,10 @@ class SinglePlayerPage extends ConsumerWidget {
                         ref: ref,
                       ),
                     ),
+                    Positioned(
+                      top: 15.h,
+                      child: _isPauseMenuShowing ? SinglePlayerPauseMenu() : Text(""),
+                    )
                   ],
                 ),
     );
