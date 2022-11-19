@@ -35,7 +35,7 @@ class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 20,
+      width: 50,
       height: 50,
       child: GestureDetector(
         onTap: () {
@@ -115,11 +115,12 @@ class PausePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print(size.width);
     //* change amount causes the bottom points of the pause icon to swap sides
-    final rightP1 = Offset(size.width, 25);
-    final rightP2 = Offset(size.width - (changeAmount * 3), 40);
-    final leftP1 = Offset(size.width - 10 - changeAmount, 25);
-    final leftP2 = Offset(size.width - 10 + (changeAmount * 2), 40);
+    final rightP1 = Offset(size.width / 2, size.height / 2);
+    final rightP2 = Offset(size.width / 2 - (changeAmount * 3), size.height / 2 + 15);
+    final leftP1 = Offset(size.width / 2 - 10 - changeAmount, size.height / 2);
+    final leftP2 = Offset(size.width / 2 - 10 + (changeAmount * 2), size.height / 2 + 15);
 
     final paint = Paint()
       ..color = Colors.black

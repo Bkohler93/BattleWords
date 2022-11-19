@@ -64,8 +64,8 @@ class SinglePlayerPage extends ConsumerWidget {
                               : Text(""),
                     ),
                     Positioned(
-                      top: 5.h,
-                      right: 10.w,
+                      top: 2.h,
+                      right: 5.w,
                       child: PauseButton(),
                     ),
                   ],
