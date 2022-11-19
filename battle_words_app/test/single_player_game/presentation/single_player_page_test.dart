@@ -1,5 +1,5 @@
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/features/single_player_game/presentation/screens/single_player_page.dart';
+import 'package:battle_words/features/single_player_game/presentation/screens/game.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_tile.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/word_status_indicator.dart';
 import 'package:flutter/material.dart';

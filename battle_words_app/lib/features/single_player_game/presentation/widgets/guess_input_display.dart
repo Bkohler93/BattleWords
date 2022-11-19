@@ -30,7 +30,7 @@ class GuessInputDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final guessInputState = ref.watch(guessWordInputControllerProvider);
     return Container(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(20),
       alignment: Alignment.center,
       child: Row(
         mainAxisSize: MainAxisSize.min,

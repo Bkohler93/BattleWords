@@ -1,8 +1,8 @@
 import 'package:battle_words/common/widgets/page_layout.dart';
 import 'package:battle_words/common/widgets/screen_route_link.dart';
-import 'package:battle_words/features/home_screen/presentation/home_page.dart';
+import 'package:battle_words/features/home_screen/presentation/home.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
-import 'package:battle_words/features/single_player_game/presentation/screens/single_player_page.dart';
+import 'package:battle_words/features/single_player_game/presentation/screens/game.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 

@@ -20,6 +20,8 @@ class EnterKey extends StatelessWidget {
           decoration: BoxDecoration(
               border: Border.all(color: Colors.black45),
               borderRadius: BorderRadius.all(Radius.elliptical(5, 10))),
+          // using Material and InkWell acts like GestureDetector but also
+          // includes the visual droplet effect.
           child: Material(
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
             child: InkWell(

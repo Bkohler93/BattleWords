@@ -1,4 +1,4 @@
-import 'package:battle_words/features/home_screen/presentation/home_page.dart';
+import 'package:battle_words/features/home_screen/presentation/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

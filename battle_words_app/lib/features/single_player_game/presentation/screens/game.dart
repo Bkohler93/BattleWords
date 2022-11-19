@@ -1,5 +1,6 @@
 import 'package:battle_words/common/widgets/page_layout.dart';
 import 'package:battle_words/features/keyboard/presentation/keyboard.dart';
+import 'package:battle_words/features/pause/presentation/button.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/single_player_game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/guess_input.dart';
@@ -34,33 +35,23 @@ class SinglePlayerPage extends ConsumerWidget {
                   //alignment: Alignment.center,
                   children: [
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text("Moves remaining: ${gameState.value!.movesRemaining}"),
-                        Column(
-                          children: [
-                            GameBoardView(singlePlayerGame: gameState.value!),
-                            WordStatusIndicatorRow(singlePlayerGame: gameState.value!),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            GuessInputDisplay(),
-                            Keyboard(
-                                onBackspace: () {
-                                  ref.read(guessWordInputControllerProvider.notifier).backspace();
-                                },
-                                onGuess: () {
-                                  ref.read(guessWordInputControllerProvider.notifier).guess();
-                                },
-                                onTextInput: (text) {
-                                  ref
-                                      .read(guessWordInputControllerProvider.notifier)
-                                      .tapTextKey(text);
-                                },
-                                letterMap: keyboardLetterMap),
-                          ],
-                        ),
+                        GameBoardView(singlePlayerGame: gameState.value!),
+                        WordStatusIndicatorRow(singlePlayerGame: gameState.value!),
+                        GuessInputDisplay(),
+                        Keyboard(
+                            onBackspace: () {
+                              ref.read(guessWordInputControllerProvider.notifier).backspace();
+                            },
+                            onGuess: () {
+                              ref.read(guessWordInputControllerProvider.notifier).guess();
+                            },
+                            onTextInput: (text) {
+                              ref.read(guessWordInputControllerProvider.notifier).tapTextKey(text);
+                            },
+                            letterMap: keyboardLetterMap),
                       ],
                     ),
                     Positioned(
@@ -75,7 +66,7 @@ class SinglePlayerPage extends ConsumerWidget {
                     Positioned(
                       top: 5.h,
                       right: 10.w,
-                      child: Icon(Icons.pause),
+                      child: PauseButton(),
                     ),
                   ],
                 ),
