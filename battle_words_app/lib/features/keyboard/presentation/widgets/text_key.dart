@@ -1,4 +1,5 @@
 import 'package:battle_words/features/keyboard/domain/letter.dart';
+import 'package:battle_words/features/keyboard/presentation/keyboard.dart';
 import 'package:flutter/material.dart';
 
 class TextKey extends StatelessWidget {
@@ -36,7 +37,9 @@ class TextKey extends StatelessWidget {
                     ? Colors.green.shade300
                     : status == KeyboardLetterStatus.incomplete
                         ? Colors.yellow.shade300
-                        : Colors.red.shade300,
+                        : status == KeyboardLetterStatus.empty
+                            ? Colors.grey
+                            : Colors.red.shade300,
             child: InkWell(
               onTap: () {
                 onTextInput.call(letter);

@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/keyboard/domain/letter.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/hidden_words.dart';
 import 'package:battle_words/features/single_player_game/data/sources/hidden_words.dart';
@@ -36,12 +37,11 @@ class SinglePlayerGameService {
       return Future.value(SinglePlayerGame.from(singlePlayerGame));
     }
 
-    //! check if all words have been uncovered, return with GameResult.win
-
-    //! reduce moves remaining
     singlePlayerGame = singlePlayerGame.flipTile(col: col, row: row);
 
     singlePlayerGame = _findUncoveredWords(singlePlayerGame: singlePlayerGame);
+
+    singlePlayerGame = _fillKeyboardLetters(singlePlayerGame, gameTile.letter);
 
     singlePlayerGame = _checkIfWin(singlePlayerGame: singlePlayerGame);
 
@@ -236,12 +236,17 @@ class SinglePlayerGameService {
 
     // set single player game in database
 
+    // set up keyboardLetterMap
+    KeyboardLetterMap keyboardLetterMap = createBlankKeyboardLetterMap();
+
     // send single player game to controller
     return SinglePlayerGame(
-        gameBoard: gameBoard,
-        movesRemaining: movesRemaining,
-        hiddenWords: hiddenWords,
-        gameResult: GameResult.playing);
+      gameBoard: gameBoard,
+      movesRemaining: movesRemaining,
+      hiddenWords: hiddenWords,
+      gameResult: GameResult.playing,
+      keyboardLetterMap: keyboardLetterMap,
+    );
   }
 
   bool _tileHasAdjacentTiles(
@@ -281,6 +286,7 @@ class SinglePlayerGameService {
     return SinglePlayerGame.from(singlePlayerGame);
   }
 
+  /// Returns false if any tile on the gameboard that has a letter is still hidden
   SinglePlayerGame _checkIfWin({required SinglePlayerGame singlePlayerGame}) {
     var singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
     bool win = true;
@@ -302,12 +308,48 @@ class SinglePlayerGameService {
     }
   }
 
+  SinglePlayerGame _fillKeyboardLetters(SinglePlayerGame singlePlayerGame, String letter) {
+    //set [KeyboardLetterStatus] to [complete] if every instance of current letter is found on gameboard
+
+    var game = SinglePlayerGame.from(singlePlayerGame);
+    bool isEachLetterInstanceFound = true;
+    bool isLetterInHiddenWord = false;
+
+    //loop through each tile on gameboard, if letter found set [isLetterNotInHiddenWords] to true
+    for (var j = 0; j < GAME_BOARD_SIZE; j++) {
+      for (var k = 0; k < GAME_BOARD_SIZE; k++) {
+        if (game.gameBoard[j][k].letter == letter) {
+          isLetterInHiddenWord = true;
+        }
+      }
+    }
+    if (game.keyboardLetterMap[letter] != KeyboardLetterStatus.complete) {
+      for (var j = 0; j < GAME_BOARD_SIZE; j++) {
+        for (var k = 0; k < GAME_BOARD_SIZE; k++) {
+          if (game.gameBoard[j][k].letter == letter &&
+              game.gameBoard[j][k].tileStatus == TileStatus.hidden) {
+            isEachLetterInstanceFound = false;
+          }
+        }
+      }
+      game.keyboardLetterMap[letter] = !isLetterInHiddenWord
+          ? KeyboardLetterStatus.empty
+          : isEachLetterInstanceFound
+              ? KeyboardLetterStatus.complete
+              : KeyboardLetterStatus.incomplete;
+    }
+    return game;
+  }
+
   SinglePlayerGame processWordGuess(
       {required SinglePlayerGame singlePlayerGame, required String word}) {
     var singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
-    bool exactMatch = false;
+    bool isExactMatch = false;
 
     //1. check if any letters were entered or if incorrect number of characters (3-5 only)
+    if (word.isEmpty || word.length < 3 || word.length > 5) {
+      return singlePlayerGameCopy;
+    }
 
     //2. check if word is real -> display invalid word message if so
 
@@ -315,8 +357,9 @@ class SinglePlayerGameService {
     for (var i = 0; i < word.length; i++) {
       for (var hiddenWord in singlePlayerGameCopy.hiddenWords) {
         if (i == 0 && hiddenWord.word == word) {
-          exactMatch = true;
+          isExactMatch = true;
         }
+
         if (i < hiddenWord.word.length && hiddenWord.word[i] == word[i]) {
           //uncover correct tile on gameBoard
           final coords = hiddenWord.letterCoords![i]!;
@@ -325,13 +368,15 @@ class SinglePlayerGameService {
               .uncover(TileStatus.letterFound);
         }
       }
+
+      singlePlayerGameCopy = _fillKeyboardLetters(singlePlayerGameCopy, word[i]);
     }
 
     //4. check if all words are uncovered (win)
     singlePlayerGameCopy = _checkIfWin(singlePlayerGame: singlePlayerGameCopy);
 
     //5. reduce moves remaining, lose if at zero
-    if (!exactMatch) {
+    if (!isExactMatch) {
       singlePlayerGameCopy = _reduceMovesRemaining(singlePlayerGame: singlePlayerGameCopy);
     }
 

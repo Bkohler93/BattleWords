@@ -29,7 +29,6 @@ class GameResultNotification extends ConsumerWidget {
               child: FloatingActionButton.extended(
                 onPressed: () {
                   ref.invalidate(singlePlayerGameControllerProvider);
-                  ref.invalidate(keyboardLettersControllerProvider);
                   ref.invalidate(guessWordInputControllerProvider);
                   Navigator.of(context).pop();
                 },

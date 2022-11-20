@@ -12,7 +12,7 @@ class GuessInputController extends StateNotifier<GuessInputState> {
   GuessInputController({required this.ref}) : super(GuessInputState(guessWord: ""));
   final ref;
 
-  void backspace() {
+  void handleBackspaceTap() {
     if (state.guessWord.isEmpty) {
       state = state;
     } else {
@@ -20,19 +20,15 @@ class GuessInputController extends StateNotifier<GuessInputState> {
     }
   }
 
-  void tapTextKey(String newChar) {
+  void handleKeyTap(String newChar) {
     state =
         state.guessWord.length > 5 ? state : GuessInputState(guessWord: state.guessWord + newChar);
   }
 
-  void guess() {
-    if (state.guessWord.isEmpty) return;
+  void handleGuessTap() {
+    if (state.guessWord.isEmpty || state.guessWord.length > 5 || state.guessWord.length < 2) return;
 
-    //* uncovers all letters on keyboard, regardless of if they are on the board or not. Update this
-    //* to update keys with green/yello/grey on if they are present or not on the board.
-    //ref.read(keyboardLettersControllerProvider.notifier).uncoverLetters(state.guessWord);
-
-    // send guess word to the single player game controller to handle game state.
+    // send guess word to the single player game controller to update game state.
     ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state.guessWord);
     state = GuessInputState(guessWord: "");
   }

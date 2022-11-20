@@ -5,7 +5,6 @@ import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/common/controllers/show_pause.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/single_player_game.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/guess_input.dart';
-import 'package:battle_words/features/single_player_game/presentation/controllers/keyboard_letters.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/game_result_notification.dart';
 import 'package:battle_words/features/single_player_game/presentation/widgets/guess_input_display.dart';
@@ -30,7 +29,6 @@ class SinglePlayerPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     //watch and rebuild when state changes
     final gameState = ref.watch(singlePlayerGameControllerProvider);
-    final keyboardLetterMap = ref.watch(keyboardLettersControllerProvider);
     bool _isPauseMenuShowing = ref.watch(isPauseMenuShowingProvider);
 
     //display loading here as well using async methods when required
@@ -51,16 +49,19 @@ class SinglePlayerPage extends ConsumerWidget {
                         WordStatusIndicatorRow(singlePlayerGame: gameState.value!),
                         GuessInputDisplay(),
                         Keyboard(
-                            onBackspace: () {
-                              ref.read(guessWordInputControllerProvider.notifier).backspace();
-                            },
-                            onGuess: () {
-                              ref.read(guessWordInputControllerProvider.notifier).guess();
-                            },
-                            onTextInput: (text) {
-                              ref.read(guessWordInputControllerProvider.notifier).tapTextKey(text);
-                            },
-                            letterMap: keyboardLetterMap),
+                          onBackspace: () {
+                            ref
+                                .read(guessWordInputControllerProvider.notifier)
+                                .handleBackspaceTap();
+                          },
+                          onGuess: () {
+                            ref.read(guessWordInputControllerProvider.notifier).handleGuessTap();
+                          },
+                          onTextInput: (text) {
+                            ref.read(guessWordInputControllerProvider.notifier).handleKeyTap(text);
+                          },
+                          letterMap: gameState.value!.keyboardLetterMap,
+                        ),
                       ],
                     ),
 

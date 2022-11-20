@@ -81,7 +81,7 @@ class PausePainterAnimationState extends State<PausePainterAnimation>
     );
 
     _animation = _controller.drive(
-      Tween<double>(begin: 0, end: 5.0),
+      Tween<double>(begin: 0, end: 0),
     )..addListener(() {
         setState(() {});
       });
@@ -90,16 +90,18 @@ class PausePainterAnimationState extends State<PausePainterAnimation>
   @override
   void didUpdateWidget(covariant PausePainterAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _controller.reset();
 
-    _animation = _controller.drive(widget.status == PauseStatus.selected
-        ? Tween<double>(begin: 0, end: 5)
-        : Tween<double>(begin: 5, end: 0))
-      ..addListener(() {
-        setState(() {});
-      });
+    if (oldWidget.status != widget.status) {
+      _controller.reset();
+      _animation = _controller.drive(widget.status == PauseStatus.selected
+          ? Tween<double>(begin: 0, end: 5)
+          : Tween<double>(begin: 5, end: 0))
+        ..addListener(() {
+          setState(() {});
+        });
 
-    _controller.forward();
+      _controller.forward();
+    }
   }
 
   @override

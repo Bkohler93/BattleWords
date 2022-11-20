@@ -1,4 +1,5 @@
 import 'package:battle_words/constants/game_details.dart';
+import 'package:battle_words/features/keyboard/domain/letter.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/features/single_player_game/domain/tile_coords.dart';
@@ -13,12 +14,14 @@ class SinglePlayerGame {
   final List<HiddenWord> hiddenWords;
   final int movesRemaining;
   final GameResult gameResult;
+  final KeyboardLetterMap keyboardLetterMap; //Map<String, KeyboardLetterStatus>
 
   const SinglePlayerGame({
     required this.gameBoard,
     required this.hiddenWords,
     required this.movesRemaining,
     required this.gameResult,
+    required this.keyboardLetterMap,
   });
 
   //TODO
@@ -44,11 +47,14 @@ class SinglePlayerGame {
 
     int movesRemaining = START_NUM_OF_MOVES;
 
+    KeyboardLetterMap keyboardLetterMap = createBlankKeyboardLetterMap();
+
     return SinglePlayerGame(
         gameBoard: gameBoard,
         movesRemaining: movesRemaining,
         hiddenWords: hiddenWords,
-        gameResult: GameResult.playing);
+        gameResult: GameResult.playing,
+        keyboardLetterMap: keyboardLetterMap);
   }
 
   factory SinglePlayerGame.from(SinglePlayerGame singlePlayerGame) {
@@ -58,13 +64,18 @@ class SinglePlayerGame {
 
     List<HiddenWord> hiddenWordsCopy = List<HiddenWord>.from(singlePlayerGame.hiddenWords);
 
+    KeyboardLetterMap keyboardLetterMap =
+        Map<String, KeyboardLetterStatus>.from(singlePlayerGame.keyboardLetterMap);
+
     int movesRemainingCopy = singlePlayerGame.movesRemaining;
 
     return SinglePlayerGame(
-        gameBoard: gameBoardCopy,
-        hiddenWords: hiddenWordsCopy,
-        movesRemaining: movesRemainingCopy,
-        gameResult: singlePlayerGame.gameResult);
+      gameBoard: gameBoardCopy,
+      hiddenWords: hiddenWordsCopy,
+      movesRemaining: movesRemainingCopy,
+      gameResult: singlePlayerGame.gameResult,
+      keyboardLetterMap: keyboardLetterMap,
+    );
   }
 
   //TODO
@@ -76,16 +87,19 @@ class SinglePlayerGame {
     return gameBoard[row][col].tileStatus == TileStatus.hidden;
   }
 
-  SinglePlayerGame copyWith(
-      {int? movesRemaining,
-      GameBoard? gameBoard,
-      List<HiddenWord>? hiddenWords,
-      GameResult? gameResult}) {
+  SinglePlayerGame copyWith({
+    int? movesRemaining,
+    GameBoard? gameBoard,
+    List<HiddenWord>? hiddenWords,
+    GameResult? gameResult,
+    KeyboardLetterMap? keyboardLetterMap,
+  }) {
     return SinglePlayerGame(
         gameBoard: gameBoard ?? this.gameBoard,
         movesRemaining: movesRemaining ?? this.movesRemaining,
         hiddenWords: hiddenWords ?? this.hiddenWords,
-        gameResult: gameResult ?? this.gameResult);
+        gameResult: gameResult ?? this.gameResult,
+        keyboardLetterMap: keyboardLetterMap ?? this.keyboardLetterMap);
   }
 }
 
@@ -96,6 +110,7 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
       hiddenWords: copyHiddenWords(hiddenWords),
       movesRemaining: movesRemaining - 1,
       gameResult: gameResult,
+      keyboardLetterMap: keyboardLetterMap,
     );
   }
 
@@ -120,6 +135,7 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
       hiddenWords: copyHiddenWords(hiddenWords),
       movesRemaining: movesRemaining,
       gameResult: result,
+      keyboardLetterMap: KeyboardLetterMap.from(keyboardLetterMap),
     );
   }
 }

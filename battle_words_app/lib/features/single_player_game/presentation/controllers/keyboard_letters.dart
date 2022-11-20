@@ -1,10 +1,6 @@
 import 'package:battle_words/features/keyboard/domain/letter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final keyboardLettersControllerProvider =
-    StateNotifierProvider<KeyboardLettersController, Map<String, KeyboardLetterStatus>>(
-        (ref) => KeyboardLettersController());
-
 class KeyboardLettersController extends StateNotifier<Map<String, KeyboardLetterStatus>> {
   KeyboardLettersController()
       : super({
