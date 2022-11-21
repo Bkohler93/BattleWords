@@ -24,7 +24,16 @@ class HiddenWordsObjectBox {
     return results[Random().nextInt(results.length - 1)];
   }
 
-  Future<List<Word>> getRandomWords() async {
+  List<Word> getRandomWords() {
     return [for (var length = 5; length > 2; length--) _getRandomWordOfLength(length)];
+  }
+
+  bool isWordInDatabase(String word) {
+    final query = (objectBox.wordBox.query(
+      Word_.text.equals(word),
+    )).build();
+    final result = query.find().isNotEmpty;
+
+    return result;
   }
 }

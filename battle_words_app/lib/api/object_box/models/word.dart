@@ -8,7 +8,11 @@ class Word {
   String text;
   int length;
 
-  Word({this.id = 0, required this.text, required this.length});
+  Word({
+    this.id = 0,
+    required this.text,
+    required this.length,
+  });
 
   @override
   toString() => 'Word{id: $id, text: $text, length: $length}';

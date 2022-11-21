@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class GuessInputDisplay extends ConsumerWidget {
   const GuessInputDisplay({super.key});
 
-  List<Widget> buildDisplay(String guessInput) {
+  List<Widget> buildDisplay(String guessInput, GuessWordStatus status) {
     List<Widget> widgetList = [];
 
     // create a new text widget for each letter of guessInput
@@ -15,10 +15,10 @@ class GuessInputDisplay extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             guessInput[i],
-            style: const TextStyle(
-              decoration: TextDecoration.underline,
-              fontSize: 30,
-            ),
+            style: TextStyle(
+                decoration: TextDecoration.underline,
+                fontSize: 30,
+                color: status == GuessWordStatus.validWord ? Colors.black : Colors.red),
           ),
         ),
       );
@@ -41,7 +41,7 @@ class GuessInputDisplay extends ConsumerWidget {
               fontSize: 30,
             ),
           ),
-          ...buildDisplay(guessInputState.guessWord)
+          ...buildDisplay(guessInputState.guessWord, guessInputState.status)
         ],
       ),
     );

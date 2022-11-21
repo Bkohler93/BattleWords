@@ -1,6 +1,7 @@
 import 'package:battle_words/features/single_player_game/application/game_service.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
+import 'package:battle_words/features/single_player_game/presentation/controllers/guess_input.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /*
@@ -44,7 +45,7 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
     });
   }
 
-  void handleWordGuess(String guessWord) async {
+  handleWordGuess(String guessWord) async {
     final singlePlayerGame = state.value!;
     state = await AsyncValue.guard(() async {
       return singlePlayerGameService.processWordGuess(

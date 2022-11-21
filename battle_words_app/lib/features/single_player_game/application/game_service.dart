@@ -7,7 +7,6 @@ import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/features/keyboard/domain/letter.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/hidden_words.dart';
-import 'package:battle_words/features/single_player_game/data/sources/hidden_words.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
@@ -64,9 +63,9 @@ class SinglePlayerGameService {
     return SinglePlayerGame.from(singlePlayerGame);
   }
 
-  Future<SinglePlayerGame> createSinglePlayerGame() async {
+  SinglePlayerGame createSinglePlayerGame() {
     // get hidden words
-    final List<HiddenWord> hiddenWords = await hiddenWordsRepository.fetchHiddenWords();
+    final List<HiddenWord> hiddenWords = hiddenWordsRepository.fetchHiddenWords();
 
     //arrange words on board
     GameBoard gameBoard = List.generate(
@@ -289,19 +288,26 @@ class SinglePlayerGameService {
   /// Returns false if any tile on the gameboard that has a letter is still hidden
   SinglePlayerGame _checkIfWin({required SinglePlayerGame singlePlayerGame}) {
     var singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
-    bool win = true;
+    bool areAllHiddenWordsFound = true;
 
     for (var hiddenWord in singlePlayerGameCopy.hiddenWords) {
+      bool isHiddenWordUncovered = true;
       //loop through each coordinate in hiddenWords.coords
       for (var i = 0; i < hiddenWord.length; i++) {
         final row = hiddenWord.letterCoords![i]!.row;
         final col = hiddenWord.letterCoords![i]!.col;
         if (singlePlayerGameCopy.gameBoard[row][col].tileStatus == TileStatus.hidden) {
-          win = false;
+          isHiddenWordUncovered = false;
+          areAllHiddenWordsFound = false;
         }
       }
+
+      //set current hiddenWord.found to true
+      if (isHiddenWordUncovered) {
+        hiddenWord.found = true;
+      }
     }
-    if (win) {
+    if (areAllHiddenWordsFound) {
       return singlePlayerGameCopy.copyWith(gameResult: GameResult.win);
     } else {
       return singlePlayerGameCopy;
@@ -345,11 +351,6 @@ class SinglePlayerGameService {
       {required SinglePlayerGame singlePlayerGame, required String word}) {
     var singlePlayerGameCopy = SinglePlayerGame.from(singlePlayerGame);
     bool isExactMatch = false;
-
-    //1. check if any letters were entered or if incorrect number of characters (3-5 only)
-    if (word.isEmpty || word.length < 3 || word.length > 5) {
-      return singlePlayerGameCopy;
-    }
 
     //2. check if word is real -> display invalid word message if so
 

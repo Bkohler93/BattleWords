@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class HomePageController extends StateNotifier<AsyncValue<void>> {
   HomePageController({required this.repository}) : super(const AsyncLoading()) {
     _fillDatabase();
-    //consider making _loadAssets if more things need to be loaded here
   }
   final ObjectBox repository;
 

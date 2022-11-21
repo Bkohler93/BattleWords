@@ -7,7 +7,8 @@ final hiddenWordsRepositoryProvider = Provider<HiddenWordsRepository>(
     (ref) => HiddenWordsRepository(hiddenWordsObjectBox: ref.watch(hiddenWordsObjectBoxProvider)));
 
 abstract class IHiddenWordsRepository {
-  Future<List<HiddenWord>> fetchHiddenWords();
+  List<HiddenWord> fetchHiddenWords();
+  bool checkIfValidWord(String word);
 }
 
 class HiddenWordsRepository implements IHiddenWordsRepository {
@@ -15,21 +16,31 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
   final HiddenWordsObjectBox hiddenWordsObjectBox;
 
   @override
-  Future<List<HiddenWord>> fetchHiddenWords() async {
-    final List<Word> words = await hiddenWordsObjectBox.getRandomWords();
+  List<HiddenWord> fetchHiddenWords() {
+    final List<Word> words = hiddenWordsObjectBox.getRandomWords();
     for (var word in words) print(word.text);
     return words.map((word) => HiddenWord(word: word.text)).toList();
+  }
+
+  @override
+  bool checkIfValidWord(String word) {
+    return hiddenWordsObjectBox.isWordInDatabase(word);
   }
 }
 
 class MockHiddenWordsRepository implements IHiddenWordsRepository {
   @override
-  Future<List<HiddenWord>> fetchHiddenWords() {
+  List<HiddenWord> fetchHiddenWords() {
     final List<Word> words = [
       Word(length: 3, text: 'you'),
       Word(length: 4, text: "ball"),
       Word(length: 5, text: "sauce")
     ];
-    return Future.value(words.map((word) => HiddenWord(word: word.text)).toList());
+    return words.map((word) => HiddenWord(word: word.text)).toList();
+  }
+
+  @override
+  bool checkIfValidWord(String word) {
+    return true;
   }
 }

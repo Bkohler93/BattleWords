@@ -20,7 +20,7 @@ class ObjectBox {
   Future<void> _ensureDbOpen() async {
     if (reset) {
       Directory dir = await getApplicationDocumentsDirectory();
-      Directory(dir.path + '/objectbox/')
+      Directory('${dir.path}/objectbox/')
           .delete(recursive: true)
           .then((FileSystemEntity value) => print("DB Deleted: ${value.existsSync()}"));
       reset = false;
@@ -32,7 +32,9 @@ class ObjectBox {
     }
   }
 
-  @override
+  /// Ensures database has been filled with valid words. If not filled, reads the
+  /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
+  /// txt file name.
   Future<void> populateDatabase() async {
     await _ensureDbOpen();
 
