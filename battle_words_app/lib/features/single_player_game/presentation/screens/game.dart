@@ -29,7 +29,7 @@ class SinglePlayerPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     //watch and rebuild when state changes
     final gameState = ref.watch(singlePlayerGameControllerProvider);
-    bool _isPauseMenuShowing = ref.watch(isPauseMenuShowingProvider);
+    bool isPauseMenuShowing = ref.watch(isPauseMenuShowingProvider);
 
     //display loading here as well using async methods when required
     return PageLayout(
@@ -81,12 +81,14 @@ class SinglePlayerPage extends ConsumerWidget {
                       right: 5.w,
                       child: PauseButton(
                         updatePauseMenuVisibility: toggleIsPauseMenuShowing,
-                        ref: ref,
                       ),
                     ),
                     Positioned(
                       top: 15.h,
-                      child: _isPauseMenuShowing ? SinglePlayerPauseMenu() : Text(""),
+                      child: SinglePlayerPauseMenu(
+                        isPauseMenuShowing: isPauseMenuShowing,
+                        closePauseMenu: toggleIsPauseMenuShowing,
+                      ),
                     )
                   ],
                 ),

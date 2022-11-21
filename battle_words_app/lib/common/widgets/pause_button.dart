@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum PauseStatus { selected, unselected }
 
-class PauseButton extends StatefulWidget {
-  const PauseButton({super.key, required this.updatePauseMenuVisibility, required this.ref});
+class PauseButton extends ConsumerStatefulWidget {
+  const PauseButton({super.key, required this.updatePauseMenuVisibility});
   final Function(WidgetRef ref) updatePauseMenuVisibility;
-  final WidgetRef ref;
+  // final WidgetRef ref;
 
   @override
-  State<PauseButton> createState() => _PauseButtonState();
+  ConsumerState<PauseButton> createState() => _PauseButtonState();
 }
 
 /// controls current state of pause button (selected vs unselected)
 /// selected - pause menu is open, button is an X
 /// unselected - pause menu is closed, button is pause icon ||
-class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStateMixin {
+class _PauseButtonState extends ConsumerState<PauseButton> with SingleTickerProviderStateMixin {
   late PauseStatus _status;
 
   @override
@@ -47,7 +47,7 @@ class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStat
       height: 50,
       child: GestureDetector(
         onTap: () {
-          togglePauseStatus(widget.ref);
+          togglePauseStatus(ref);
         },
         child: PausePainterAnimation(status: _status),
       ),
