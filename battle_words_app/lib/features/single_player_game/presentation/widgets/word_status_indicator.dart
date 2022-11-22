@@ -39,7 +39,9 @@ class WordStatusIndicator extends StatelessWidget {
           (index) => Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomPaint(
-              painter: CirclePainter(),
+              painter: CirclePainter(
+                isLetterFound: hiddenWord.areLettersFound[index],
+              ),
             ),
           ),
         ),
@@ -49,6 +51,9 @@ class WordStatusIndicator extends StatelessWidget {
 }
 
 class CirclePainter extends CustomPainter {
+  CirclePainter({required this.isLetterFound});
+  final bool isLetterFound;
+
   @override
   void paint(Canvas canvas, Size size) {
     var dotPaint = Paint()
@@ -57,6 +62,14 @@ class CirclePainter extends CustomPainter {
       ..strokeWidth = 2.0;
 
     canvas.drawCircle(const Offset(0, 0), 5, dotPaint);
+
+    if (isLetterFound) {
+      dotPaint
+        ..style = PaintingStyle.fill
+        ..color = Colors.green;
+
+      canvas.drawCircle(const Offset(0, 0), 5, dotPaint);
+    }
   }
 
   @override

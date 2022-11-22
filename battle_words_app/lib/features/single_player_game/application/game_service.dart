@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:battle_words/api/object_box/object_box.dart';
 import 'package:battle_words/constants/game_details.dart';
 import 'package:battle_words/features/keyboard/domain/letter.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
@@ -299,12 +298,14 @@ class SinglePlayerGameService {
         if (singlePlayerGameCopy.gameBoard[row][col].tileStatus == TileStatus.hidden) {
           isHiddenWordUncovered = false;
           areAllHiddenWordsFound = false;
+        } else {
+          hiddenWord.areLettersFound[i] = true;
         }
       }
 
       //set current hiddenWord.found to true
       if (isHiddenWordUncovered) {
-        hiddenWord.found = true;
+        hiddenWord.isWordFound = true;
       }
     }
     if (areAllHiddenWordsFound) {
