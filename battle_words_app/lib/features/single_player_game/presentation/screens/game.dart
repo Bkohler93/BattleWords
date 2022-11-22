@@ -70,9 +70,11 @@ class SinglePlayerPage extends ConsumerWidget {
                       top: 30.h,
                       left: 25.w,
                       child: gameState.value!.gameResult == GameResult.loss
-                          ? GameResultNotification(result: "Loser!")
+                          ? GameResultNotification(
+                              result: "Loser!", hiddenWords: gameState.value!.hiddenWords)
                           : gameState.value!.gameResult == GameResult.win
-                              ? GameResultNotification(result: "Winner!")
+                              ? GameResultNotification(
+                                  result: "Winner!", hiddenWords: gameState.value!.hiddenWords)
                               : Text(""),
                     ),
 

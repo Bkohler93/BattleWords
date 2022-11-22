@@ -1,3 +1,4 @@
+import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/guess_input.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/keyboard_letters.dart';
 import 'package:battle_words/features/single_player_game/presentation/controllers/single_player_game.dart';
@@ -6,8 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
 class GameResultNotification extends ConsumerWidget {
-  const GameResultNotification({super.key, required this.result});
+  const GameResultNotification({super.key, required this.result, required this.hiddenWords});
   final String result;
+  final List<HiddenWord> hiddenWords;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,8 +30,8 @@ class GameResultNotification extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: FloatingActionButton.extended(
                 onPressed: () {
-                  ref.invalidate(singlePlayerGameControllerProvider);
-                  ref.invalidate(guessWordInputControllerProvider);
+                  // ref.invalidate(singlePlayerGameControllerProvider);
+                  // ref.invalidate(guessWordInputControllerProvider);
                   Navigator.of(context).pop();
                 },
                 label: Text("Main Menu"),
