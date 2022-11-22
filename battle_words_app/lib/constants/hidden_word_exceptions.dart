@@ -1,6 +1,7 @@
 const HIDDEN_WORDS_EXCEPTIONS = [
   "torr",
   "aalii",
+  "waw",
   "aah",
   "aahed",
   "aahs",

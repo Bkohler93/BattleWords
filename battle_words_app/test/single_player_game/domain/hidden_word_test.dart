@@ -6,7 +6,7 @@ void main() {
     test('constructor creates a HiddenWord with its found property set to false', () {
       final hiddenWord = HiddenWord(word: "sauce");
 
-      expect(hiddenWord.found, false);
+      expect(hiddenWord.isWordFound, false);
       expect(hiddenWord.word, "sauce");
     });
 

@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.battle_words">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="battle_words"
+        android:label="Wardle"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
