@@ -67,29 +67,39 @@ class SinglePlayerPage extends ConsumerWidget {
 
                     /// displays end of game popup with return to main menu button
                     Positioned(
-                      top: 30.h,
-                      left: 25.w,
-                      child: gameState.value!.gameResult == GameResult.loss
-                          ? GameResultNotification(
-                              result: "Loser!", hiddenWords: gameState.value!.hiddenWords)
-                          : gameState.value!.gameResult == GameResult.win
-                              ? GameResultNotification(
-                                  result: "Winner!", hiddenWords: gameState.value!.hiddenWords)
-                              : Text(""),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: gameState.value!.gameResult == GameResult.loss
+                            ? GameResultNotification(
+                                result: "Loser!", hiddenWords: gameState.value!.hiddenWords)
+                            : gameState.value!.gameResult == GameResult.win
+                                ? GameResultNotification(
+                                    result: "Winner!", hiddenWords: gameState.value!.hiddenWords)
+                                : Text(""),
+                      ),
                     ),
 
                     Positioned(
-                      top: 2.h,
-                      right: 5.w,
-                      child: PauseButton(
-                        updatePauseMenuVisibility: toggleIsPauseMenuShowing,
+                      // top: 2.h,
+                      // right: 5.w,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0),
+                          child: PauseButton(
+                            updatePauseMenuVisibility: toggleIsPauseMenuShowing,
+                          ),
+                        ),
                       ),
                     ),
                     Positioned(
-                      top: 15.h,
-                      child: SinglePlayerPauseMenu(
-                        isPauseMenuShowing: isPauseMenuShowing,
-                        closePauseMenu: toggleIsPauseMenuShowing,
+                      // top: 15.h,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SinglePlayerPauseMenu(
+                          isPauseMenuShowing: isPauseMenuShowing,
+                          closePauseMenu: toggleIsPauseMenuShowing,
+                        ),
                       ),
                     )
                   ],
