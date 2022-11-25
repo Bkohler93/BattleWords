@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-class WordStatusIndicatorRow extends ConsumerWidget {
+class WordStatusIndicatorRow extends StatelessWidget {
   const WordStatusIndicatorRow({super.key, required this.singlePlayerGame});
   final SinglePlayerGame singlePlayerGame;
-
+  //TODO BlocBuilder instead of passing SinglePlayerGame as parameter
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(

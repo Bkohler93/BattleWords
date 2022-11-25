@@ -1,9 +1,8 @@
 import 'package:battle_words/common/controllers/show_pause.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-class SinglePlayerPauseMenu extends ConsumerStatefulWidget {
+class SinglePlayerPauseMenu extends StatefulWidget {
   const SinglePlayerPauseMenu(
       {Key? key, required this.isPauseMenuShowing, required this.closePauseMenu})
       : super(key: key);
@@ -11,10 +10,10 @@ class SinglePlayerPauseMenu extends ConsumerStatefulWidget {
   final Function closePauseMenu;
 
   @override
-  ConsumerState<SinglePlayerPauseMenu> createState() => SinglePlayerPauseMenuState();
+  State<SinglePlayerPauseMenu> createState() => SinglePlayerPauseMenuState();
 }
 
-class SinglePlayerPauseMenuState extends ConsumerState<SinglePlayerPauseMenu> {
+class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -50,9 +49,10 @@ class SinglePlayerPauseMenuState extends ConsumerState<SinglePlayerPauseMenu> {
                             child: GestureDetector(
                               child: Text("Continue"),
                               onTap: () {
-                                ref
-                                    .read(isPauseMenuShowingProvider.notifier)
-                                    .update((state) => !state);
+                                //TODO rethink how pause menu works
+                                // ref
+                                // .read(isPauseMenuShowingProvider.notifier)
+                                // .update((state) => !state);
                               },
                             ),
                           ),

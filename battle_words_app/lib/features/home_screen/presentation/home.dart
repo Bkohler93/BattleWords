@@ -7,45 +7,49 @@ import 'package:battle_words/features/user_settings/presentation/settings_page.d
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(homePageControllerProvider);
+  State<HomePage> createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    //TODO HomePageState for determining if loadaing or not .. needed .. ? idk
+    // final state = ref.watch(homePageControllerProvider);
     return PageLayout(
       menuPage: true,
-      child: state.isLoading
-          ? const Text("Loading")
-          : Column(
-              children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: Container(),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        screenRoute(SinglePlayerHomePage(), "Single Player", context),
-                        screenRoute(MultiplayerHomePage(), "Multiplayer", context),
-                        screenRoute(SettingsPage(), "Settings", context),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    color: Colors.white,
-                  ),
-                )
-              ],
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(),
+          ),
+          Expanded(
+            flex: 0,
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  screenRoute(SinglePlayerHomePage(), "Single Player", context),
+                  screenRoute(MultiplayerHomePage(), "Multiplayer", context),
+                  screenRoute(SettingsPage(), "Settings", context),
+                ],
+              ),
             ),
+          ),
+          Expanded(
+            flex: 0,
+            child: Container(
+              color: Colors.white,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

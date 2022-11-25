@@ -7,12 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-class GameBoardView extends ConsumerWidget {
-  GameBoardView({super.key, required this.singlePlayerGame});
-  final SinglePlayerGame singlePlayerGame;
+class GameBoardView extends StatelessWidget {
+  const GameBoardView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     List<Widget> gameBoard = List<Widget>.generate(
       GAME_BOARD_SIZE,
       (row) => Row(
@@ -20,7 +19,9 @@ class GameBoardView extends ConsumerWidget {
         children: List<Widget>.generate(
           GAME_BOARD_SIZE,
           (col) => GameBoardTileWidget(
-            singlePlayerGameTile: singlePlayerGame.gameBoard[row][col],
+            col: col,
+            row: row,
+            // singlePlayerGameTile: singlePlayerGame.gameBoard[row][col],
           ),
         ),
       ),

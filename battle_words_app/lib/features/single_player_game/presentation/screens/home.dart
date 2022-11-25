@@ -1,9 +1,12 @@
 import 'package:battle_words/common/widgets/page_layout.dart';
 import 'package:battle_words/common/widgets/screen_route_link.dart';
 import 'package:battle_words/features/home_screen/presentation/home.dart';
+import 'package:battle_words/features/single_player_game/bloc/single_player_bloc.dart';
+import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/features/single_player_game/presentation/screens/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
 class SinglePlayerHomePage extends StatefulWidget {
@@ -16,6 +19,7 @@ class SinglePlayerHomePage extends StatefulWidget {
 class SinglePlayerHomePageState extends State<SinglePlayerHomePage> {
   @override
   Widget build(BuildContext context) {
+    //lazy  load is active so repository and bloc will not be loaded until SinglePlayerGame page initializes
     return PageLayout(
       menuPage: true,
       child: Padding(

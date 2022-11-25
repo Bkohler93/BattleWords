@@ -2,19 +2,21 @@ import 'package:battle_words/features/single_player_game/presentation/controller
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GuessInputDisplay extends ConsumerWidget {
+//TODO This widget will most likely become a StatefulWidget after having to incoroporate the keyboard and the various controllers for that.
+//TODO yes will defeinitely become a statefulWidget because the text has to be here.
+class GuessInputDisplay extends StatelessWidget {
   const GuessInputDisplay({super.key});
 
-  List<Widget> buildDisplay(String guessInput, GuessWordStatus status) {
+  List<Widget> buildDisplay(String displayString, GuessWordStatus status) {
     List<Widget> widgetList = [];
 
     // create a new text widget for each letter of guessInput
-    for (int i = 0; i < guessInput.length; i++) {
+    for (int i = 0; i < displayString.length; i++) {
       widgetList.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
-            guessInput[i],
+            displayString[i],
             style: TextStyle(
                 decoration: TextDecoration.underline,
                 fontSize: 30,
@@ -27,9 +29,11 @@ class GuessInputDisplay extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final guessInputState = ref.watch(guessWordInputControllerProvider);
+  Widget build(BuildContext context) {
+    //TODO Use BlocBuilder to do this with SinglePlayerBloc
+    // final guessInputState = ref.watch(guessWordInputControllerProvider);
     return Container(
+      //TODO This should be Column( with Keyboard as well as ...buildDisplay)
       padding: const EdgeInsets.all(20),
       alignment: Alignment.center,
       child: Row(
@@ -41,7 +45,7 @@ class GuessInputDisplay extends ConsumerWidget {
               fontSize: 30,
             ),
           ),
-          ...buildDisplay(guessInputState.guessWord, guessInputState.status)
+          ...buildDisplay("guessWord", GuessWordStatus.noWord)
         ],
       ),
     );

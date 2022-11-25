@@ -17,14 +17,14 @@ enum Direction { horizontal, vertical }
 
 final singlePlayerGameServiceProvider = Provider<SinglePlayerGameService>((ref) {
   return SinglePlayerGameService(
-      singlePlayerGameRepository: ref.watch(singlePlayerGameRepositoryProvider),
+      singlePlayerGameRepository: ref.watch(singlePlayerRepositoryProvider),
       hiddenWordsRepository: ref.watch(hiddenWordsRepositoryProvider));
 });
 
 class SinglePlayerGameService {
   SinglePlayerGameService(
       {required this.singlePlayerGameRepository, required this.hiddenWordsRepository});
-  final MockSinglePlayerGameRepository singlePlayerGameRepository;
+  final MockSinglePlayerRepository singlePlayerGameRepository;
   final IHiddenWordsRepository hiddenWordsRepository;
 
   Future<SinglePlayerGame> flipGameBoardTile(
@@ -264,11 +264,6 @@ class SinglePlayerGameService {
 
   Direction _randomDirection() {
     return Random().nextInt(2) == 1 ? Direction.horizontal : Direction.horizontal;
-  }
-
-  // ignore: unused_element
-  Future<SinglePlayerGame> _fetchSinglePlayerGame() {
-    return singlePlayerGameRepository.getSinglePlayerGame();
   }
 
   // ignore: unused_element

@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-class GameResultNotification extends ConsumerWidget {
+//TODO this widget is pretty  shit
+class GameResultNotification extends StatelessWidget {
   const GameResultNotification({super.key, required this.result, required this.hiddenWords});
   final String result;
   final List<HiddenWord> hiddenWords;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       height: 40.h,
       width: 70.w,
@@ -50,8 +51,9 @@ class GameResultNotification extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: FloatingActionButton.extended(
                 onPressed: () {
-                  ref.invalidate(singlePlayerGameControllerProvider);
-                  ref.invalidate(guessWordInputControllerProvider);
+                  //send ResetGameEvent to SinglePlayerBloc
+                  // ref.invalidate(singlePlayerGameControllerProvider);
+                  // ref.invalidate(guessWordInputControllerProvider);
                   Navigator.of(context).pop();
                 },
                 label: const Text("Main Menu"),
