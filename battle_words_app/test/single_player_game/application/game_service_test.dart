@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Test SinglePlayerGame service', () {
     test('Flipping game board tile returns new board with uncovered tile', () async {
-      final mockRepository = MockSinglePlayerGameRepository();
+      final mockRepository = MockSinglePlayerRepository();
       final mockHiddenWordsRepository = MockHiddenWordsRepository();
       final game = SinglePlayerGame.generate();
       int col = 0;
@@ -29,7 +29,7 @@ void main() {
     });
 
     test('Reduce number of moves remaining after flipping game board tile', () async {
-      final mockRepository = MockSinglePlayerGameRepository();
+      final mockRepository = MockSinglePlayerRepository();
       final mockHiddenWordsRepository = MockHiddenWordsRepository();
       final game = SinglePlayerGame.generate();
 
@@ -48,7 +48,7 @@ void main() {
     });
 
     test('create a new single player game returns a single player game', () async {
-      final mockRepository = MockSinglePlayerGameRepository();
+      final mockRepository = MockSinglePlayerRepository();
       final mockHiddenWordsRepository = MockHiddenWordsRepository();
 
       final singlePlayerGameService = SinglePlayerGameService(
@@ -61,7 +61,7 @@ void main() {
     });
 
     test('_arrangeGameBoard returns a GameBoard instance with filled in hiddenWords', () async {
-      final mockRepository = MockSinglePlayerGameRepository();
+      final mockRepository = MockSinglePlayerRepository();
       final mockHiddenWordsRepository = MockHiddenWordsRepository();
 
       final singlePlayerGameService = SinglePlayerGameService(

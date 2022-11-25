@@ -6,25 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-//TODO This class will require two parameters, int col and int row. These will be used when communicating with SinglePlayerBloc to identify which tile this is
 class GameBoardTileWidget extends StatelessWidget {
-  const GameBoardTileWidget(
-      {Key? key,
-      // required this.singlePlayerGameTile,
-      required this.row,
-      required this.col})
-      : super(key: key);
+  const GameBoardTileWidget({Key? key, required this.row, required this.col}) : super(key: key);
 
-  // final SinglePlayerGameTile singlePlayerGameTile;
   final int col;
   final int row;
 
   @override
   Widget build(BuildContext context) {
-    // int row = singlePlayerGameTile.coordinates.row;
-    // int col = singlePlayerGameTile.coordinates.col;
-
-    //TODO Add BlocBuilder, maybe BlocConsumer with fucntion down there
     return BlocSelector<SinglePlayerBloc, SinglePlayerState, SinglePlayerGameTile>(
       selector: (state) {
         return state.gameBoard[col][row];
@@ -57,8 +46,8 @@ class GameBoardTileWidget extends StatelessWidget {
                   : Text("${state.letter.toUpperCase()}"),
             ),
             onTap: () {
-              //TODO Bloc TileTapEvent
-              print('=== row: , col: ');
+              BlocProvider.of<SinglePlayerBloc>(context)
+                  .add(TapGameBoardTileEvent(col: col, row: row));
               // ref.read(singlePlayerGameControllerProvider.notifier).handleTileTap(row: row, col: col);
             },
           ),

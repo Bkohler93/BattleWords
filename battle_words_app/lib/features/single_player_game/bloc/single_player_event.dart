@@ -4,3 +4,11 @@ part of 'single_player_bloc.dart';
 abstract class SinglePlayerEvent {}
 
 class StartGameEvent implements SinglePlayerEvent {}
+
+/// This event only requires knowing the col/row of the tile that was tapped on.
+class TapGameBoardTileEvent implements SinglePlayerEvent {
+  TapGameBoardTileEvent({required this.col, required this.row});
+
+  final int col;
+  final int row;
+}
