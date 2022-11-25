@@ -1,4 +1,4 @@
-import 'package:battle_words/features/keyboard/domain/letter.dart';
+import 'package:battle_words/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/features/single_player_game/domain/hidden_word.dart';
 import 'package:flutter/material.dart';

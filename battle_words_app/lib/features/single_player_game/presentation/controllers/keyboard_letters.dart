@@ -1,4 +1,4 @@
-import 'package:battle_words/features/keyboard/domain/letter.dart';
+import 'package:battle_words/common/widgets/keyboard/domain/letter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class KeyboardLettersController extends StateNotifier<Map<String, KeyboardLetterStatus>> {

@@ -3,7 +3,7 @@
 import 'dart:math';
 
 import 'package:battle_words/constants/game_details.dart';
-import 'package:battle_words/features/keyboard/domain/letter.dart';
+import 'package:battle_words/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/features/single_player_game/data/repositories/hidden_words.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';

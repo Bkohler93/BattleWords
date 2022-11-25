@@ -1,5 +1,5 @@
 import 'package:battle_words/common/widgets/page_layout.dart';
-import 'package:battle_words/features/keyboard/presentation/keyboard.dart';
+import 'package:battle_words/common/widgets/keyboard/presentation/keyboard.dart';
 import 'package:battle_words/common/widgets/pause_button.dart';
 import 'package:battle_words/features/single_player_game/domain/game.dart';
 import 'package:battle_words/common/controllers/show_pause.dart';

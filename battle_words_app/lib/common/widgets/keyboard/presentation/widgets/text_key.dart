@@ -1,5 +1,5 @@
-import 'package:battle_words/features/keyboard/domain/letter.dart';
-import 'package:battle_words/features/keyboard/presentation/keyboard.dart';
+import 'package:battle_words/common/widgets/keyboard/domain/letter.dart';
+import 'package:battle_words/common/widgets/keyboard/presentation/keyboard.dart';
 import 'package:flutter/material.dart';
 
 class TextKey extends StatelessWidget {
