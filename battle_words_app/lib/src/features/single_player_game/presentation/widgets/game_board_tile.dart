@@ -14,7 +14,7 @@ class GameBoardTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<SinglePlayerBloc, SinglePlayerState, SinglePlayerGameTile>(
       selector: (state) {
-        return state.gameBoard[col][row];
+        return state.gameBoard[row][col];
       },
       builder: (context, state) {
         return Padding(

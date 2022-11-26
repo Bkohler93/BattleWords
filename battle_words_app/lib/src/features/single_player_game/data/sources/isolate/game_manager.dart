@@ -259,6 +259,7 @@ class GameManager {
 
     state = _checkIfWin(singlePlayerGame: state);
 
+    //only reduce moves and check for loss if game hasn't been won up to this point
     if (state.gameStatus != GameStatus.win) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }

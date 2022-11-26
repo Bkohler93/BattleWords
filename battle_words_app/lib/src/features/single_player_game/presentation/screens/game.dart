@@ -12,6 +12,7 @@ import 'package:battle_words/src/features/single_player_game/presentation/bloc/s
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_result_notification.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/guess_input_display.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/moves_remaining_display.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/pause_menu.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/word_status_indicator.dart';
 import 'package:flutter/material.dart';
@@ -101,38 +102,30 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
       child: BlocSelector<SinglePlayerBloc, SinglePlayerState, GameStatus>(
         selector: ((state) => state.gameStatus),
         builder: (context, state) {
-          // BlocProvider.of<SinglePlayerBloc>(context).add(StartGameEvent());
           if (state.isLoading) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           } else {
             return Stack(
               alignment: Alignment.center,
               children: [
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text("Moves remaining: ${/*movesRemaining*/ 0}"),
+                  children: const [
+                    MovesRemaining(),
                     GameBoardView(),
                     WordStatusIndicatorRow(),
                     GuessInputDisplay(),
                   ],
                 ),
                 Positioned(
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: BlocListener<SinglePlayerBloc, SinglePlayerState>(
-                          listener: (context, state) => {
-                                if (state.gameStatus == GameStatus.win ||
-                                    state.gameStatus == GameStatus.loss)
-                                  {
-                                    GameResultNotification(
-                                      result: state.gameStatus,
-                                      hiddenWords: state.hiddenWords,
-                                    )
-                                  }
-                              },
-                          child: Container())),
-                ),
+                    child: Align(
+                  alignment: Alignment.center,
+                  child: (state.isWin || state.isLoss)
+                      ? GameResultNotification(
+                          result: state,
+                        )
+                      : Text(""),
+                )),
                 Positioned(
                   // top: 2.h,
                   // right: 5.w,
