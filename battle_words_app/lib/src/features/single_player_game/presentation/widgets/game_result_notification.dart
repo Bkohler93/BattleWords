@@ -1,12 +1,14 @@
+import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-//TODO this widget is pretty  shit
+//* take out the required parameters, access them using BlocBuilder
 class GameResultNotification extends StatelessWidget {
   const GameResultNotification({super.key, required this.result, required this.hiddenWords});
-  final String result;
+  final GameStatus result;
   final List<HiddenWord> hiddenWords;
 
   @override
@@ -21,7 +23,7 @@ class GameResultNotification extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              result,
+              result == GameResult.win ? "Winner" : "Loser",
               style: const TextStyle(color: Colors.white),
             ),
             (hiddenWords.any((hiddenWord) => !hiddenWord.isWordFound))

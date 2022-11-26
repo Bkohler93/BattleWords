@@ -1,13 +1,14 @@
+import 'package:battle_words/src/constants/game_details.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
 class WordStatusIndicatorRow extends StatelessWidget {
-  const WordStatusIndicatorRow({super.key, required this.singlePlayerGame});
-  final SinglePlayerGame singlePlayerGame;
-  //TODO BlocBuilder instead of passing SinglePlayerGame as parameter
+  const WordStatusIndicatorRow({super.key});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -15,8 +16,8 @@ class WordStatusIndicatorRow extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List<Widget>.generate(
-          singlePlayerGame.hiddenWords.length,
-          (index) => WordStatusIndicator(hiddenWord: singlePlayerGame.hiddenWords[index]),
+          NUM_HIDDEN_WORDS,
+          (index) => WordStatusIndicator(hiddenWordIndex: index),
         ),
       ),
     );
@@ -24,27 +25,34 @@ class WordStatusIndicatorRow extends StatelessWidget {
 }
 
 class WordStatusIndicator extends StatelessWidget {
-  const WordStatusIndicator({Key? key, required this.hiddenWord}) : super(key: key);
+  const WordStatusIndicator({Key? key, required this.hiddenWordIndex}) : super(key: key);
 
-  final HiddenWord hiddenWord;
+  final int hiddenWordIndex;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        children: List<Widget>.generate(
-          hiddenWord.word.length,
-          (index) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CustomPaint(
-              painter: CirclePainter(
-                isLetterFound: hiddenWord.areLettersFound[index],
+    return BlocSelector<SinglePlayerBloc, SinglePlayerState, HiddenWord>(
+      selector: (state) {
+        return state.hiddenWords[hiddenWordIndex];
+      },
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            children: List<Widget>.generate(
+              state.word.length,
+              (index) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomPaint(
+                  painter: CirclePainter(
+                    isLetterFound: state.areLettersFound[index],
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

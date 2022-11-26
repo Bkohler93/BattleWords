@@ -14,7 +14,7 @@ class GuessInputController extends StateNotifier<GuessInputState> {
   GuessInputController({required this.ref, required this.hiddenWordsRepository})
       : super(GuessInputState(guessWord: ""));
   final ref;
-  final IHiddenWordsRepository hiddenWordsRepository;
+  final HiddenWordsRepository hiddenWordsRepository;
 
   void handleBackspaceTap() {
     if (state.guessWord.isEmpty) {
@@ -51,7 +51,7 @@ class GuessInputController extends StateNotifier<GuessInputState> {
         : GuessWordStatus.invalidWord;
 
     if (status == GuessWordStatus.validWord) {
-      ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state.guessWord);
+      // ref.read(singlePlayerGameControllerProvider.notifier).handleWordGuess(state.guessWord);
       state = GuessInputState(guessWord: "", status: status);
       return;
     }
@@ -61,9 +61,3 @@ class GuessInputController extends StateNotifier<GuessInputState> {
     }
   }
 }
-
-final guessWordInputControllerProvider =
-    StateNotifierProvider<GuessInputController, GuessInputState>((ref) {
-  return GuessInputController(
-      ref: ref, hiddenWordsRepository: ref.watch(hiddenWordsRepositoryProvider));
-});

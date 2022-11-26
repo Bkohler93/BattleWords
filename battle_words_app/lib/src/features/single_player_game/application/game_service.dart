@@ -3,7 +3,7 @@
 import 'dart:math';
 
 import 'package:battle_words/src/constants/game_details.dart';
-import 'package:battle_words/src/features/keyboard/domain/letter.dart';
+import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/game.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game.dart';
@@ -15,17 +15,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum Direction { horizontal, vertical }
 
-final singlePlayerGameServiceProvider = Provider<SinglePlayerGameService>((ref) {
-  return SinglePlayerGameService(
-      singlePlayerGameRepository: ref.watch(singlePlayerRepositoryProvider),
-      hiddenWordsRepository: ref.watch(hiddenWordsRepositoryProvider));
-});
-
 class SinglePlayerGameService {
   SinglePlayerGameService(
       {required this.singlePlayerGameRepository, required this.hiddenWordsRepository});
   final MockSinglePlayerRepository singlePlayerGameRepository;
-  final IHiddenWordsRepository hiddenWordsRepository;
+  final HiddenWordsRepository hiddenWordsRepository;
 
   Future<SinglePlayerGame> flipGameBoardTile(
       {required int row, required int col, required SinglePlayerGame singlePlayerGame}) {

@@ -1,13 +1,42 @@
-import 'package:battle_words/src/features/single_player_game/presentation/controllers/guess_input.dart';
+import 'package:battle_words/src/api/object_box/object_box.dart';
+import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/controllers/cubit/display_string_cubit.dart';
+import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-//TODO This widget will most likely become a StatefulWidget after having to incoroporate the keyboard and the various controllers for that.
-//TODO yes will defeinitely become a statefulWidget because the text has to be here.
 class GuessInputDisplay extends StatelessWidget {
   const GuessInputDisplay({super.key});
 
-  List<Widget> buildDisplay(String displayString, GuessWordStatus status) {
+  @override
+  Widget build(BuildContext context) {
+    return RepositoryProvider(
+      create: (context) =>
+          HiddenWordsRepository(store: RepositoryProvider.of<ObjectBoxStore>(context)),
+      child: BlocProvider(
+        create: (context) =>
+            DisplayStringCubit(repository: RepositoryProvider.of<HiddenWordsRepository>(context)),
+        child: GuessInputDisplayView(),
+      ),
+    );
+  }
+}
+
+//TODO
+//* 5 States, also need access to these fields: String displayString, GuessInputState displayState
+
+//* 1 - Normal State: regular black text, will be the state as new characters are added/removed
+
+//* 2 - Abnormal State: regular black text, shake at start, notify that word is too short/long/nonexistent
+//* 3 - Invalid State: red text, word is not real
+//* 4 - Previously Guessed State: yellow-similar text, already guessed (FUNCTIONALITY NOT IMPLEMENTED)
+//* 5 - Guessing State: maybe animate the text away, this means the guessed word has been sent to the GameManager to create the next game state.
+class GuessInputDisplayView extends StatelessWidget {
+  const GuessInputDisplayView({super.key});
+
+  List<Widget> buildDisplay(String displayString, DisplayStringStatus status) {
     List<Widget> widgetList = [];
 
     // create a new text widget for each letter of guessInput
@@ -20,7 +49,11 @@ class GuessInputDisplay extends StatelessWidget {
             style: TextStyle(
                 decoration: TextDecoration.underline,
                 fontSize: 30,
-                color: status == GuessWordStatus.validWord ? Colors.black : Colors.red),
+                color: status.isInvalid
+                    ? Colors.red
+                    : status.isPreviouslyGuessed
+                        ? Colors.amber
+                        : Colors.black),
           ),
         ),
       );
@@ -30,24 +63,51 @@ class GuessInputDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO Use BlocBuilder to do this with SinglePlayerBloc
     // final guessInputState = ref.watch(guessWordInputControllerProvider);
-    return Container(
-      //TODO This should be Column( with Keyboard as well as ...buildDisplay)
-      padding: const EdgeInsets.all(20),
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "",
-            style: TextStyle(
-              fontSize: 30,
-            ),
+    /// BlocBuilder provides the keyboardLetterMap for the Keyboard widget.
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          alignment: Alignment.center,
+          child: BlocBuilder<DisplayStringCubit, DisplayStringState>(
+            builder: (context, state) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "",
+                    style: TextStyle(
+                      fontSize: 30,
+                    ),
+                  ),
+                  ...buildDisplay(state.displayString, state.displayStringStatus)
+                ],
+              );
+            },
           ),
-          ...buildDisplay("guessWord", GuessWordStatus.noWord)
-        ],
-      ),
+        ),
+        BlocSelector<SinglePlayerBloc, SinglePlayerState, KeyboardLetterMap>(
+          selector: (state) {
+            return state.keyboardLetterMap;
+          },
+          builder: (context, state) {
+            print("building keyboard");
+            return Keyboard(
+              onBackspace: () {
+                BlocProvider.of<DisplayStringCubit>(context).handleTapBackspace();
+              },
+              onGuess: () {
+                BlocProvider.of<DisplayStringCubit>(context).handleTapGuess();
+              },
+              onTextInput: (text) {
+                BlocProvider.of<DisplayStringCubit>(context).handleTextInput(text);
+              },
+              letterMap: state,
+            );
+          },
+        ),
+      ],
     );
   }
 }

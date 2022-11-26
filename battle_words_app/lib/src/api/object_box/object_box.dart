@@ -5,14 +5,14 @@ import 'dart:math';
 import 'package:battle_words/src/api/object_box/models/word.dart';
 import 'package:battle_words/src/api/object_box/objectbox.g.dart';
 import 'package:battle_words/src/constants/api.dart';
+import 'package:battle_words/src/constants/hidden_word_exceptions.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
-final objectBoxProvider = Provider<ObjectBox>((ref) => ObjectBox());
-
-class ObjectBox {
-  ObjectBox();
+class ObjectBoxStore {
+  ObjectBoxStore() {
+    _populateDatabase();
+  }
   Store? store;
   late final Box<Word> wordBox;
   bool reset = RESET_DATABASE;
@@ -35,7 +35,7 @@ class ObjectBox {
   /// Ensures database has been filled with valid words. If not filled, reads the
   /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
   /// txt file name.
-  Future<void> populateDatabase() async {
+  Future<void> _populateDatabase() async {
     await _ensureDbOpen();
 
     if (wordBox.isEmpty()) {
@@ -49,5 +49,37 @@ class ObjectBox {
     } else {
       print("=== database already populated");
     }
+  }
+
+  Word _getRandomWordOfLength(final int length) {
+    final query = (wordBox.query(
+      Word_.length.equals(length),
+    )).build();
+
+    final results = query.find();
+
+    var word;
+
+    while (true) {
+      word = results[Random().nextInt(results.length - 1)];
+      if (!HIDDEN_WORDS_EXCEPTIONS.contains(word)) {
+        break;
+      }
+    }
+
+    return word;
+  }
+
+  List<Word> getRandomWords() {
+    return [for (var length = 5; length > 2; length--) _getRandomWordOfLength(length)];
+  }
+
+  bool isWordInDatabase(String word) {
+    final query = (wordBox.query(
+      Word_.text.equals(word),
+    )).build();
+    final results = query.find().isNotEmpty;
+
+    return results;
   }
 }

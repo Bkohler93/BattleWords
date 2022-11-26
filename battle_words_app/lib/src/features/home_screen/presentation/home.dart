@@ -16,8 +16,6 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    //TODO HomePageState for determining if loadaing or not .. needed .. ? idk
-    // final state = ref.watch(homePageControllerProvider);
     return PageLayout(
       menuPage: true,
       child: Column(

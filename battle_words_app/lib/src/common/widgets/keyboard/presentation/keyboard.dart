@@ -1,7 +1,7 @@
-import 'package:battle_words/src/features/keyboard/domain/letter.dart';
-import 'package:battle_words/src/features/keyboard/presentation/widgets/backspace.dart';
-import 'package:battle_words/src/features/keyboard/presentation/widgets/enter_key.dart';
-import 'package:battle_words/src/features/keyboard/presentation/widgets/text_key.dart';
+import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
+import 'package:battle_words/src/common/widgets/keyboard/presentation/widgets/backspace.dart';
+import 'package:battle_words/src/common/widgets/keyboard/presentation/widgets/enter_key.dart';
+import 'package:battle_words/src/common/widgets/keyboard/presentation/widgets/text_key.dart';
 import 'package:flutter/material.dart';
 
 /// Custom Keyboard

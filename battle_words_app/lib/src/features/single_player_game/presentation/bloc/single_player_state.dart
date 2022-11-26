@@ -14,6 +14,7 @@ extension GameStatusX on GameStatus {
 @immutable
 class SinglePlayerState extends Equatable {
   final GameBoard gameBoard;
+  final List<String> wordsGuessed;
   final List<HiddenWord> hiddenWords;
   final int movesRemaining;
   final GameStatus gameStatus;
@@ -22,6 +23,7 @@ class SinglePlayerState extends Equatable {
   const SinglePlayerState({
     this.gameBoard = const [],
     this.hiddenWords = const [],
+    this.wordsGuessed = const [],
     this.movesRemaining = START_NUM_OF_MOVES,
     this.gameStatus = GameStatus.initial,
     this.keyboardLetterMap = const {},

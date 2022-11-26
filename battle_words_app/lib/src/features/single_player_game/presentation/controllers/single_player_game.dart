@@ -63,11 +63,3 @@ class SinglePlayerGameController extends StateNotifier<AsyncValue<SinglePlayerGa
     // }
   }
 }
-
-final singlePlayerGameControllerProvider =
-    StateNotifierProvider<SinglePlayerGameController, AsyncValue<SinglePlayerGame>>((ref) {
-  final singlePlayerGameRepository = ref.watch(singlePlayerRepositoryProvider);
-  final singlePlayerGameService = ref.watch(singlePlayerGameServiceProvider);
-  return SinglePlayerGameController(
-      repository: singlePlayerGameRepository, singlePlayerGameService: singlePlayerGameService);
-});

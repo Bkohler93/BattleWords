@@ -2,7 +2,6 @@ import 'package:battle_words/src/features/single_player_game/domain/game_tile.da
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
 class GameBoardTileWidget extends StatelessWidget {
