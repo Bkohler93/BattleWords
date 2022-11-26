@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
 class GameBoardTileWidget extends StatelessWidget {
-  const GameBoardTileWidget({Key? key, required this.row, required this.col}) : super(key: key);
+  const GameBoardTileWidget({Key? key, required this.col, required this.row}) : super(key: key);
 
   final int col;
   final int row;
@@ -46,7 +46,6 @@ class GameBoardTileWidget extends StatelessWidget {
             onTap: () {
               BlocProvider.of<SinglePlayerBloc>(context)
                   .add(TapGameBoardTileEvent(col: col, row: row));
-              // ref.read(singlePlayerGameControllerProvider.notifier).handleTileTap(row: row, col: col);
             },
           ),
         );

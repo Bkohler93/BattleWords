@@ -9,7 +9,15 @@ import 'package:battle_words/src/constants/hidden_word_exceptions.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-class ObjectBoxStore {
+abstract class IObjectBoxStore {
+  Future<void> _ensureDbOpen();
+  Future<void> _populateDatabase();
+  Word _getRandomWordOfLength(final int length);
+  List<Word> getRandomWords();
+  bool isWordInDatabase(String word);
+}
+
+class ObjectBoxStore implements IObjectBoxStore {
   ObjectBoxStore() {
     _populateDatabase();
   }
@@ -81,5 +89,43 @@ class ObjectBoxStore {
     final results = query.find().isNotEmpty;
 
     return results;
+  }
+}
+
+class MockObjectBoxStore implements IObjectBoxStore {
+  @override
+  Future<void> _ensureDbOpen() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Word _getRandomWordOfLength(int length) {
+    return Word(
+      length: length,
+      text: length == 3
+          ? 'hut'
+          : length == 4
+              ? 'that'
+              : 'there',
+    );
+  }
+
+  @override
+  Future<void> _populateDatabase() {
+    throw UnimplementedError();
+  }
+
+  @override
+  List<Word> getRandomWords() {
+    return [
+      Word(length: 3, text: 'bye'),
+      Word(length: 4, text: 'that'),
+      Word(length: 5, text: 'there')
+    ];
+  }
+
+  @override
+  bool isWordInDatabase(String word) {
+    return true;
   }
 }

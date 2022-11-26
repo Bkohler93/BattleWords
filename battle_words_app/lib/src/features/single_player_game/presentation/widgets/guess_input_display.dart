@@ -1,8 +1,8 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
-import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
-import 'package:battle_words/src/features/single_player_game/presentation/controllers/cubit/display_string_cubit.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/controllers/guess_display/display_string_cubit.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,7 +53,11 @@ class GuessInputDisplayView extends StatelessWidget {
                     ? Colors.red
                     : status.isPreviouslyGuessed
                         ? Colors.amber
-                        : Colors.black),
+                        : status.isGuessing
+                            ? Colors.green
+                            : status.isIncorrectLength
+                                ? Colors.purple
+                                : Colors.black),
           ),
         ),
       );
@@ -65,14 +69,14 @@ class GuessInputDisplayView extends StatelessWidget {
   Widget build(BuildContext context) {
     // final guessInputState = ref.watch(guessWordInputControllerProvider);
     /// BlocBuilder provides the keyboardLetterMap for the Keyboard widget.
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          alignment: Alignment.center,
-          child: BlocBuilder<DisplayStringCubit, DisplayStringState>(
-            builder: (context, state) {
-              return Row(
+    return BlocBuilder<DisplayStringCubit, DisplayStringState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              alignment: Alignment.center,
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
@@ -81,33 +85,49 @@ class GuessInputDisplayView extends StatelessWidget {
                       fontSize: 30,
                     ),
                   ),
-                  ...buildDisplay(state.displayString, state.displayStringStatus)
+                  ...buildDisplay(
+                    state.displayString,
+                    state.displayStringStatus,
+                  )
                 ],
-              );
-            },
-          ),
-        ),
-        BlocSelector<SinglePlayerBloc, SinglePlayerState, KeyboardLetterMap>(
-          selector: (state) {
-            return state.keyboardLetterMap;
-          },
-          builder: (context, state) {
-            print("building keyboard");
-            return Keyboard(
-              onBackspace: () {
-                BlocProvider.of<DisplayStringCubit>(context).handleTapBackspace();
+              ),
+            ),
+            BlocListener<DisplayStringCubit, DisplayStringState>(
+              listener: (context, state) {
+                if (state.displayStringStatus.isGuessing) {
+                  BlocProvider.of<SinglePlayerBloc>(context).add(
+                    GuessWordEvent(
+                      word: state.displayString,
+                    ),
+                  );
+                  BlocProvider.of<DisplayStringCubit>(context).resetDisplay();
+                }
               },
-              onGuess: () {
-                BlocProvider.of<DisplayStringCubit>(context).handleTapGuess();
+              child: Container(),
+            ),
+            BlocSelector<SinglePlayerBloc, SinglePlayerState, KeyboardLetterMap>(
+              selector: (state) {
+                return state.keyboardLetterMap;
               },
-              onTextInput: (text) {
-                BlocProvider.of<DisplayStringCubit>(context).handleTextInput(text);
+              builder: (context, state) {
+                return Keyboard(
+                  onBackspace: () {
+                    BlocProvider.of<DisplayStringCubit>(context).handleTapBackspace();
+                  },
+                  onGuess: () {
+                    print("hit enter");
+                    BlocProvider.of<DisplayStringCubit>(context).handleTapGuess();
+                  },
+                  onTextInput: (text) {
+                    BlocProvider.of<DisplayStringCubit>(context).handleTextInput(text);
+                  },
+                  letterMap: state,
+                );
               },
-              letterMap: state,
-            );
-          },
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

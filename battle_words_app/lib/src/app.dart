@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized();
     // debugPaintSizeEnabled = true;
     return Sizer(builder: (context, orientation, deviceType) {
       return RepositoryProvider(

@@ -6,7 +6,17 @@ import 'package:battle_words/src/features/single_player_game/domain/tile_coords.
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 
+//!
+//! DELETE ME ONCE [application/game_service.dart] is no longer needed.
+//!
+//!
 enum GameResult { playing, win, loss }
+
+extension GameResultX on GameResult {
+  bool get isPlaying => this == GameResult.playing;
+  bool get isWin => this == GameResult.win;
+  bool get isLoss => this == GameResult.loss;
+}
 
 @immutable
 class SinglePlayerGame {

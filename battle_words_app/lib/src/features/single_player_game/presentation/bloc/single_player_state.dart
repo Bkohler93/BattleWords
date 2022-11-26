@@ -25,7 +25,7 @@ class SinglePlayerState extends Equatable {
     this.hiddenWords = const [],
     this.wordsGuessed = const [],
     this.movesRemaining = START_NUM_OF_MOVES,
-    this.gameStatus = GameStatus.initial,
+    this.gameStatus = GameStatus.loading,
     this.keyboardLetterMap = const {},
   });
 
@@ -44,6 +44,7 @@ class SinglePlayerState extends Equatable {
         keyboardLetterMap: keyboardLetterMap ?? this.keyboardLetterMap);
   }
 
+  //! move this logic into Isolate !\\
   factory SinglePlayerState.generate() {
     GameBoard gameBoard = List.generate(
       GAME_BOARD_SIZE,

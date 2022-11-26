@@ -12,3 +12,13 @@ class TapGameBoardTileEvent implements SinglePlayerEvent {
   final int col;
   final int row;
 }
+
+class GuessWordEvent implements SinglePlayerEvent {
+  GuessWordEvent({required this.word});
+  final String word;
+}
+
+class StateChangeEvent implements SinglePlayerEvent {
+  StateChangeEvent({required this.state});
+  final SinglePlayerState state;
+}

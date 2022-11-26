@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 
 enum TileStatus { hidden, empty, letterFound, wordFound }
 
+extension TileStatusX on TileStatus {
+  bool get isHidden => this == TileStatus.hidden;
+  bool get isEmpty => this == TileStatus.empty;
+  bool get isLetterFound => this == TileStatus.letterFound;
+  bool get isWordFound => this == TileStatus.wordFound;
+}
+
 @immutable
 class SinglePlayerGameTile {
   final TileCoordinates coordinates;

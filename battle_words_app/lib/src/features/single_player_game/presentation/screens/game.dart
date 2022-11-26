@@ -1,9 +1,12 @@
+import 'dart:isolate';
+
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/pause_button.dart';
 import 'package:battle_words/src/common/controllers/show_pause.dart';
 import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
-import 'package:battle_words/src/features/single_player_game/data/repositories/game.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/run_app.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_view.dart';
@@ -15,21 +18,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SinglePlayerPage extends StatelessWidget {
+class SinglePlayerPage extends StatefulWidget {
   const SinglePlayerPage({super.key});
 
   @override
+  State<SinglePlayerPage> createState() => _SinglePlayerPageState();
+}
+
+class _SinglePlayerPageState extends State<SinglePlayerPage> {
+  final ReceivePort fromGameManagerPort = ReceivePort();
+  late final Isolate gameManager;
+
+  bool _isGameManagerSpawned = false;
+
+  void _spawnIsolate() async {
+    final gameManagerSendPorts = {
+      'repository': fromGameManagerPort.sendPort,
+    };
+    gameManager = await Isolate.spawn(runSinglePlayerGameManager, gameManagerSendPorts);
+
+    setState(() {
+      _isGameManagerSpawned = true;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _spawnIsolate();
+  }
+
+  @override
+  void dispose() {
+    gameManager.kill();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => SinglePlayerRepository(),
-      child: BlocProvider<SinglePlayerBloc>(
-        lazy: false,
-        create: (context) => SinglePlayerBloc(
-          repository: RepositoryProvider.of<SinglePlayerRepository>(context),
-        ),
-        child: SinglePlayerView(),
-      ),
-    );
+    return _isGameManagerSpawned
+        ? RepositoryProvider<ISinglePlayerRepository>(
+            lazy: false,
+            create: (context) =>
+                SinglePlayerIsolateRepository(fromGameManagerPort: fromGameManagerPort),
+            child: BlocProvider<SinglePlayerBloc>(
+              lazy: false,
+              create: (context) => SinglePlayerBloc(
+                repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
+              ),
+              child: SinglePlayerView(),
+            ),
+          )
+        : CircularProgressIndicator();
   }
 }
 
@@ -61,10 +101,8 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
       child: BlocSelector<SinglePlayerBloc, SinglePlayerState, GameStatus>(
         selector: ((state) => state.gameStatus),
         builder: (context, state) {
-          if (state.isInitial) {
-            BlocProvider.of<SinglePlayerBloc>(context).add(StartGameEvent());
-            return CircularProgressIndicator();
-          } else if (state.isLoading) {
+          // BlocProvider.of<SinglePlayerBloc>(context).add(StartGameEvent());
+          if (state.isLoading) {
             return CircularProgressIndicator();
           } else {
             return Stack(
@@ -76,15 +114,9 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
                     Text("Moves remaining: ${/*movesRemaining*/ 0}"),
                     GameBoardView(),
                     WordStatusIndicatorRow(),
-                    //TODO Move keyboard into GuessInputDisplay
                     GuessInputDisplay(),
-
-                    //TODO END HERE
                   ],
                 ),
-
-                /// displays end of game popup with return to main menu button
-                //TODO This is where the GameResultNotification is shown or not. It is janky, mayberedesign
                 Positioned(
                   child: Align(
                       alignment: Alignment.center,
@@ -99,18 +131,8 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
                                     )
                                   }
                               },
-                          child: Container())
-
-                      //*gameState.value!.gameResult == GameResult.loss
-                      // ? GameResultNotification(
-                      //     result: "Loser!", hiddenWords: gameState.value!.hiddenWords)
-                      // : gameState.value!.gameResult == GameResult.win
-                      //     ? GameResultNotification(
-                      //         result: "Winner!", hiddenWords: gameState.value!.hiddenWords)
-                      //Text(""),
-                      ),
+                          child: Container())),
                 ),
-
                 Positioned(
                   // top: 2.h,
                   // right: 5.w,

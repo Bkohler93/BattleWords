@@ -22,19 +22,29 @@ class DisplayStringState extends Equatable {
   const DisplayStringState({
     required this.displayString,
     this.displayStringStatus = DisplayStringStatus.normal,
+    this.guessedWords = const [],
   });
   final String displayString;
   final DisplayStringStatus displayStringStatus;
+  final List<String> guessedWords;
 
   @override
   List<Object> get props => [
         displayString,
+        displayStringStatus,
       ];
 
-  DisplayStringState copyWith({String? string, DisplayStringStatus? status}) {
+  DisplayStringState copyWith({
+    String? displayString,
+    DisplayStringStatus? displayStringStatus,
+    List<String>? guessedWords,
+    String? guessedWord,
+  }) {
     return DisplayStringState(
-      displayString: string ?? displayString,
-      displayStringStatus: status ?? displayStringStatus,
+      displayString: displayString ?? this.displayString,
+      displayStringStatus: displayStringStatus ?? this.displayStringStatus,
+      guessedWords: guessedWords ??
+          (guessedWord != null ? [...this.guessedWords, guessedWord] : this.guessedWords),
     );
   }
 }
