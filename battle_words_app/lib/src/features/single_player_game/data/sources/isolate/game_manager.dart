@@ -39,7 +39,6 @@ class GameManager implements IGameManager {
       {required this.toRepositoryPort,
       required this.fromRepositoryPort,
       required this.hiddenWordsRepository}) {
-    printIsolate("GameManager started constructor");
     toRepositoryPort
         .send(fromRepositoryPort.sendPort); // send repository its port to send data to GameManager
     _initializeGame();
@@ -51,6 +50,7 @@ class GameManager implements IGameManager {
   final ReceivePort fromRepositoryPort;
   late SinglePlayerState state;
 
+  @override
   void _listen() {
     printIsolate("Game Manager started listening");
     fromRepositoryPort.listen(
@@ -86,8 +86,10 @@ class GameManager implements IGameManager {
     );
   }
 
+  //! Placing words on board algorithm is causing freezing
+  @override
   void _initializeGame() {
-    printIsolate("Initializing first game state");
+    printIsolate("Initializing game");
     final List<HiddenWord> hiddenWords = hiddenWordsRepository!.fetchHiddenWords();
 
     //arrange words on board
@@ -103,6 +105,7 @@ class GameManager implements IGameManager {
       bool placeable = false; //assume word cannot be placed
 
       while (!placeable) {
+        printIsolate("placing word"); //! Gets printed inifinitely on game freeze
         placeable = true; //assume word can be placed
 
         //get random acceptable index, determine L->R or T->B
@@ -252,7 +255,7 @@ class GameManager implements IGameManager {
         }
       }
     }
-
+    printIsolate("Set all words on board");
     // set moves remaining
     int movesRemaining = START_NUM_OF_MOVES;
 
@@ -269,11 +272,12 @@ class GameManager implements IGameManager {
       keyboardLetterMap: keyboardLetterMap,
       gameStatus: GameStatus.initial,
     );
-
+    printIsolate("Sending initial state");
     //send out initial state
     toRepositoryPort.send(state);
   }
 
+  @override
   bool _tileHasAdjacentTiles(
     GameBoard gameBoard,
     int tempRow,
@@ -289,14 +293,17 @@ class GameManager implements IGameManager {
         (left ? gameBoard[tempRow][tempCol - 1].isNotEmpty() : false));
   }
 
+  @override
   Direction _randomDirection() {
     return Random().nextInt(2) == 1 ? Direction.horizontal : Direction.horizontal;
   }
 
+  @override
   void _startSinglePlayerGame() {
     toRepositoryPort.send(state);
   }
 
+  @override
   SinglePlayerState flipTile({required int row, required int col}) {
     SinglePlayerState singlePlayerGameCopy = state;
     switch (singlePlayerGameCopy.gameBoard[row][col].letter) {
@@ -312,6 +319,7 @@ class GameManager implements IGameManager {
     return singlePlayerGameCopy;
   }
 
+  @override
   void _updateGameByTileTap({required int col, required int row}) {
     final SinglePlayerGameTile gameTile = state.gameBoard[row][col];
 
@@ -333,6 +341,7 @@ class GameManager implements IGameManager {
     toRepositoryPort.send(state);
   }
 
+  @override
   void _updateGameByGuessingWord({required String word}) {
     bool isExactMatch = false;
 
@@ -366,6 +375,7 @@ class GameManager implements IGameManager {
     toRepositoryPort.send(state);
   }
 
+  @override
   SinglePlayerState _fillKeyboardLetters(SinglePlayerState singlePlayerGame, String letter) {
     //set [KeyboardLetterStatus] to [complete] if every instance of current letter is found on gameboard
 
@@ -400,6 +410,7 @@ class GameManager implements IGameManager {
   }
 
   /// Returns false if any tile on the gameboard that has a letter is still hidden
+  @override
   SinglePlayerState _checkIfWin({required SinglePlayerState singlePlayerGame}) {
     var singlePlayerGameCopy = singlePlayerGame;
     bool areAllHiddenWordsFound = true;
@@ -430,6 +441,7 @@ class GameManager implements IGameManager {
     }
   }
 
+  @override
   SinglePlayerState _reduceMovesRemaining({required SinglePlayerState singlePlayerGame}) {
     //reduce moves remaining
     singlePlayerGame =

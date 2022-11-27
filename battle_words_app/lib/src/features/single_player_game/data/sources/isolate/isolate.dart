@@ -12,19 +12,24 @@ void printIsolate(String message) {
 }
 
 void runSinglePlayerGameManager(Map<String, dynamic> data) async {
-  //extract port and ObjectBox store reference from main isolate
-  final toRepositoryPort = data['gameManagerToRepositoryPort'];
-  final objectBoxReference = data['objectBoxReference'];
+  try {
+    //extract port and ObjectBox store reference from main isolate
+    final toRepositoryPort = data['gameManagerToRepositoryPort'];
+    final objectBoxReference = data['objectBoxReference'];
 
-  final ReceivePort fromRepositoryPort = ReceivePort();
+    final ReceivePort fromRepositoryPort = ReceivePort();
 
-  //create repository for GameManager to retrieve words from
-  final objectBoxStore = ObjectBoxStore(storeReference: objectBoxReference);
-  final IHiddenWordsRepository hiddenWordsRepository = HiddenWordsRepository(store: objectBoxStore);
+    //create repository for GameManager to retrieve words from
+    final objectBoxStore = ObjectBoxStore(storeReference: objectBoxReference);
+    final IHiddenWordsRepository hiddenWordsRepository =
+        HiddenWordsRepository(store: objectBoxStore);
 
-  GameManager(
-    toRepositoryPort: toRepositoryPort,
-    hiddenWordsRepository: hiddenWordsRepository,
-    fromRepositoryPort: fromRepositoryPort,
-  );
+    GameManager(
+      toRepositoryPort: toRepositoryPort,
+      hiddenWordsRepository: hiddenWordsRepository,
+      fromRepositoryPort: fromRepositoryPort,
+    );
+  } catch (err) {
+    printIsolate(err.toString());
+  }
 }
