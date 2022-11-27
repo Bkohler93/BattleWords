@@ -10,22 +10,29 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class IObjectBoxStore {
-  Future<void> _ensureDbOpen();
-  Future<void> _populateDatabase();
+  Future<void> _initialize({ByteData? storeReference});
   Word _getRandomWordOfLength(final int length);
   List<Word> getRandomWords();
   bool isWordInDatabase(String word);
+  ByteData get reference;
 }
 
 class ObjectBoxStore implements IObjectBoxStore {
-  ObjectBoxStore() {
-    _populateDatabase();
+  ObjectBoxStore({ByteData? storeReference}) {
+    _initialize(storeReference: storeReference);
   }
   Store? store;
+
   late final Box<Word> wordBox;
   bool reset = RESET_DATABASE;
 
-  Future<void> _ensureDbOpen() async {
+  @override
+  ByteData get reference => store!.reference;
+
+  /// Ensures database has been filled with valid words. If not filled, reads the
+  /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
+  /// txt file name.
+  Future<void> _initialize({ByteData? storeReference}) async {
     if (reset) {
       Directory dir = await getApplicationDocumentsDirectory();
       Directory('${dir.path}/objectbox/')
@@ -34,17 +41,13 @@ class ObjectBoxStore implements IObjectBoxStore {
       reset = false;
     }
 
-    if (store == null) {
+    if (storeReference != null) {
+      store = Store.fromReference(getObjectBoxModel(), storeReference);
+      wordBox = store!.box<Word>();
+    } else if (store == null) {
       store = await openStore();
       wordBox = store!.box<Word>();
     }
-  }
-
-  /// Ensures database has been filled with valid words. If not filled, reads the
-  /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
-  /// txt file name.
-  Future<void> _populateDatabase() async {
-    await _ensureDbOpen();
 
     if (wordBox.isEmpty()) {
       final wordString = await rootBundle.loadString("assets/wordlists/$HIDDEN_WORDS_SOURCE");
@@ -54,9 +57,9 @@ class ObjectBoxStore implements IObjectBoxStore {
       words.forEach((word, length) => modelWords.add(Word(text: word, length: length)));
       print('=== populated database. first word: ${modelWords[0]}');
       final ids = wordBox.putMany(modelWords);
-    } else {
-      print("=== database already populated");
     }
+
+    print('=== database created');
   }
 
   Word _getRandomWordOfLength(final int length) {
@@ -94,11 +97,6 @@ class ObjectBoxStore implements IObjectBoxStore {
 
 class MockObjectBoxStore implements IObjectBoxStore {
   @override
-  Future<void> _ensureDbOpen() {
-    throw UnimplementedError();
-  }
-
-  @override
   Word _getRandomWordOfLength(int length) {
     return Word(
       length: length,
@@ -127,5 +125,15 @@ class MockObjectBoxStore implements IObjectBoxStore {
   @override
   bool isWordInDatabase(String word) {
     return true;
+  }
+
+  @override
+  // TODO: implement reference
+  ByteData get reference => throw UnimplementedError();
+
+  @override
+  Future<void> _initialize({ByteData? storeReference}) {
+    // TODO: implement _initialize
+    throw UnimplementedError();
   }
 }

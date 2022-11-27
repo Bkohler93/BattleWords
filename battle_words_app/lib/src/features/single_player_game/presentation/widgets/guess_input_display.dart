@@ -115,7 +115,6 @@ class GuessInputDisplayView extends StatelessWidget {
                     BlocProvider.of<DisplayStringCubit>(context).handleTapBackspace();
                   },
                   onGuess: () {
-                    print("hit enter");
                     BlocProvider.of<DisplayStringCubit>(context).handleTapGuess();
                   },
                   onTextInput: (text) {

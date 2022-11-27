@@ -1,21 +1,29 @@
 part of 'interface.dart';
 
 class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
-  SinglePlayerIsolateRepository({required this.fromGameManagerPort}) {
-    _receivePort();
+  SinglePlayerIsolateRepository({required this.objectBoxStoreReference}) {
+    _spawnIsolate();
   }
-  final ReceivePort fromGameManagerPort;
+  final ByteData objectBoxStoreReference;
+  final ReceivePort fromGameManagerPort = ReceivePort();
   late final SendPort toGameManagerPort;
   final _gameStateStream = StreamController<SinglePlayerState>();
 
   @override
   Stream<SinglePlayerState> get gameStateStream => _gameStateStream.stream;
 
-  void _receivePort() {
+  void _spawnIsolate() async {
+    final gameManagerData = {
+      'gameManagerToRepositoryPort': fromGameManagerPort.sendPort,
+      'objectBoxReference': objectBoxStoreReference,
+    };
+
+    await Isolate.spawn(runSinglePlayerGameManager, gameManagerData);
+
     fromGameManagerPort.listen(
       (message) {
-        if (message == "send us the store") {
-        } else if (message is SendPort) {
+        if (message is SendPort) {
+          print("(main isolate): repository received toGameManagerPort");
           toGameManagerPort = message;
         } else {
           _gameStateStream.sink.add(message);
@@ -27,7 +35,6 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
   @override
   FutureOr<SinglePlayerState> getSinglePlayerGame() {
     final requestObject = GetSinglePlayerGame();
-    // print("(main isolate): requesting new game");
     toGameManagerPort.send(requestObject);
     return SinglePlayerState.generate();
   }

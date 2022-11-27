@@ -1,12 +1,13 @@
 import 'dart:isolate';
 
+import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/pause_button.dart';
 import 'package:battle_words/src/common/controllers/show_pause.dart';
 import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
-import 'package:battle_words/src/features/single_player_game/data/sources/isolate/run_app.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_view.dart';
@@ -27,50 +28,21 @@ class SinglePlayerPage extends StatefulWidget {
 }
 
 class _SinglePlayerPageState extends State<SinglePlayerPage> {
-  final ReceivePort fromGameManagerPort = ReceivePort();
-  late final Isolate gameManager;
-
-  bool _isGameManagerSpawned = false;
-
-  void _spawnIsolate() async {
-    final gameManagerSendPorts = {
-      'repository': fromGameManagerPort.sendPort,
-    };
-    gameManager = await Isolate.spawn(runSinglePlayerGameManager, gameManagerSendPorts);
-
-    setState(() {
-      _isGameManagerSpawned = true;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _spawnIsolate();
-  }
-
-  @override
-  void dispose() {
-    fromGameManagerPort.close();
-    gameManager.kill();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _isGameManagerSpawned
-        ? RepositoryProvider<ISinglePlayerRepository>(
-            lazy: false,
-            create: (context) =>
-                SinglePlayerIsolateRepository(fromGameManagerPort: fromGameManagerPort),
-            child: BlocProvider<SinglePlayerBloc>(
-              create: (context) => SinglePlayerBloc(
-                repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
-              ),
-              child: SinglePlayerView(),
-            ),
-          )
-        : CircularProgressIndicator();
+    return RepositoryProvider<ISinglePlayerRepository>(
+      lazy: false,
+      //Isolate is created when SinglePlayerIsolateRepository is created
+      create: (context) => SinglePlayerIsolateRepository(
+          objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+      //GameManagerPortCubit's state is a ReceivePort
+      child: BlocProvider<SinglePlayerBloc>(
+        create: (context) => SinglePlayerBloc(
+          repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
+        ),
+        child: SinglePlayerView(),
+      ),
+    );
   }
 }
 
@@ -86,7 +58,6 @@ class SinglePlayerView extends StatefulWidget {
 class _SinglePlayerViewState extends State<SinglePlayerView> {
   ///controls whether the pause menu is showing or not
   void toggleIsPauseMenuShowing(WidgetRef ref) {
-    print("flipping pause menu");
     ref.read(isPauseMenuShowingProvider.notifier).update((state) => !state);
   }
 
@@ -103,7 +74,6 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
         selector: ((state) => state.gameStatus),
         builder: (context, state) {
           if (state.isLoading) {
-            print("(main isolate): SinglePlayerGame UI building progress indicator, loading.");
             return const CircularProgressIndicator();
           } else {
             return Stack(

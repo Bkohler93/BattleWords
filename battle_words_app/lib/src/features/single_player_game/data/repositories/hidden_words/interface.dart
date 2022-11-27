@@ -8,4 +8,5 @@ part 'mock.dart';
 abstract class IHiddenWordsRepository {
   List<HiddenWord> fetchHiddenWords();
   bool checkIfValidWord(String word);
+  void closeStore();
 }

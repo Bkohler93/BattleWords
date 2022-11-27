@@ -1,31 +1,93 @@
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/constants/game_details.dart';
-import 'package:battle_words/src/features/single_player_game/application/game_service.dart';
+import 'package:battle_words/src/features/single_player_game/data/dao/game_manager.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 
-class GameManager {
-  GameManager({required this.repositoryPort}) {
-    _initializeNewState();
+abstract class IGameManager {
+  void _listen();
+  void _initializeGame();
+  bool _tileHasAdjacentTiles(
+    GameBoard gameBoard,
+    int tempRow,
+    int tempCol, {
+    right = false,
+    left = false,
+    below = false,
+    above = false,
+  });
+  Direction _randomDirection();
+  void _startSinglePlayerGame();
+  SinglePlayerState flipTile({required int row, required int col});
+  void _updateGameByTileTap({required int col, required int row});
+  void _updateGameByGuessingWord({required String word});
+  SinglePlayerState _fillKeyboardLetters(SinglePlayerState singlePlayerGame, String letter);
+  SinglePlayerState _checkIfWin({required SinglePlayerState singlePlayerGame});
+  SinglePlayerState _reduceMovesRemaining({required SinglePlayerState singlePlayerGame});
+}
+
+class GameManager implements IGameManager {
+  GameManager(
+      {required this.toRepositoryPort,
+      required this.fromRepositoryPort,
+      required this.hiddenWordsRepository}) {
+    printIsolate("GameManager started constructor");
+    toRepositoryPort
+        .send(fromRepositoryPort.sendPort); // send repository its port to send data to GameManager
+    _initializeGame();
+    _listen();
   }
 
   IHiddenWordsRepository? hiddenWordsRepository;
-  final SendPort repositoryPort;
+  final SendPort toRepositoryPort;
+  final ReceivePort fromRepositoryPort;
   late SinglePlayerState state;
 
-  void receiveStore({required ObjectBoxStore store}) {
-    hiddenWordsRepository = HiddenWordsRepository(store: store);
+  void _listen() {
+    printIsolate("Game Manager started listening");
+    fromRepositoryPort.listen(
+      (message) {
+        switch (message.runtimeType) {
+          case GetSinglePlayerGame:
+            {
+              _startSinglePlayerGame();
+              break;
+            }
+          case UpdateGameByTileTap:
+            {
+              _updateGameByTileTap(col: message.col, row: message.row);
+              break;
+            }
+          case UpdateGameByGuessingWord:
+            {
+              _updateGameByGuessingWord(word: message.word);
+              break;
+            }
+          case SetSinglePlayerGame:
+            {
+              toRepositoryPort.send('set single player game');
+              break;
+            }
+          case GameOver:
+            {
+              fromRepositoryPort.close();
+              hiddenWordsRepository!.closeStore();
+            }
+        }
+      },
+    );
   }
 
-  void _initializeNewState() {
+  void _initializeGame() {
+    printIsolate("Initializing first game state");
     final List<HiddenWord> hiddenWords = hiddenWordsRepository!.fetchHiddenWords();
 
     //arrange words on board
@@ -208,7 +270,8 @@ class GameManager {
       gameStatus: GameStatus.initial,
     );
 
-    repositoryPort.send(state);
+    //send out initial state
+    toRepositoryPort.send(state);
   }
 
   bool _tileHasAdjacentTiles(
@@ -230,8 +293,8 @@ class GameManager {
     return Random().nextInt(2) == 1 ? Direction.horizontal : Direction.horizontal;
   }
 
-  void startSinglePlayerGame() {
-    repositoryPort.send(state);
+  void _startSinglePlayerGame() {
+    toRepositoryPort.send(state);
   }
 
   SinglePlayerState flipTile({required int row, required int col}) {
@@ -249,11 +312,11 @@ class GameManager {
     return singlePlayerGameCopy;
   }
 
-  void updateGameByTileTap({required int col, required int row}) {
+  void _updateGameByTileTap({required int col, required int row}) {
     final SinglePlayerGameTile gameTile = state.gameBoard[row][col];
 
     if (!(gameTile.tileStatus.isHidden)) {
-      repositoryPort.send(state); //tile already uncovered..
+      toRepositoryPort.send(state); //tile already uncovered..
       return;
     }
 
@@ -267,10 +330,10 @@ class GameManager {
     if (state.gameStatus != GameStatus.win) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }
-    repositoryPort.send(state);
+    toRepositoryPort.send(state);
   }
 
-  void updateGameByGuessingWord({required String word}) {
+  void _updateGameByGuessingWord({required String word}) {
     bool isExactMatch = false;
 
     //2. check if word is real -> display invalid word message if so
@@ -300,7 +363,7 @@ class GameManager {
     if (!isExactMatch) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }
-    repositoryPort.send(state);
+    toRepositoryPort.send(state);
   }
 
   SinglePlayerState _fillKeyboardLetters(SinglePlayerState singlePlayerGame, String letter) {

@@ -9,3 +9,5 @@ class TileCoordinates extends Equatable {
   @override
   List<Object?> get props => [col, row];
 }
+
+enum Direction { vertical, horizontal }

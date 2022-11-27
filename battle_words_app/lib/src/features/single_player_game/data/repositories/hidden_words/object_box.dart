@@ -15,4 +15,8 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
   bool checkIfValidWord(String word) {
     return store.isWordInDatabase(word);
   }
+
+  void closeStore() {
+    store.store!.close();
+  }
 }

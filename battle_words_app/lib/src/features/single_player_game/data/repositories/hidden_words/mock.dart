@@ -17,4 +17,9 @@ class MockHiddenWordsRepository implements IHiddenWordsRepository {
   bool checkIfValidWord(String word) {
     return true;
   }
+
+  @override
+  void closeStore() {
+    // TODO: implement closeStore
+  }
 }
