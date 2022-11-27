@@ -5,21 +5,29 @@ import 'package:battle_words/src/features/single_player_game/data/repositories/g
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/game_manager.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
+import 'package:flutter/material.dart';
 
-void runSinglePlayerGameManager(Map<String, dynamic> portData) async {
-  final toRepositoryPort = portData['repository'];
+void runSinglePlayerGameManager(Map<String, dynamic> data) async {
+  final toRepositoryPort = data['toRepositoryPort'];
 
   final ReceivePort fromRepositoryPort = ReceivePort();
-  final IObjectBoxStore store = MockObjectBoxStore();
-  final IHiddenWordsRepository hiddenWordsRepository = MockHiddenWordsRepository();
-  final GameManager manager =
-      GameManager(hiddenWordsRepository: hiddenWordsRepository, repositoryPort: toRepositoryPort);
+  // final IHiddenWordsRepository hiddenWordsRepository = HiddenWordsRepository(store: store);
+  final GameManager manager = GameManager(repositoryPort: toRepositoryPort);
 
   toRepositoryPort.send(fromRepositoryPort.sendPort);
 
   fromRepositoryPort.listen(
     (message) {
+      //ask to send Store until repository is not null
+      if (manager.hiddenWordsRepository == null) {
+        toRepositoryPort.send();
+      }
       switch (message.runtimeType) {
+        case SendObjectBoxStore:
+          {
+            manager.receiveStore(store: message.store);
+            break;
+          }
         case GetSinglePlayerGame:
           {
             manager.startSinglePlayerGame();

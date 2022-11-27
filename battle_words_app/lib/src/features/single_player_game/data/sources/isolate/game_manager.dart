@@ -13,16 +13,20 @@ import 'package:battle_words/src/features/single_player_game/presentation/bloc/s
 import 'package:battle_words/src/helpers/data_types.dart';
 
 class GameManager {
-  GameManager({required this.hiddenWordsRepository, required this.repositoryPort}) {
+  GameManager({required this.repositoryPort}) {
     _initializeNewState();
   }
 
-  final IHiddenWordsRepository hiddenWordsRepository;
+  IHiddenWordsRepository? hiddenWordsRepository;
   final SendPort repositoryPort;
   late SinglePlayerState state;
 
+  void receiveStore({required ObjectBoxStore store}) {
+    hiddenWordsRepository = HiddenWordsRepository(store: store);
+  }
+
   void _initializeNewState() {
-    final List<HiddenWord> hiddenWords = hiddenWordsRepository.fetchHiddenWords();
+    final List<HiddenWord> hiddenWords = hiddenWordsRepository!.fetchHiddenWords();
 
     //arrange words on board
     GameBoard gameBoard = List.generate(

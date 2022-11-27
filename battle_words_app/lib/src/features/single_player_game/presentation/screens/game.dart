@@ -51,6 +51,7 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
 
   @override
   void dispose() {
+    fromGameManagerPort.close();
     gameManager.kill();
     super.dispose();
   }
@@ -63,7 +64,6 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
             create: (context) =>
                 SinglePlayerIsolateRepository(fromGameManagerPort: fromGameManagerPort),
             child: BlocProvider<SinglePlayerBloc>(
-              lazy: false,
               create: (context) => SinglePlayerBloc(
                 repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
               ),
@@ -103,6 +103,7 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
         selector: ((state) => state.gameStatus),
         builder: (context, state) {
           if (state.isLoading) {
+            print("(main isolate): SinglePlayerGame UI building progress indicator, loading.");
             return const CircularProgressIndicator();
           } else {
             return Stack(

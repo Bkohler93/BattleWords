@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 
+import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/run_app.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
@@ -27,6 +28,11 @@ class UpdateGameByTileTap extends GameManagerRequestObject {
 class UpdateGameByGuessingWord extends GameManagerRequestObject {
   UpdateGameByGuessingWord({required this.word});
   final String word;
+}
+
+class SendObjectBoxStore extends GameManagerRequestObject {
+  SendObjectBoxStore({required this.store});
+  final ObjectBoxStore store;
 }
 
 /* 

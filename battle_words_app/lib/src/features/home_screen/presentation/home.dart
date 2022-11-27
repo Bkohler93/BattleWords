@@ -4,7 +4,6 @@ import 'package:battle_words/src/features/multiplayer/presentation/home.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/screens/home.dart';
 import 'package:battle_words/src/features/user_settings/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -25,7 +24,13 @@ class HomePageState extends State<HomePage> {
             child: Container(),
           ),
           Expanded(
-            flex: 0,
+            flex: 1,
+            child: Container(
+              color: Colors.white,
+            ),
+          ),
+          Expanded(
+            flex: 1,
             child: Container(
               alignment: Alignment.centerLeft,
               child: Column(
@@ -40,11 +45,11 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            flex: 0,
+            flex: 1,
             child: Container(
               color: Colors.white,
             ),
-          )
+          ),
         ],
       ),
     );

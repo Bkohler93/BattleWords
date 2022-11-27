@@ -26,6 +26,7 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
 
   void _handleGameStateStream() {
     repository.gameStateStream.listen((state) {
+      // print("(main isolate): BLoC received a game state");
       add(StateChangeEvent(state: state));
     });
   }

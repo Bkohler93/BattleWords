@@ -14,7 +14,8 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
   void _receivePort() {
     fromGameManagerPort.listen(
       (message) {
-        if (message is SendPort) {
+        if (message == "send us the store") {
+        } else if (message is SendPort) {
           toGameManagerPort = message;
         } else {
           _gameStateStream.sink.add(message);
@@ -26,9 +27,14 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
   @override
   FutureOr<SinglePlayerState> getSinglePlayerGame() {
     final requestObject = GetSinglePlayerGame();
-    print("== (single player isolate repository) requesting new game");
+    // print("(main isolate): requesting new game");
     toGameManagerPort.send(requestObject);
     return SinglePlayerState.generate();
+  }
+
+  FutureOr<void> sendObjectBoxStore(ObjectBoxStore objectBoxStore) {
+    final requestObject = SendObjectBoxStore(store: objectBoxStore);
+    toGameManagerPort.send(requestObject);
   }
 
   @override
