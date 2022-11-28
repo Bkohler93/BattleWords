@@ -27,7 +27,7 @@ class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository 
   @override
   SinglePlayerScoreState updateScoreFromGameEnd({required GameStatus status}) {
     final currentScoreData = store.getScoreData();
-    late final newScoreData;
+    late final SinglePlayerScore newScoreData;
 
     if (status.isWin) {
       final currentWinStreak = currentScoreData.currentWinStreak + 1;
