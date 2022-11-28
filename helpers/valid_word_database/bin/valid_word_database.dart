@@ -26,6 +26,5 @@ Future<void> fillDatabase(Store store, Box<Word> wordBox, String fileName) async
   final List<Word> modelWords = [];
 
   words.forEach((word, length) => modelWords.add(Word(text: word, length: length)));
-  print(modelWords[0]);
   final ids = wordBox.putMany(modelWords);
 }
