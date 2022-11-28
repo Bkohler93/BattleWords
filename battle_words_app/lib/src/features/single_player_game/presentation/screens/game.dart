@@ -6,12 +6,7 @@ import 'package:battle_words/src/features/single_player_game/data/repositories/s
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/pause_menu/pause_menu_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/pause_button.dart';
-import 'package:battle_words/src/common/controllers/show_pause.dart';
-import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
-import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
-import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
-import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_result_notification.dart';
@@ -21,16 +16,10 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/word_status_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SinglePlayerPage extends StatefulWidget {
+class SinglePlayerPage extends StatelessWidget {
   const SinglePlayerPage({super.key});
 
-  @override
-  State<SinglePlayerPage> createState() => _SinglePlayerPageState();
-}
-
-class _SinglePlayerPageState extends State<SinglePlayerPage> {
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -69,29 +58,10 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
   }
 }
 
-class SinglePlayerView extends StatefulWidget {
+class SinglePlayerView extends StatelessWidget {
   const SinglePlayerView({
     Key? key,
   }) : super(key: key);
-
-  @override
-  State<SinglePlayerView> createState() => _SinglePlayerViewState();
-}
-
-class _SinglePlayerViewState extends State<SinglePlayerView> {
-  late bool isPauseMenuShowing;
-
-  @override
-  void initState() {
-    super.initState();
-    isPauseMenuShowing = false;
-  }
-
-  void _showOrHidePauseMenu() {
-    setState(() {
-      isPauseMenuShowing = !isPauseMenuShowing;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
