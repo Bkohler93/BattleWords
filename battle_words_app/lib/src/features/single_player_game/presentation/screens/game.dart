@@ -2,7 +2,8 @@ import 'dart:isolate';
 
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
-import 'package:battle_words/src/common/widgets/pause_button.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/controllers/pause_menu/pause_menu_cubit.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/pause_button.dart';
 import 'package:battle_words/src/common/controllers/show_pause.dart';
 import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
@@ -40,7 +41,10 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
         create: (context) => SinglePlayerBloc(
           repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
         ),
-        child: SinglePlayerView(),
+        child: BlocProvider<PauseMenuCubit>(
+          create: (context) => PauseMenuCubit(),
+          child: SinglePlayerView(),
+        ),
       ),
     );
   }
@@ -56,14 +60,18 @@ class SinglePlayerView extends StatefulWidget {
 }
 
 class _SinglePlayerViewState extends State<SinglePlayerView> {
-  ///controls whether the pause menu is showing or not
-  void toggleIsPauseMenuShowing(WidgetRef ref) {
-    ref.read(isPauseMenuShowingProvider.notifier).update((state) => !state);
-  }
+  late bool isPauseMenuShowing;
 
   @override
   void initState() {
     super.initState();
+    isPauseMenuShowing = false;
+  }
+
+  void _showOrHidePauseMenu() {
+    setState(() {
+      isPauseMenuShowing = !isPauseMenuShowing;
+    });
   }
 
   @override
@@ -104,8 +112,14 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 10.0, 0),
-                      child: PauseButton(
-                        updatePauseMenuVisibility: toggleIsPauseMenuShowing,
+                      child: BlocBuilder<PauseMenuCubit, bool>(
+                        builder: ((context, state) {
+                          return PauseButton(
+                            showOrHidePauseMenu:
+                                BlocProvider.of<PauseMenuCubit>(context).showOrHidePauseMenu,
+                            isPauseMenuShowing: state,
+                          );
+                        }),
                       ),
                     ),
                   ),
@@ -114,9 +128,14 @@ class _SinglePlayerViewState extends State<SinglePlayerView> {
                   // top: 15.h,
                   child: Align(
                     alignment: Alignment.center,
-                    child: SinglePlayerPauseMenu(
-                      isPauseMenuShowing: false,
-                      closePauseMenu: toggleIsPauseMenuShowing,
+                    child: BlocBuilder<PauseMenuCubit, bool>(
+                      builder: (context, state) {
+                        return SinglePlayerPauseMenu(
+                          isPauseMenuShowing: state,
+                          showOrHidePauseMenu:
+                              BlocProvider.of<PauseMenuCubit>(context).showOrHidePauseMenu,
+                        );
+                      },
                     ),
                   ),
                 )

@@ -4,10 +4,10 @@ import 'package:sizer/sizer.dart';
 
 class SinglePlayerPauseMenu extends StatefulWidget {
   const SinglePlayerPauseMenu(
-      {Key? key, required this.isPauseMenuShowing, required this.closePauseMenu})
+      {Key? key, required this.isPauseMenuShowing, required this.showOrHidePauseMenu})
       : super(key: key);
   final bool isPauseMenuShowing;
-  final Function closePauseMenu;
+  final Function showOrHidePauseMenu;
 
   @override
   State<SinglePlayerPauseMenu> createState() => SinglePlayerPauseMenuState();
@@ -49,10 +49,7 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
                             child: GestureDetector(
                               child: Text("Continue"),
                               onTap: () {
-                                //TODO rethink how pause menu works
-                                // ref
-                                // .read(isPauseMenuShowingProvider.notifier)
-                                // .update((state) => !state);
+                                widget.showOrHidePauseMenu();
                               },
                             ),
                           ),

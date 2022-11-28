@@ -1,43 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum PauseStatus { selected, unselected }
 
-class PauseButton extends ConsumerStatefulWidget {
-  const PauseButton({super.key, required this.updatePauseMenuVisibility});
-  final Function(WidgetRef ref) updatePauseMenuVisibility;
-  // final WidgetRef ref;
+class PauseButton extends StatefulWidget {
+  const PauseButton(
+      {super.key, required this.showOrHidePauseMenu, required this.isPauseMenuShowing});
+  final void Function() showOrHidePauseMenu;
+  final bool isPauseMenuShowing;
 
   @override
-  ConsumerState<PauseButton> createState() => _PauseButtonState();
+  State<PauseButton> createState() => _PauseButtonState();
 }
 
 /// controls current state of pause button (selected vs unselected)
 /// selected - pause menu is open, button is an X
 /// unselected - pause menu is closed, button is pause icon ||
-class _PauseButtonState extends ConsumerState<PauseButton> with SingleTickerProviderStateMixin {
-  late PauseStatus _status;
-
-  @override
-  void initState() {
-    _status = PauseStatus.unselected;
-
-    super.initState();
-  }
-
-  /// inverts the current status of button
-  void togglePauseStatus(WidgetRef ref) {
-    widget.updatePauseMenuVisibility(ref);
-    if (_status == PauseStatus.selected) {
-      setState(() {
-        _status = PauseStatus.unselected;
-      });
-    } else {
-      setState(() {
-        _status = PauseStatus.selected;
-      });
-    }
-  }
+class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStateMixin {
+  _PauseButtonState();
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +25,9 @@ class _PauseButtonState extends ConsumerState<PauseButton> with SingleTickerProv
       width: 50,
       height: 50,
       child: GestureDetector(
-        onTap: () {
-          togglePauseStatus(ref);
-        },
-        child: PausePainterAnimation(status: _status),
+        onTap: widget.showOrHidePauseMenu,
+        child: PausePainterAnimation(
+            status: widget.isPauseMenuShowing ? PauseStatus.selected : PauseStatus.unselected),
       ),
     );
   }
