@@ -1,19 +1,39 @@
+import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/screen_route_link.dart';
 import 'package:battle_words/src/features/home_screen/presentation/home.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/screens/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
-class SinglePlayerHomePage extends StatefulWidget {
+class SinglePlayerHomePage extends StatelessWidget {
   const SinglePlayerHomePage({super.key});
-
   @override
-  State<SinglePlayerHomePage> createState() => SinglePlayerHomePageState();
+  Widget build(BuildContext context) {
+    return RepositoryProvider(
+      lazy: false,
+      create: (context) => SinglePlayerScoreObjectBoxRepository(
+          storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+      child: BlocProvider<SinglePlayerScoreCubit>(
+          create: ((context) => SinglePlayerScoreCubit(
+                repository: RepositoryProvider.of<SinglePlayerScoreObjectBoxRepository>(context),
+              )),
+          child: SinglePlayerHomeView()),
+    );
+  }
 }
 
-class SinglePlayerHomePageState extends State<SinglePlayerHomePage> {
+class SinglePlayerHomeView extends StatefulWidget {
+  const SinglePlayerHomeView({super.key});
+
+  @override
+  State<SinglePlayerHomeView> createState() => SinglePlayerHomeViewState();
+}
+
+class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
   @override
   Widget build(BuildContext context) {
     //lazy  load is active so repository and bloc will not be loaded until SinglePlayerGame page initializes
@@ -48,9 +68,14 @@ class SinglePlayerHomePageState extends State<SinglePlayerHomePage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text("Games Won"),
-                            Text("32"),
+                          children: [
+                            const Text("Games Won"),
+                            BlocSelector<SinglePlayerScoreCubit, SinglePlayerScoreState, int>(
+                              selector: (state) => state.totalGamesWon,
+                              builder: (context, state) {
+                                return Text("$state");
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -58,9 +83,14 @@ class SinglePlayerHomePageState extends State<SinglePlayerHomePage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text("High Score"),
-                            Text("7"),
+                          children: [
+                            const Text("High Score"),
+                            BlocSelector<SinglePlayerScoreCubit, SinglePlayerScoreState, int>(
+                              selector: (state) => state.highestWinStreak,
+                              builder: (context, state) {
+                                return Text("$state");
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -68,9 +98,14 @@ class SinglePlayerHomePageState extends State<SinglePlayerHomePage> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text("Current Streak"),
-                            Text("3"),
+                          children: [
+                            const Text("Current Streak"),
+                            BlocSelector<SinglePlayerScoreCubit, SinglePlayerScoreState, int>(
+                              selector: (state) => state.currentWinStreak,
+                              builder: (context, state) {
+                                return Text("$state");
+                              },
+                            ),
                           ],
                         ),
                       )
@@ -95,6 +130,7 @@ class SinglePlayerHomePageState extends State<SinglePlayerHomePage> {
                   SinglePlayerPage(),
                   "Play",
                   context,
+                  onReturn: BlocProvider.of<SinglePlayerScoreCubit>(context).reloadScoreData,
                 ),
                 screenRoute(
                   HomePage(),

@@ -1,6 +1,8 @@
+import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,38 +28,42 @@ class GameResultNotification extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  result == GameResult.win ? "Winner" : "Loser",
+                  result.isWin ? "Winner" : "Loser",
                   style: const TextStyle(color: Colors.white),
                 ),
                 (state.any((hiddenWord) => !hiddenWord.isWordFound))
                     ? Column(children: [
-                        Text("Words you missed",
+                        const Text("Words you missed",
                             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: List.generate(
                             state.length,
                             (index) => state[index].isWordFound
-                                ? SizedBox(
+                                ? const SizedBox(
                                     height: 1,
                                     width: 1,
                                   )
                                 : Text('${state[index].word}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                     )),
                           ),
                         )
                       ])
-                    : SizedBox(),
+                    : const SizedBox(),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: FloatingActionButton.extended(
                     onPressed: () {
-                      //send ResetGameEvent to SinglePlayerBloc
-                      // ref.invalidate(singlePlayerGameControllerProvider);
-                      // ref.invalidate(guessWordInputControllerProvider);
-                      Navigator.of(context).pop();
+                      if (result.isWin) {
+                        BlocProvider.of<SinglePlayerScoreCubit>(context)
+                            .handleGameEnd(status: result);
+                      } else if (result.isLoss) {
+                        BlocProvider.of<SinglePlayerScoreCubit>(context)
+                            .handleGameEnd(status: result);
+                      }
+                      Navigator.of(context).pop(true);
                     },
                     label: const Text("Main Menu"),
                   ),

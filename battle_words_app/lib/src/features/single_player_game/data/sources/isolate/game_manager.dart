@@ -270,7 +270,7 @@ class GameManager implements IGameManager {
       movesRemaining: movesRemaining,
       hiddenWords: hiddenWords,
       keyboardLetterMap: keyboardLetterMap,
-      gameStatus: GameStatus.initial,
+      gameStatus: GameStatus.playing,
     );
     printIsolate("Sending initial state");
     //send out initial state
@@ -369,7 +369,7 @@ class GameManager implements IGameManager {
     state = _checkIfWin(singlePlayerGame: state);
 
     //5. reduce moves remaining, lose if at zero
-    if (!isExactMatch) {
+    if (!isExactMatch && state.gameStatus.isPlaying) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }
     toRepositoryPort.send(state);

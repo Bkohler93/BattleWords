@@ -2,18 +2,20 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:battle_words/src/api/object_box/models/single_player_score.dart';
 import 'package:battle_words/src/api/object_box/models/word.dart';
 import 'package:battle_words/src/api/object_box/objectbox.g.dart';
 import 'package:battle_words/src/constants/api.dart';
 import 'package:battle_words/src/constants/hidden_word_exceptions.dart';
 import 'package:flutter/services.dart';
+import 'package:objectbox/objectbox.dart';
 import 'package:path_provider/path_provider.dart';
+
+part 'package:battle_words/src/features/single_player_game/data/sources/object_box/word.dart';
+part 'package:battle_words/src/features/single_player_game/data/sources/object_box/single_player_score.dart';
 
 abstract class IObjectBoxStore {
   Future<void> _initialize({ByteData? storeReference});
-  Word _getRandomWordOfLength(final int length);
-  List<Word> getRandomWords();
-  bool isWordInDatabase(String word);
   ByteData get reference;
 }
 
@@ -24,6 +26,7 @@ class ObjectBoxStore implements IObjectBoxStore {
   Store? store;
 
   late final Box<Word> wordBox;
+  late final Box<SinglePlayerScore> singlePlayerScoreBox;
   bool reset = RESET_DATABASE;
 
   @override
@@ -32,6 +35,7 @@ class ObjectBoxStore implements IObjectBoxStore {
   /// Ensures database has been filled with valid words. If not filled, reads the
   /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
   /// txt file name.
+  @override
   Future<void> _initialize({ByteData? storeReference}) async {
     if (reset) {
       Directory dir = await getApplicationDocumentsDirectory();
@@ -44,11 +48,14 @@ class ObjectBoxStore implements IObjectBoxStore {
     if (storeReference != null) {
       store = Store.fromReference(getObjectBoxModel(), storeReference);
       wordBox = store!.box<Word>();
+      singlePlayerScoreBox = store!.box<SinglePlayerScore>();
     } else if (store == null) {
       store = await openStore();
       wordBox = store!.box<Word>();
+      singlePlayerScoreBox = store!.box<SinglePlayerScore>();
     }
 
+    //initial launch, initialize score data to all zeros
     if (wordBox.isEmpty()) {
       final wordString = await rootBundle.loadString("assets/wordlists/$HIDDEN_WORDS_SOURCE");
       final words = jsonDecode(wordString);
@@ -57,41 +64,13 @@ class ObjectBoxStore implements IObjectBoxStore {
       words.forEach((word, length) => modelWords.add(Word(text: word, length: length)));
       print('=== populated database. first word: ${modelWords[0]}');
       final ids = wordBox.putMany(modelWords);
+
+      singlePlayerScoreBox.put(
+        SinglePlayerScore(currentWinStreak: 0, highestScoreStreak: 0, totalGamesWon: 0),
+      );
     }
 
     print('=== database created');
-  }
-
-  Word _getRandomWordOfLength(final int length) {
-    final query = (wordBox.query(
-      Word_.length.equals(length),
-    )).build();
-
-    final results = query.find();
-
-    var word;
-
-    while (true) {
-      word = results[Random().nextInt(results.length - 1)];
-      if (!HIDDEN_WORDS_EXCEPTIONS.contains(word)) {
-        break;
-      }
-    }
-
-    return word;
-  }
-
-  List<Word> getRandomWords() {
-    return [for (var length = 5; length > 2; length--) _getRandomWordOfLength(length)];
-  }
-
-  bool isWordInDatabase(String word) {
-    final query = (wordBox.query(
-      Word_.text.equals(word),
-    )).build();
-    final results = query.find().isNotEmpty;
-
-    return results;
   }
 }
 
@@ -134,6 +113,12 @@ class MockObjectBoxStore implements IObjectBoxStore {
   @override
   Future<void> _initialize({ByteData? storeReference}) {
     // TODO: implement _initialize
+    throw UnimplementedError();
+  }
+
+  @override
+  Box<SinglePlayerScore> getSinglePlayerScoreBox() {
+    // TODO: implement getSinglePlayerScoreBox
     throw UnimplementedError();
   }
 }

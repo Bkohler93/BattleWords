@@ -2,7 +2,9 @@ import 'dart:isolate';
 
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/pause_menu/pause_menu_cubit.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/pause_button.dart';
 import 'package:battle_words/src/common/controllers/show_pause.dart';
 import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
@@ -31,20 +33,37 @@ class SinglePlayerPage extends StatefulWidget {
 class _SinglePlayerPageState extends State<SinglePlayerPage> {
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider<ISinglePlayerRepository>(
-      lazy: false,
-      //Isolate is created when SinglePlayerIsolateRepository is created
-      create: (context) => SinglePlayerIsolateRepository(
-          objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
-      //GameManagerPortCubit's state is a ReceivePort
-      child: BlocProvider<SinglePlayerBloc>(
-        create: (context) => SinglePlayerBloc(
-          repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ISinglePlayerRepository>(
+          lazy: false,
+          //Isolate is created when SinglePlayerIsolateRepository is created
+          create: (context) => SinglePlayerIsolateRepository(
+              objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+          //GameManagerPortCubit's state is a ReceivePort
         ),
-        child: BlocProvider<PauseMenuCubit>(
-          create: (context) => PauseMenuCubit(),
-          child: SinglePlayerView(),
+        RepositoryProvider(
+          create: (context) => SinglePlayerScoreObjectBoxRepository(
+              storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
         ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<SinglePlayerBloc>(
+            create: (context) => SinglePlayerBloc(
+              repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => PauseMenuCubit(),
+          ),
+          BlocProvider(
+            create: (context) => SinglePlayerScoreCubit(
+              repository: RepositoryProvider.of<SinglePlayerScoreObjectBoxRepository>(context),
+            ),
+          ),
+        ],
+        child: SinglePlayerView(),
       ),
     );
   }

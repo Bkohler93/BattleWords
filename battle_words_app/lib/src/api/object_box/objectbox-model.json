@@ -4,23 +4,52 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:3982067526880827626",
-      "lastPropertyId": "3:3170911081771315531",
-      "name": "Word",
+      "id": "1:2662743278124321634",
+      "lastPropertyId": "4:8904508634276666278",
+      "name": "SinglePlayerScore",
       "properties": [
         {
-          "id": "1:3296261479252101613",
+          "id": "1:1842769607269309673",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:3966837985926470837",
+          "id": "2:4482381269432351560",
+          "name": "currentWinStreak",
+          "type": 6
+        },
+        {
+          "id": "3:8766004702817089764",
+          "name": "highestScoreStreak",
+          "type": 6
+        },
+        {
+          "id": "4:8904508634276666278",
+          "name": "totalGamesWon",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:5707926258663747963",
+      "lastPropertyId": "3:1609456835343854650",
+      "name": "Word",
+      "properties": [
+        {
+          "id": "1:177827910576576443",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3467845689541913634",
           "name": "text",
           "type": 9
         },
         {
-          "id": "3:3170911081771315531",
+          "id": "3:1609456835343854650",
           "name": "length",
           "type": 6
         }
@@ -28,7 +57,7 @@
       "relations": []
     }
   ],
-  "lastEntityId": "1:3982067526880827626",
+  "lastEntityId": "2:5707926258663747963",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

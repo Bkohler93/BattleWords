@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 
-Widget screenRoute(Widget screen, String linkName, BuildContext context) => GestureDetector(
-      onTap: () => Navigator.of(context).push(
+Widget screenRoute(
+  Widget screen,
+  String linkName,
+  BuildContext context, {
+  void Function()? onReturn,
+}) =>
+    GestureDetector(
+      onTap: () => Navigator.of(context)
+          .push(
         MaterialPageRoute(
           builder: (context) => screen,
         ),
+      )
+          .then(
+        (value) {
+          if (value) {
+            onReturn == null ? null : onReturn();
+          }
+        },
       ),
       child: SizedBox(
         width: double.infinity,
