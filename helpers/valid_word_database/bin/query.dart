@@ -14,7 +14,5 @@ Future<void> main(List<String> arguments) async {
   final results = query.find();
   print(results.length);
 
-  // print(results[Random().nextInt(results.length - 1)]);
-
   store.close();
 }
