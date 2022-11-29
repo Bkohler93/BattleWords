@@ -15,7 +15,7 @@ Widget screenRoute(
       )
           .then(
         (value) {
-          if (value) {
+          if (value.runtimeType == bool) {
             onReturn == null ? null : onReturn();
           }
         },

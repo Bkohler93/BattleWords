@@ -1,6 +1,7 @@
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:battle_words/src/common/extensions/primitives.dart';
 import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/constants/game_details.dart';
 import 'package:battle_words/src/features/single_player_game/data/dao/game_manager.dart';
@@ -15,7 +16,7 @@ import 'package:battle_words/src/helpers/data_types.dart';
 abstract class IGameManager {
   void _listen();
   void _initializeGame();
-  bool _tileHasAdjacentTiles(GameBoard gameBoard, int tempRow, int tempCol);
+  bool _doesTileHaveAdjacentFilledTiles(GameBoard gameBoard, int tempRow, int tempCol);
   Direction _randomDirection();
   void _startSinglePlayerGame();
   SinglePlayerState flipTile({required int row, required int col});
@@ -93,175 +94,211 @@ class GameManager implements IGameManager {
             ));
 
     for (var hiddenWord in hiddenWords) {
-      //loop until word is cleared for placement.
-      bool placeable = false; //assume word cannot be placed
+      //place the word length of 5
+      if (hiddenWord.length == 5) {
+        final direction = _randomDirection();
 
-      while (!placeable) {
-        printIsolate("placing word"); //! Gets printed inifinitely on game freeze
-        placeable = true; //assume word can be placed
+        if (direction.isHorizontal) {
+          hiddenWord.direction = Direction.horizontal;
+          final col = Random().nextInt(2);
+          final row = Random().nextInt(6);
 
-        //get random acceptable index, determine L->R or T->B
-        final int col = Random().nextInt(GAME_BOARD_SIZE);
-        late final int row;
-        late Direction direction;
-        int directionLimiter = GAME_BOARD_SIZE - hiddenWord.length;
+          for (var i = 0; i < hiddenWord.length; i++) {
+            hiddenWord.letterCoords![i] = TileCoordinates(col: col + i, row: row);
+            gameBoard[row][col + i] = gameBoard[row][col + i].setLetter(hiddenWord.word[i]);
+          }
+        } else if (direction.isVertical) {
+          hiddenWord.direction = Direction.vertical;
+          final col = Random().nextInt(6);
+          final row = Random().nextInt(2);
 
-        if (col > directionLimiter) {
-          row = Random().nextInt(directionLimiter);
-          direction = Direction.vertical;
+          for (var i = 0; i < hiddenWord.length; i++) {
+            hiddenWord.letterCoords![i] = TileCoordinates(col: col, row: row + i);
+            hiddenWord.letterCoords![i]!.setColRow(col: col, row: row + i);
+            gameBoard[row + i][col] = gameBoard[row + i][col].setLetter(hiddenWord.word[i]);
+          }
         } else {
-          row = Random().nextInt(GAME_BOARD_SIZE);
-          direction = row > directionLimiter ? Direction.horizontal : _randomDirection();
+          throw "(game_manager.dart 114): No valid direction generated";
         }
 
-        //check if other letters are already present/nearby from other words
-        int tempCol = col;
-        int tempRow = row;
-        for (var i = 0; i < hiddenWord.length; i++) {
-          if (gameBoard[tempRow][tempCol].isEmpty()) {
-            //check if at top left
-            if (tempRow == 0 && tempCol == 0) {
-              //check if tiles right and lower are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol)) {
-                placeable = false;
-                break;
-              }
-            }
+        //place word length of 4
+      } else if (hiddenWord.length == 4) {
+        if (hiddenWords[0].direction.isHorizontal &&
+            hiddenWords[0].letterCoords![0]!.col.isBetweenInclusive(1, 4)) {
+          bool isPlaceable = false; //start false to enter while loop
+          int startCol = -1;
+          int constRow = -1;
+          hiddenWord.direction = Direction.horizontal;
 
-            //check if at top right
-            else if (tempRow == 0 && tempCol == GAME_BOARD_SIZE - 1) {
-              //check if tiles left and below are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol)) {
-                placeable = false;
-                break;
-              }
-            }
+          while (!isPlaceable) {
+            //assume the word will be placeable
+            isPlaceable = true;
 
-            //check if at bottom left
-            else if (tempRow == GAME_BOARD_SIZE - 1 && tempCol == 0) {
-              //check if tiles above and right are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol)) {
-                placeable = false;
-                break;
-              }
-            }
+            startCol = Random().nextInt(3);
+            constRow = Random().nextInt(6);
 
-            //check if at bottom right
-            else if (tempRow == GAME_BOARD_SIZE - 1 && tempCol == GAME_BOARD_SIZE - 1) {
-              //be sure tiles above and left are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol)) {
-                placeable = false;
-                break;
+            //check if surrounding tiles are empty
+            for (var i = 0; i < hiddenWord.length; i++) {
+              if (gameBoard[constRow][startCol + i].isNotEmpty() ||
+                  _doesTileHaveAdjacentFilledTiles(gameBoard, constRow, startCol + i)) {
+                isPlaceable = false;
               }
             }
+          }
+          //fill word
+          for (var i = 0; i < hiddenWord.length; i++) {
+            hiddenWord.letterCoords![i] = TileCoordinates(col: startCol + i, row: constRow);
+            gameBoard[constRow][startCol + i] =
+                gameBoard[constRow][startCol + i].setLetter(hiddenWord.word[i]);
+          }
+        } else if (hiddenWords[0].direction.isVertical &&
+            hiddenWords[0].letterCoords![0]!.row.isBetweenInclusive(1, 4)) {
+          hiddenWord.direction = Direction.vertical;
+          bool isPlaceable = false; //start with false to enter while loop
+          int constCol = -1;
+          int startRow = -1;
+          hiddenWord.direction = Direction.vertical;
 
-            //check if at top
-            else if (tempRow == 0) {
-              //make sure tile below, left, and right are empty
-              if (_tileHasAdjacentTiles(
-                gameBoard,
-                tempRow,
-                tempCol,
-              )) {
-                placeable = false;
-                break;
-              }
-            }
+          while (!isPlaceable) {
+            //assume word is placeable and prove it wrong
+            isPlaceable = true;
 
-            //check if at bottom
-            else if (tempRow == GAME_BOARD_SIZE - 1) {
-              //make sure tile above, left, and right are empty
-              if (_tileHasAdjacentTiles(
-                gameBoard,
-                tempRow,
-                tempCol,
-              )) {
-                placeable = false;
-                break;
-              }
-            }
+            constCol = Random().nextInt(6);
+            startRow = Random().nextInt(3);
 
-            //check if at right
-            else if (tempCol == GAME_BOARD_SIZE - 1) {
-              //make sure tile above, left, and below are empty
-              if (_tileHasAdjacentTiles(
-                gameBoard,
-                tempRow,
-                tempCol,
-              )) {
-                placeable = false;
-                break;
+            for (var i = 0; i < hiddenWord.length; i++) {
+              if (gameBoard[startRow + i][constCol].isNotEmpty() ||
+                  _doesTileHaveAdjacentFilledTiles(gameBoard, startRow, constCol)) {
+                isPlaceable = false;
               }
             }
+          }
 
-            //check if at left
-            else if (tempCol == 0) {
-              //make sure tile above, right, and below are empty
-              if (_tileHasAdjacentTiles(
-                gameBoard,
-                tempRow,
-                tempCol,
-              )) {
-                placeable = false;
-                break;
-              }
-            }
+          for (var i = 0; i < hiddenWord.length; i++) {
+            hiddenWord.letterCoords![i] = TileCoordinates(col: constCol + 1, row: startRow);
+            gameBoard[startRow + i][constCol] =
+                gameBoard[startRow + i][constCol].setLetter(hiddenWord.word[i]);
+          }
+        } else {
+          hiddenWord.direction = _randomDirection();
+          bool isPlaceable = false;
+          int col = -1;
+          int row = -1;
 
-            //in middle of board somewhere
-            else {
-              //make sure tile above, below, right, and left are empoty
-              if (_tileHasAdjacentTiles(
-                gameBoard,
-                tempRow,
-                tempCol,
-              )) {
-                placeable = false;
-                break;
+          while (!isPlaceable) {
+            //asume the word is going to be placeable this iteration
+            isPlaceable = true;
+            if (hiddenWord.direction.isHorizontal) {
+              col = Random().nextInt(3);
+              row = Random().nextInt(6);
+
+              for (var i = 0; i < hiddenWord.length; i++) {
+                if (gameBoard[row][col + i].isNotEmpty() ||
+                    _doesTileHaveAdjacentFilledTiles(gameBoard, row, col)) {
+                  isPlaceable = false;
+                }
+              }
+            } else {
+              col = Random().nextInt(6);
+              row = Random().nextInt(3);
+              for (var i = 0; i < hiddenWord.length; i++) {
+                if (gameBoard[row + i][col].isNotEmpty() ||
+                    _doesTileHaveAdjacentFilledTiles(gameBoard, row, col)) {
+                  isPlaceable = false;
+                }
               }
             }
-          } else if (gameBoard[tempRow][tempCol].letter == hiddenWord.word[i]) {
-            //spot is fine for a word
+          }
+
+          //place word on board horizontally
+          if (hiddenWord.direction.isHorizontal) {
+            for (var i = 0; i < hiddenWord.length; i++) {
+              hiddenWord.letterCoords![i] = TileCoordinates(col: col + i, row: row);
+              gameBoard[row][col + i] = gameBoard[row][col + i].setLetter(hiddenWord.word[i]);
+            }
           } else {
-            placeable = false;
-            break;
-          }
-          switch (direction) {
-            case Direction.horizontal:
-              tempCol++;
-              break;
-            case Direction.vertical:
-              tempRow++;
-              break;
+            //place word on board vertically
+            for (var i = 0; i < hiddenWord.length; i++) {
+              hiddenWord.letterCoords![i] = TileCoordinates(col: col, row: row + i);
+              hiddenWord.letterCoords![i]!.setColRow(col: col, row: row + i);
+              gameBoard[row + i][col] = gameBoard[row + i][col].setLetter(hiddenWord.word[i]);
+            }
           }
         }
+      } else {
+        //place word of length 3
+        final direction = _randomDirection();
+        if (direction.isHorizontal) {
+          int consecutiveAvailableTiles = 0;
+          int startingIdx = -1;
+          int fillRow = -1;
 
-        //place word
-        if (placeable) {
-          var tempRow = row;
-          var tempCol = col;
-          hiddenWord.letterCoords = {};
+          //search for open spot starting at top
+          rowLoop:
+          for (var row = 0; row < GAME_BOARD_SIZE; row++) {
+            fillRow = row;
+            consecutiveAvailableTiles = 0;
+            startingIdx = 0;
+            for (var col = 0; col < GAME_BOARD_SIZE; col++) {
+              if (gameBoard[row][col].isEmpty() &&
+                  !_doesTileHaveAdjacentFilledTiles(gameBoard, row, col)) {
+                consecutiveAvailableTiles++;
+              } else {
+                consecutiveAvailableTiles = 0;
+              }
+              if (consecutiveAvailableTiles == 1) {
+                startingIdx = col;
+              }
 
-          switch (direction) {
-            case Direction.horizontal:
-              hiddenWord.wordDirection = HiddenWordDirection.right;
-              for (var i = 0; i < hiddenWord.length; i++) {
-                hiddenWord.letterCoords![i] = TileCoordinates(row: tempRow, col: tempCol);
-                gameBoard[tempRow][tempCol] =
-                    gameBoard[tempRow][tempCol++].setLetter(hiddenWord.word[i]);
+              if (consecutiveAvailableTiles == hiddenWord.length) {
+                break rowLoop;
               }
-              break;
-            case Direction.vertical:
-              hiddenWord.wordDirection = HiddenWordDirection.down;
-              for (var i = 0; i < hiddenWord.length; i++) {
-                hiddenWord.letterCoords![i] = TileCoordinates(row: tempRow, col: tempCol);
-                gameBoard[tempRow][tempCol] =
-                    gameBoard[tempRow++][tempCol].setLetter(hiddenWord.word[i]);
+            }
+          }
+          //fill word on board
+          for (var i = startingIdx; i < hiddenWord.length; i++) {
+            hiddenWord.letterCoords![i] = TileCoordinates(col: i, row: fillRow);
+            gameBoard[fillRow][i - startingIdx] =
+                gameBoard[fillRow][i - startingIdx].setLetter(hiddenWord.word[i - startingIdx]);
+          }
+        }
+        if (direction.isVertical) {
+          int consecutiveAvailableTiles = 0;
+          int startingIdx = -1;
+          int fillCol = -1;
+
+          //search for open spot starting at top
+          colLoop:
+          for (var col = 0; col < GAME_BOARD_SIZE; col++) {
+            fillCol = col;
+            consecutiveAvailableTiles = 0;
+            startingIdx = 0;
+            for (var row = 0; row < GAME_BOARD_SIZE; row++) {
+              if (gameBoard[row][col].isEmpty() &&
+                  !_doesTileHaveAdjacentFilledTiles(gameBoard, row, col)) {
+                consecutiveAvailableTiles++;
+              } else {
+                consecutiveAvailableTiles = 0;
               }
-              break;
+              if (consecutiveAvailableTiles == 1) {
+                startingIdx = col;
+              }
+
+              if (consecutiveAvailableTiles == hiddenWord.length) {
+                break colLoop;
+              }
+            }
+          }
+          //fill word on board
+          for (var i = startingIdx; i < hiddenWord.length; i++) {
+            hiddenWord.letterCoords![i] = TileCoordinates(col: fillCol, row: i - startingIdx);
+            gameBoard[i - startingIdx][fillCol] =
+                gameBoard[i - startingIdx][fillCol].setLetter(hiddenWord.word[i - startingIdx]);
           }
         }
       }
     }
+
     printIsolate("Set all words on board");
     // set moves remaining
     int movesRemaining = START_NUM_OF_MOVES;
@@ -285,10 +322,17 @@ class GameManager implements IGameManager {
   }
 
   @override
-  bool _tileHasAdjacentTiles(GameBoard gameBoard, int tempRow, int tempCol) {
+  bool _doesTileHaveAdjacentFilledTiles(GameBoard gameBoard, int tempRow, int tempCol) {
+    //checks tile above
     return ((tempRow != 0 ? !gameBoard[tempRow - 1][tempCol].isEmpty() : false) ||
+
+        //checks tile below
         (tempRow != GAME_BOARD_SIZE - 1 ? !gameBoard[tempRow + 1][tempCol].isEmpty() : false) ||
+
+        //checks tile to the right
         (tempCol != GAME_BOARD_SIZE - 1 ? !gameBoard[tempRow][tempCol + 1].isEmpty() : false) ||
+
+        //checks tile to the left
         (tempCol != 0 ? !gameBoard[tempRow][tempCol - 1].isEmpty() : false));
   }
 

@@ -1,13 +1,11 @@
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
 
-enum HiddenWordDirection { down, right, unassigned }
-
 class HiddenWord {
   HiddenWord({
     required this.word,
     this.isWordFound = false,
     this.letterCoords,
-    this.wordDirection = HiddenWordDirection.unassigned,
+    this.direction = Direction.unassigned,
   })  : length = word.length,
         areLettersFound = List.generate(
           word.length,
@@ -20,7 +18,7 @@ class HiddenWord {
 
   /// int is the index of current letter, coordinates are the location on the game board.
   Map<int, TileCoordinates>? letterCoords;
-  HiddenWordDirection wordDirection;
+  Direction direction;
   bool isWordFound;
 
   /// each boolean value represents if each letter of the hidden word have been found or not. Used in [word_status_indicator]

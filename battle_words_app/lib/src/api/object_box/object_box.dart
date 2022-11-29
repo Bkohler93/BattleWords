@@ -70,7 +70,7 @@ class ObjectBoxStore implements IObjectBoxStore {
       );
     }
 
-    print('=== database created');
+    print('=== database opened');
   }
 }
 
@@ -94,7 +94,11 @@ class MockObjectBoxStore implements IObjectBoxStore {
 
   @override
   List<Word> getRandomWords() {
-    return [Word(length: 3, text: 'bye'), Word(length: 4, text: 'that'), Word(length: 5, text: 'there')];
+    return [
+      Word(length: 3, text: 'bye'),
+      Word(length: 4, text: 'that'),
+      Word(length: 5, text: 'there')
+    ];
   }
 
   @override

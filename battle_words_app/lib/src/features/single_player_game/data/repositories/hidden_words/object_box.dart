@@ -8,7 +8,7 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
   List<HiddenWord> fetchHiddenWords() {
     final List<Word> words = store.getRandomWords();
     for (var word in words) print(word.text);
-    return words.map((word) => HiddenWord(word: word.text)).toList();
+    return words.map((word) => HiddenWord(word: word.text, letterCoords: {})).toList();
   }
 
   @override
