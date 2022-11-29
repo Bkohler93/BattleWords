@@ -10,8 +10,7 @@ class SinglePlayerScoreState extends Equatable {
   final int highestWinStreak;
   final int currentWinStreak;
 
-  SinglePlayerScoreState copyWith(
-      {int? totalGamesWon, int? highestWinStreak, int? currentWinStreak}) {
+  SinglePlayerScoreState copyWith({int? totalGamesWon, int? highestWinStreak, int? currentWinStreak}) {
     return SinglePlayerScoreState(
       currentWinStreak: currentWinStreak ?? this.currentWinStreak,
       highestWinStreak: highestWinStreak ?? this.highestWinStreak,

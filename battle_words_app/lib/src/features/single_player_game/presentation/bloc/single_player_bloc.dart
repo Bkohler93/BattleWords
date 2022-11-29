@@ -38,8 +38,7 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     await repository.getSinglePlayerGame();
   }
 
-  void _handleTapGameBoardTileEvent(
-      TapGameBoardTileEvent event, Emitter<SinglePlayerState> emit) async {
+  void _handleTapGameBoardTileEvent(TapGameBoardTileEvent event, Emitter<SinglePlayerState> emit) async {
     await repository.updateGameByTileTap(col: event.col, row: event.row);
   }
 

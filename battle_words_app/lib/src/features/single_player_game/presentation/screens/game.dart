@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
@@ -29,7 +27,6 @@ class SinglePlayerPage extends StatelessWidget {
           //Isolate is created when SinglePlayerIsolateRepository is created
           create: (context) => SinglePlayerIsolateRepository(
               objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
-          //GameManagerPortCubit's state is a ReceivePort
         ),
         RepositoryProvider(
           create: (context) => SinglePlayerScoreObjectBoxRepository(

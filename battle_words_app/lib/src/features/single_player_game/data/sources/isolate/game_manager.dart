@@ -35,12 +35,8 @@ abstract class IGameManager {
 }
 
 class GameManager implements IGameManager {
-  GameManager(
-      {required this.toRepositoryPort,
-      required this.fromRepositoryPort,
-      required this.hiddenWordsRepository}) {
-    toRepositoryPort
-        .send(fromRepositoryPort.sendPort); // send repository its port to send data to GameManager
+  GameManager({required this.toRepositoryPort, required this.fromRepositoryPort, required this.hiddenWordsRepository}) {
+    toRepositoryPort.send(fromRepositoryPort.sendPort); // send repository its port to send data to GameManager
     _initializeGame();
     _listen();
   }
@@ -166,8 +162,7 @@ class GameManager implements IGameManager {
             //check if at top
             else if (tempRow == 0) {
               //make sure tile below, left, and right are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
-                  below: true, left: true, right: true)) {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, below: true, left: true, right: true)) {
                 placeable = false;
                 break;
               }
@@ -176,8 +171,7 @@ class GameManager implements IGameManager {
             //check if at bottom
             else if (tempRow == GAME_BOARD_SIZE - 1) {
               //make sure tile above, left, and right are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
-                  above: true, left: true, right: true)) {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, above: true, left: true, right: true)) {
                 placeable = false;
                 break;
               }
@@ -186,8 +180,7 @@ class GameManager implements IGameManager {
             //check if at right
             else if (tempCol == GAME_BOARD_SIZE - 1) {
               //make sure tile above, left, and below are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
-                  above: true, left: true, below: true)) {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, above: true, left: true, below: true)) {
                 placeable = false;
                 break;
               }
@@ -196,8 +189,7 @@ class GameManager implements IGameManager {
             //check if at left
             else if (tempCol == 0) {
               //make sure tile above, right, and below are empty
-              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol,
-                  above: true, right: true, below: true)) {
+              if (_tileHasAdjacentTiles(gameBoard, tempRow, tempCol, above: true, right: true, below: true)) {
                 placeable = false;
                 break;
               }
@@ -239,16 +231,14 @@ class GameManager implements IGameManager {
               hiddenWord.wordDirection = HiddenWordDirection.right;
               for (var i = 0; i < hiddenWord.length; i++) {
                 hiddenWord.letterCoords![i] = TileCoordinates(row: tempRow, col: tempCol);
-                gameBoard[tempRow][tempCol] =
-                    gameBoard[tempRow][tempCol++].setLetter(hiddenWord.word[i]);
+                gameBoard[tempRow][tempCol] = gameBoard[tempRow][tempCol++].setLetter(hiddenWord.word[i]);
               }
               break;
             case Direction.vertical:
               hiddenWord.wordDirection = HiddenWordDirection.down;
               for (var i = 0; i < hiddenWord.length; i++) {
                 hiddenWord.letterCoords![i] = TileCoordinates(row: tempRow, col: tempCol);
-                gameBoard[tempRow][tempCol] =
-                    gameBoard[tempRow++][tempCol].setLetter(hiddenWord.word[i]);
+                gameBoard[tempRow][tempCol] = gameBoard[tempRow++][tempCol].setLetter(hiddenWord.word[i]);
               }
               break;
           }
@@ -308,8 +298,7 @@ class GameManager implements IGameManager {
     SinglePlayerState singlePlayerGameCopy = state;
     switch (singlePlayerGameCopy.gameBoard[row][col].letter) {
       case "":
-        singlePlayerGameCopy.gameBoard[row][col] =
-            singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
+        singlePlayerGameCopy.gameBoard[row][col] = singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
         break;
       default:
         singlePlayerGameCopy.gameBoard[row][col] =
@@ -394,8 +383,7 @@ class GameManager implements IGameManager {
     if (game.keyboardLetterMap[letter] != KeyboardLetterStatus.complete) {
       for (var j = 0; j < GAME_BOARD_SIZE; j++) {
         for (var k = 0; k < GAME_BOARD_SIZE; k++) {
-          if (game.gameBoard[j][k].letter == letter &&
-              game.gameBoard[j][k].tileStatus == TileStatus.hidden) {
+          if (game.gameBoard[j][k].letter == letter && game.gameBoard[j][k].tileStatus == TileStatus.hidden) {
             isEachLetterInstanceFound = false;
           }
         }
@@ -444,8 +432,7 @@ class GameManager implements IGameManager {
   @override
   SinglePlayerState _reduceMovesRemaining({required SinglePlayerState singlePlayerGame}) {
     //reduce moves remaining
-    singlePlayerGame =
-        singlePlayerGame.copyWith(movesRemaining: singlePlayerGame.movesRemaining - 1);
+    singlePlayerGame = singlePlayerGame.copyWith(movesRemaining: singlePlayerGame.movesRemaining - 1);
 
     //check if 0, set GameResult to GameResult.win
     if (singlePlayerGame.movesRemaining == 0) {

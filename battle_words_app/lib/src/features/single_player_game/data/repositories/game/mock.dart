@@ -16,8 +16,8 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
     final state = SinglePlayerState.generate();
 
     //hardcoded changing value
-    state.gameBoard[col][row] = SinglePlayerGameTile(
-        coordinates: TileCoordinates(col: col, row: row), tileStatus: TileStatus.empty);
+    state.gameBoard[col][row] =
+        SinglePlayerGameTile(coordinates: TileCoordinates(col: col, row: row), tileStatus: TileStatus.empty);
   }
 
   @override

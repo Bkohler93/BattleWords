@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 enum PauseStatus { selected, unselected }
 
 class PauseButton extends StatefulWidget {
-  const PauseButton(
-      {super.key, required this.showOrHidePauseMenu, required this.isPauseMenuShowing});
+  const PauseButton({super.key, required this.showOrHidePauseMenu, required this.isPauseMenuShowing});
   final void Function() showOrHidePauseMenu;
   final bool isPauseMenuShowing;
 
@@ -26,8 +25,7 @@ class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStat
       height: 50,
       child: GestureDetector(
         onTap: widget.showOrHidePauseMenu,
-        child: PausePainterAnimation(
-            status: widget.isPauseMenuShowing ? PauseStatus.selected : PauseStatus.unselected),
+        child: PausePainterAnimation(status: widget.isPauseMenuShowing ? PauseStatus.selected : PauseStatus.unselected),
       ),
     );
   }
@@ -44,8 +42,7 @@ class PausePainterAnimation extends StatefulWidget {
 /// maintains state of animation.
 /// _controller uses a ticker to control and move to next frames
 /// _animation holds the Tween (inbetween two values) to control current displacement to control icon manipulation
-class PausePainterAnimationState extends State<PausePainterAnimation>
-    with SingleTickerProviderStateMixin {
+class PausePainterAnimationState extends State<PausePainterAnimation> with SingleTickerProviderStateMixin {
   late Animation _animation;
   late AnimationController _controller;
 
@@ -71,9 +68,8 @@ class PausePainterAnimationState extends State<PausePainterAnimation>
 
     if (oldWidget.status != widget.status) {
       _controller.reset();
-      _animation = _controller.drive(widget.status == PauseStatus.selected
-          ? Tween<double>(begin: 0, end: 5)
-          : Tween<double>(begin: 5, end: 0))
+      _animation = _controller.drive(
+          widget.status == PauseStatus.selected ? Tween<double>(begin: 0, end: 5) : Tween<double>(begin: 5, end: 0))
         ..addListener(() {
           setState(() {});
         });

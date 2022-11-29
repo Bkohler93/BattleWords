@@ -10,7 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO with lazy set to false, will have to include some loading mechanism to avoid jank while ObjectBox is being initialized
     // debugPaintSizeEnabled = true;
     return Sizer(builder: (context, orientation, deviceType) {
       return RepositoryProvider(

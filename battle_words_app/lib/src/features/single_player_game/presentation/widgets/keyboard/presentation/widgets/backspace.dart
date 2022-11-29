@@ -18,8 +18,7 @@ class BackspaceKey extends StatelessWidget {
         padding: const EdgeInsets.all(1.0),
         child: Container(
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.black45),
-              borderRadius: BorderRadius.all(Radius.elliptical(5, 10))),
+              border: Border.all(color: Colors.black45), borderRadius: BorderRadius.all(Radius.elliptical(5, 10))),
           child: Material(
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
             color: Colors.white,

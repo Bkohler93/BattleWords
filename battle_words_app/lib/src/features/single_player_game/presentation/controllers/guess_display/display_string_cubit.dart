@@ -5,8 +5,7 @@ import 'package:equatable/equatable.dart';
 part 'display_string_state.dart';
 
 class DisplayStringCubit extends Cubit<DisplayStringState> {
-  DisplayStringCubit({required this.repository})
-      : super(const DisplayStringState(displayString: ""));
+  DisplayStringCubit({required this.repository}) : super(const DisplayStringState(displayString: ""));
   final HiddenWordsRepository repository;
 
   void handleTapBackspace() {

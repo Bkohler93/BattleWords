@@ -74,8 +74,7 @@ class SinglePlayerGame {
 
     List<HiddenWord> hiddenWordsCopy = List<HiddenWord>.from(singlePlayerGame.hiddenWords);
 
-    KeyboardLetterMap keyboardLetterMap =
-        Map<String, KeyboardLetterStatus>.from(singlePlayerGame.keyboardLetterMap);
+    KeyboardLetterMap keyboardLetterMap = Map<String, KeyboardLetterStatus>.from(singlePlayerGame.keyboardLetterMap);
 
     int movesRemainingCopy = singlePlayerGame.movesRemaining;
 
@@ -128,8 +127,7 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
     SinglePlayerGame singlePlayerGameCopy = SinglePlayerGame.from(this);
     switch (singlePlayerGameCopy.gameBoard[row][col].letter) {
       case "":
-        singlePlayerGameCopy.gameBoard[row][col] =
-            singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
+        singlePlayerGameCopy.gameBoard[row][col] = singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
         break;
       default:
         singlePlayerGameCopy.gameBoard[row][col] =

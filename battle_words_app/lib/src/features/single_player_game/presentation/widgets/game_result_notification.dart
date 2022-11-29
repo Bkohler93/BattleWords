@@ -57,11 +57,9 @@ class GameResultNotification extends StatelessWidget {
                   child: FloatingActionButton.extended(
                     onPressed: () {
                       if (result.isWin) {
-                        BlocProvider.of<SinglePlayerScoreCubit>(context)
-                            .handleGameEnd(status: result);
+                        BlocProvider.of<SinglePlayerScoreCubit>(context).handleGameEnd(status: result);
                       } else if (result.isLoss) {
-                        BlocProvider.of<SinglePlayerScoreCubit>(context)
-                            .handleGameEnd(status: result);
+                        BlocProvider.of<SinglePlayerScoreCubit>(context).handleGameEnd(status: result);
                       }
                       Navigator.of(context).pop(true);
                     },

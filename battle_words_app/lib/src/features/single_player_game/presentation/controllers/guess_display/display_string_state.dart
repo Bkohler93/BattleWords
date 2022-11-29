@@ -43,8 +43,7 @@ class DisplayStringState extends Equatable {
     return DisplayStringState(
       displayString: displayString ?? this.displayString,
       displayStringStatus: displayStringStatus ?? this.displayStringStatus,
-      guessedWords: guessedWords ??
-          (guessedWord != null ? [...this.guessedWords, guessedWord] : this.guessedWords),
+      guessedWords: guessedWords ?? (guessedWord != null ? [...this.guessedWords, guessedWord] : this.guessedWords),
     );
   }
 }

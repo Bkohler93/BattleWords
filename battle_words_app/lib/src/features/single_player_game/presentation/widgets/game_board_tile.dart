@@ -39,13 +39,10 @@ class GameBoardTileWidget extends StatelessWidget {
                   Radius.circular(4.0),
                 ),
               ),
-              child: state.tileStatus == TileStatus.hidden
-                  ? Text("")
-                  : Text("${state.letter.toUpperCase()}"),
+              child: state.tileStatus == TileStatus.hidden ? Text("") : Text("${state.letter.toUpperCase()}"),
             ),
             onTap: () {
-              BlocProvider.of<SinglePlayerBloc>(context)
-                  .add(TapGameBoardTileEvent(col: col, row: row));
+              BlocProvider.of<SinglePlayerBloc>(context).add(TapGameBoardTileEvent(col: col, row: row));
             },
           ),
         );
