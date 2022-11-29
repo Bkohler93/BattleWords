@@ -79,7 +79,6 @@ class GameManager implements IGameManager {
     );
   }
 
-  //! Placing words on board algorithm is causing freezing
   @override
   void _initializeGame() {
     printIsolate("Initializing game");
