@@ -104,4 +104,4 @@ objectbox:
   # Writes objectbox-model.json and objectbox.g.dart to lib/api/object_box
   output_dir:
     lib: src/api/object_box 
-    test: test/api/object_box
+    test: src/api/object_box

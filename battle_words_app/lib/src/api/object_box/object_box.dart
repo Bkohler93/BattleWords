@@ -8,7 +8,6 @@ import 'package:battle_words/src/api/object_box/objectbox.g.dart';
 import 'package:battle_words/src/constants/api.dart';
 import 'package:battle_words/src/constants/hidden_word_exceptions.dart';
 import 'package:flutter/services.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'package:battle_words/src/features/single_player_game/data/sources/object_box/word.dart';
@@ -20,7 +19,7 @@ abstract class IObjectBoxStore {
 }
 
 class ObjectBoxStore implements IObjectBoxStore {
-  ObjectBoxStore({ByteData? storeReference}) {
+  ObjectBoxStore({ByteData? storeReference, this.directory}) {
     _initialize(storeReference: storeReference);
   }
   Store? store;
@@ -28,6 +27,7 @@ class ObjectBoxStore implements IObjectBoxStore {
   late final Box<Word> wordBox;
   late final Box<SinglePlayerScore> singlePlayerScoreBox;
   bool reset = RESET_DATABASE;
+  String? directory;
 
   @override
   ByteData get reference => store!.reference;
@@ -50,7 +50,10 @@ class ObjectBoxStore implements IObjectBoxStore {
       wordBox = store!.box<Word>();
       singlePlayerScoreBox = store!.box<SinglePlayerScore>();
     } else if (store == null) {
-      store = await openStore();
+      if (directory != null) {
+        await Directory('$directory').create(recursive: true);
+      }
+      store = await openStore(directory: directory);
       wordBox = store!.box<Word>();
       singlePlayerScoreBox = store!.box<SinglePlayerScore>();
     }
