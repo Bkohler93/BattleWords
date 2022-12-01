@@ -1,7 +1,6 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/features/home_screen/presentation/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 

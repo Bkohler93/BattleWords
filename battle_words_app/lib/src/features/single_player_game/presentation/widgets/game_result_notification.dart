@@ -1,12 +1,9 @@
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
-import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
-import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
 //* take out the required parameters, access them using BlocBuilder
@@ -64,7 +61,7 @@ class GameResultNotification extends StatelessWidget {
                         BlocProvider.of<SinglePlayerScoreCubit>(context)
                             .handleGameEnd(status: result);
                       }
-                      RepositoryProvider.of<SinglePlayerIsolateRepository>(context).dispose();
+                      RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
                       Navigator.of(context).pop(true);
                     },
                     label: const Text("Main Menu"),

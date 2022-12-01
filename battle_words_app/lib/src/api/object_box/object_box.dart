@@ -61,11 +61,10 @@ class ObjectBoxStore implements IObjectBoxStore {
     //initial launch, initialize score data to all zeros
     if (wordBox.isEmpty()) {
       final wordString = await rootBundle.loadString("assets/wordlists/$HIDDEN_WORDS_SOURCE");
-      final words = jsonDecode(wordString);
-      final List<Word> modelWords = [];
+      final Map<String, dynamic> words = jsonDecode(wordString);
+      final List<Word> modelWords =
+          List<Word>.from(words.entries.map((model) => Word.fromJson(model)).toList());
 
-      words.forEach((word, length) => modelWords.add(Word(text: word, length: length)));
-      print('=== populated database. first word: ${modelWords[0]}');
       final ids = wordBox.putMany(modelWords);
 
       singlePlayerScoreBox.put(
@@ -73,55 +72,19 @@ class ObjectBoxStore implements IObjectBoxStore {
       );
     }
 
-    print('=== database opened');
+    print('=== database accessed');
   }
 }
 
 class MockObjectBoxStore implements IObjectBoxStore {
-  @override
-  Word _getRandomWordOfLength(int length) {
-    return Word(
-      length: length,
-      text: length == 3
-          ? 'hut'
-          : length == 4
-              ? 'that'
-              : 'there',
-    );
-  }
+  MockObjectBoxStore(); //do not call initialize on mock store
 
   @override
-  Future<void> _populateDatabase() {
+  Future<void> _initialize({ByteData? storeReference}) {
     throw UnimplementedError();
-  }
-
-  @override
-  List<Word> getRandomWords() {
-    return [
-      Word(length: 3, text: 'bye'),
-      Word(length: 4, text: 'that'),
-      Word(length: 5, text: 'there')
-    ];
-  }
-
-  @override
-  bool isWordInDatabase(String word) {
-    return true;
   }
 
   @override
   // TODO: implement reference
   ByteData get reference => throw UnimplementedError();
-
-  @override
-  Future<void> _initialize({ByteData? storeReference}) {
-    // TODO: implement _initialize
-    throw UnimplementedError();
-  }
-
-  @override
-  Box<SinglePlayerScore> getSinglePlayerScoreBox() {
-    // TODO: implement getSinglePlayerScoreBox
-    throw UnimplementedError();
-  }
 }

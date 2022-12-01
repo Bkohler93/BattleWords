@@ -22,4 +22,5 @@ abstract class ISinglePlayerRepository {
   FutureOr<void> updateGameByTileTap({required int col, required int row});
   FutureOr<void> updateGameByGuessingWord({required String word});
   Stream<SinglePlayerState> get gameStateStream;
+  void dispose();
 }

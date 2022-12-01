@@ -16,4 +16,7 @@ class Word {
 
   @override
   toString() => 'Word{id: $id, text: $text, length: $length}';
+
+  // Json is a Map<String, dynamic>
+  static fromJson(model) => Word(length: model.value, text: model.key);
 }

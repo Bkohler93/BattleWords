@@ -16,8 +16,8 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
     final state = SinglePlayerState.generate();
 
     //hardcoded changing value
-    state.gameBoard[col][row] =
-        SinglePlayerGameTile(coordinates: TileCoordinates(col: col, row: row), tileStatus: TileStatus.empty);
+    state.gameBoard[col][row] = SinglePlayerGameTile(
+        coordinates: TileCoordinates(col: col, row: row), tileStatus: TileStatus.empty);
   }
 
   @override
@@ -28,4 +28,9 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
   @override
   // TODO: implement gameStateStream
   Stream<SinglePlayerState> get gameStateStream => throw UnimplementedError();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+  }
 }
