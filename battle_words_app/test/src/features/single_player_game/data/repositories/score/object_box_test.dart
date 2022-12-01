@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:battle_words/src/api/object_box/models/single_player_score.dart';
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,13 +23,14 @@ void main() {
     late ByteData? storeReference;
     late Directory dir;
 
-    setUpAll(() async {
+    setUp(() async {
       return Future(
         () async {
           dir = await getApplicationDocumentsDirectory()
               .then((dir) => Directory('${dir.path}/objectbox').create(recursive: true));
           store = ObjectBoxStore();
-          storeReference = store!.reference;
+          await Future.delayed(Duration(milliseconds: 100))
+              .then((_) => storeReference = store!.reference);
         },
       );
     });
@@ -58,11 +60,43 @@ void main() {
       expect(scoreState.totalGamesWon, 0);
     });
 
-    tearDownAll(() async {
+    test(
+        "updateScoreFromGameEnd(status.win) returns a SinglePlayerScoreState with all properties incremented by 1 (increase win streak, # games won, current win streak)",
+        () {
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+
+      final scoreState = scoreRepository.updateScoreFromGameEnd(status: GameStatus.win);
+
+      expect(scoreState.currentWinStreak, 1);
+      expect(scoreState.totalGamesWon, 1);
+      expect(scoreState.highestWinStreak, 1);
+    });
+
+    test(
+        "updateScoreFromGameEnd(status.loss) returns a SinglePlayerScoreState with currentWinStreak set to 0 and other properties unadjusted",
+        () {
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+
+      final scoreState = scoreRepository.updateScoreFromGameEnd(status: GameStatus.loss);
+
+      expect(scoreState.currentWinStreak, 0);
+      expect(scoreState.totalGamesWon, 0);
+      expect(scoreState.highestWinStreak, 0);
+    });
+
+    test("updateScoreFromGameEnd(status.playing) returns throws an error", () {
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+
+      expect(() => scoreRepository.updateScoreFromGameEnd(status: GameStatus.playing),
+          throwsException);
+    });
+
+    tearDown(() async {
       return Future(() async {
         store!.clearAndCloseStore();
         dir.delete(recursive: true).then(
-            (value) => print("=== (score repository test) DB deleted: ${!value.existsSync()}"));
+              (value) => print("=== (score repository test) DB deleted: ${!value.existsSync()}"),
+            );
       });
     });
   });

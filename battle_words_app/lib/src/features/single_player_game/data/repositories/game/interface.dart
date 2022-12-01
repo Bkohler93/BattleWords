@@ -12,12 +12,14 @@ import 'package:battle_words/src/features/single_player_game/presentation/bloc/s
 part 'isolate_repository.dart';
 part 'mock.dart';
 
-/* 
-  This is an interface for the single player game repository
-  Future expansions on this project may have to retrieve game states from external API calls. Implement a new repository in this case.
-  */
+///  This is an interface for the single player game repository
+///  Future expansions on this project may have to retrieve game states from external API calls. Implement a new repository in this case.
+///
+/// calls do not return new states. each "getXxx/setXxx/updateXxx" sends a
+/// request object to the isolate/server and then the gameStateStream receives the response
+/// from the isolate/server depending on which repository implementation is being used
 abstract class ISinglePlayerRepository {
-  FutureOr<SinglePlayerState> getSinglePlayerGame();
+  void getSinglePlayerGame();
   FutureOr<bool> setSinglePlayerGame(SinglePlayerState singlePlayerGame);
   FutureOr<void> updateGameByTileTap({required int col, required int row});
   FutureOr<void> updateGameByGuessingWord({required String word});

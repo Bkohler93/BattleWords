@@ -33,28 +33,28 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
     );
   }
 
+  @override
   void dispose() {
     _isolate?.kill(priority: Isolate.immediate);
     _isolate = null;
   }
 
   @override
-  FutureOr<SinglePlayerState> getSinglePlayerGame() {
+  void getSinglePlayerGame() {
     final requestObject = GetSinglePlayerGame();
-    toGameManagerPort.send(requestObject);
-    return SinglePlayerState.generate();
-  }
-
-  FutureOr<void> sendObjectBoxStore(ObjectBoxStore objectBoxStore) {
-    final requestObject = SendObjectBoxStore(store: objectBoxStore);
     toGameManagerPort.send(requestObject);
   }
 
   @override
-  FutureOr<bool> setSinglePlayerGame(SinglePlayerState singlePlayerGame) {
-    final requestObject = SetSinglePlayerGame(state: singlePlayerGame);
-    toGameManagerPort.send(requestObject);
-    return true;
+  bool setSinglePlayerGame(SinglePlayerState singlePlayerGame) {
+    try {
+      final requestObject = SetSinglePlayerGame(state: singlePlayerGame);
+      toGameManagerPort.send(requestObject);
+      return true;
+    } catch (err) {
+      print("=== (isolate repository) setSinglePlayerGame error $err");
+      return false;
+    }
   }
 
   @override

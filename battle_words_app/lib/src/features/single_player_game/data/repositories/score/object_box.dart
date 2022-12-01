@@ -52,7 +52,7 @@ class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository 
         totalGamesWon: totalGamesWon,
       );
     } else {
-      throw "(SinglePlayerScoreObjectRepository): Result of game is not win or loss";
+      throw Exception("(SinglePlayerScoreObjectRepository): Result of game is not win or loss");
     }
 
     store.removeExistingScoreData();

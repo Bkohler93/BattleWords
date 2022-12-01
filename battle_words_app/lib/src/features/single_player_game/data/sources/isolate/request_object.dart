@@ -21,9 +21,4 @@ class UpdateGameByGuessingWord extends GameManagerRequestObject {
   final String word;
 }
 
-class SendObjectBoxStore extends GameManagerRequestObject {
-  SendObjectBoxStore({required this.store});
-  final ObjectBoxStore store;
-}
-
 class GameOver extends GameManagerRequestObject {}

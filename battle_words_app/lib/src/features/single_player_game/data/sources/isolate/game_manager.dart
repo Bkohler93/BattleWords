@@ -414,6 +414,9 @@ class GameManager implements IGameManager {
     if (!isExactMatch && state.gameStatus.isPlaying) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }
+
+    //add guessWord to state
+    state = _addWordGuess(word);
     toRepositoryPort.send(state);
   }
 
@@ -496,5 +499,9 @@ class GameManager implements IGameManager {
 
     // set in database
     return singlePlayerGame;
+  }
+
+  SinglePlayerState _addWordGuess(String word) {
+    return state.copyWith(wordsGuessed: [...state.wordsGuessed, word]);
   }
 }

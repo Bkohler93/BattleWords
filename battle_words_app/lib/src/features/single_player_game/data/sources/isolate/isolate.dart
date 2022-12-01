@@ -21,7 +21,8 @@ void runSinglePlayerGameManager(Map<String, dynamic> data) async {
 
     //create repository for GameManager to retrieve words from
     final objectBoxStore = ObjectBoxStore(storeReference: objectBoxReference);
-    final IHiddenWordsRepository hiddenWordsRepository = HiddenWordsRepository(store: objectBoxStore);
+    final IHiddenWordsRepository hiddenWordsRepository =
+        HiddenWordsRepository(store: objectBoxStore);
 
     GameManager(
       toRepositoryPort: toRepositoryPort,

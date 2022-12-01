@@ -35,13 +35,16 @@ class SinglePlayerState extends Equatable {
     List<HiddenWord>? hiddenWords,
     GameStatus? gameStatus,
     KeyboardLetterMap? keyboardLetterMap,
+    List<String>? wordsGuessed,
   }) {
     return SinglePlayerState(
-        gameBoard: gameBoard ?? this.gameBoard,
-        movesRemaining: movesRemaining ?? this.movesRemaining,
-        hiddenWords: hiddenWords ?? this.hiddenWords,
-        gameStatus: gameStatus ?? this.gameStatus,
-        keyboardLetterMap: keyboardLetterMap ?? this.keyboardLetterMap);
+      gameBoard: gameBoard ?? this.gameBoard,
+      movesRemaining: movesRemaining ?? this.movesRemaining,
+      hiddenWords: hiddenWords ?? this.hiddenWords,
+      gameStatus: gameStatus ?? this.gameStatus,
+      keyboardLetterMap: keyboardLetterMap ?? this.keyboardLetterMap,
+      wordsGuessed: wordsGuessed ?? this.wordsGuessed,
+    );
   }
 
   //! move this logic into Isolate !\\
@@ -70,7 +73,8 @@ class SinglePlayerState extends Equatable {
         movesRemaining: movesRemaining,
         hiddenWords: hiddenWords,
         gameStatus: GameStatus.playing,
-        keyboardLetterMap: keyboardLetterMap);
+        keyboardLetterMap: keyboardLetterMap,
+        wordsGuessed: const []);
   }
 
   @override
@@ -80,5 +84,6 @@ class SinglePlayerState extends Equatable {
         hiddenWords,
         gameStatus,
         keyboardLetterMap,
+        wordsGuessed,
       ];
 }
