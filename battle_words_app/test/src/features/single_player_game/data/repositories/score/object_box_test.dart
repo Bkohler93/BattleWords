@@ -28,7 +28,7 @@ void main() {
           dir = await getApplicationDocumentsDirectory()
               .then((dir) => Directory('${dir.path}/objectbox').create(recursive: true));
           store = ObjectBoxStore();
-          storeReference = store.reference;
+          storeReference = store!.reference;
         },
       );
     });
