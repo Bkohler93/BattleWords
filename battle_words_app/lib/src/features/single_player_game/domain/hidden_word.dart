@@ -24,3 +24,11 @@ class HiddenWord {
   /// each boolean value represents if each letter of the hidden word have been found or not. Used in [word_status_indicator]
   List<bool> areLettersFound;
 }
+
+enum Direction { vertical, horizontal, unassigned }
+
+extension DirectionX on Direction {
+  bool get isVertical => this == Direction.vertical;
+  bool get isUnassigned => this == Direction.unassigned;
+  bool get isHorizontal => this == Direction.horizontal;
+}
