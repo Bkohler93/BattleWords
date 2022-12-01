@@ -13,12 +13,12 @@ class SinglePlayerScoreCubit extends Cubit<SinglePlayerScoreState> {
   final ISinglePlayerScoreRepository repository;
 
   void reloadScoreData() {
-    final state = repository.getStoreData();
+    final state = repository.getScoreState();
     emit(state);
   }
 
   void updateScoreData() {
-    repository.setStoreData(state);
+    repository.setScoreState(state);
     emit(state);
   }
 
@@ -28,7 +28,7 @@ class SinglePlayerScoreCubit extends Cubit<SinglePlayerScoreState> {
   }
 
   void _loadScoreData() {
-    final state = repository.getStoreData();
+    final state = repository.getScoreState();
     emit(state);
   }
 }

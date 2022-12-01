@@ -16,6 +16,7 @@ part 'package:battle_words/src/features/single_player_game/data/sources/object_b
 abstract class IObjectBoxStore {
   Future<void> _initialize({ByteData? storeReference});
   ByteData get reference;
+  void closeStore();
 }
 
 class ObjectBoxStore implements IObjectBoxStore {
@@ -74,6 +75,17 @@ class ObjectBoxStore implements IObjectBoxStore {
 
     print('=== database accessed');
   }
+
+  @override
+  void closeStore() {
+    store!.close();
+  }
+
+  void clearAndCloseStore() {
+    singlePlayerScoreBox.removeAll();
+    wordBox.removeAll();
+    store!.close();
+  }
 }
 
 class MockObjectBoxStore implements IObjectBoxStore {
@@ -87,4 +99,9 @@ class MockObjectBoxStore implements IObjectBoxStore {
   @override
   // TODO: implement reference
   ByteData get reference => throw UnimplementedError();
+
+  @override
+  void closeStore() {
+    // TODO: implement closeStore
+  }
 }

@@ -7,13 +7,13 @@ class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository 
   late final ObjectBoxStore store;
 
   @override
-  SinglePlayerScoreState getStoreData() {
+  SinglePlayerScoreState getScoreState() {
     final scoreData = store.getScoreData();
     return SinglePlayerScoreState.from(scoreData);
   }
 
   @override
-  void setStoreData(SinglePlayerScoreState state) {
+  void setScoreState(SinglePlayerScoreState state) {
     store.removeExistingScoreData();
 
     final SinglePlayerScore objectBoxScoreData = SinglePlayerScore(

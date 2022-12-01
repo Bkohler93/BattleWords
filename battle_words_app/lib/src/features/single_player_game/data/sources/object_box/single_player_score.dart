@@ -10,12 +10,19 @@ extension SinglePlayerScoreAccessor on ObjectBoxStore {
   }
 
   SinglePlayerScore getScoreData() {
-    final rawScoreData = singlePlayerScoreBox.getAll()[0];
+    final rawScoreData = singlePlayerScoreBox.getAll();
 
-    return SinglePlayerScore(
-      currentWinStreak: rawScoreData.currentWinStreak,
-      highestScoreStreak: rawScoreData.highestScoreStreak,
-      totalGamesWon: rawScoreData.totalGamesWon,
-    );
+    if (rawScoreData.isEmpty) {
+      final newScoreState =
+          SinglePlayerScore(currentWinStreak: 0, highestScoreStreak: 0, totalGamesWon: 0);
+      singlePlayerScoreBox.put(newScoreState);
+      return newScoreState;
+    } else {
+      return SinglePlayerScore(
+        currentWinStreak: rawScoreData[0].currentWinStreak,
+        highestScoreStreak: rawScoreData[0].highestScoreStreak,
+        totalGamesWon: rawScoreData[0].totalGamesWon,
+      );
+    }
   }
 }

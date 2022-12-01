@@ -8,7 +8,7 @@ import 'package:objectbox/objectbox.dart';
 part 'object_box.dart';
 
 abstract class ISinglePlayerScoreRepository {
-  SinglePlayerScoreState getStoreData();
-  void setStoreData(SinglePlayerScoreState state);
+  SinglePlayerScoreState getScoreState();
+  void setScoreState(SinglePlayerScoreState state);
   SinglePlayerScoreState updateScoreFromGameEnd({required GameStatus status});
 }
