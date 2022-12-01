@@ -1,3 +1,4 @@
+import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
@@ -57,10 +58,13 @@ class GameResultNotification extends StatelessWidget {
                   child: FloatingActionButton.extended(
                     onPressed: () {
                       if (result.isWin) {
-                        BlocProvider.of<SinglePlayerScoreCubit>(context).handleGameEnd(status: result);
+                        BlocProvider.of<SinglePlayerScoreCubit>(context)
+                            .handleGameEnd(status: result);
                       } else if (result.isLoss) {
-                        BlocProvider.of<SinglePlayerScoreCubit>(context).handleGameEnd(status: result);
+                        BlocProvider.of<SinglePlayerScoreCubit>(context)
+                            .handleGameEnd(status: result);
                       }
+                      RepositoryProvider.of<SinglePlayerIsolateRepository>(context).dispose();
                       Navigator.of(context).pop(true);
                     },
                     label: const Text("Main Menu"),

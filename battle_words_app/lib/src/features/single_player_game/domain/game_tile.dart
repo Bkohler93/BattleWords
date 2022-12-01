@@ -35,6 +35,9 @@ class SinglePlayerGameTile {
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {
+  /// uncovers tile to display the correct status after replacing
+  /// existing status (most likely [TileStatus.hidden]) to a correct
+  /// status reflecting whether a letter is present or not.
   SinglePlayerGameTile uncover(TileStatus status) {
     return SinglePlayerGameTile(
       coordinates: coordinates,

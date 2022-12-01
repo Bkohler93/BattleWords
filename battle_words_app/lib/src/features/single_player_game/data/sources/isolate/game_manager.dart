@@ -2,15 +2,15 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:battle_words/src/common/extensions/primitives.dart';
-import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/constants/game_details.dart';
-import 'package:battle_words/src/features/single_player_game/data/dao/game_manager.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/request_object.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 
 abstract class IGameManager {

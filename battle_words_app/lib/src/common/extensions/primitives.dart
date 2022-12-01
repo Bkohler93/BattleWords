@@ -5,7 +5,7 @@ extension RangeNum on num {
 }
 
 extension RangeInt on int {
-  bool isBetweenInclusive(num from, num to) {
+  bool isBetweenInclusive(int from, int to) {
     return from <= this && this <= to;
   }
 }

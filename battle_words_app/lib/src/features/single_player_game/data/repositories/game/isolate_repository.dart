@@ -7,6 +7,7 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
   final ByteData objectBoxStoreReference;
   final ReceivePort fromGameManagerPort = ReceivePort();
   late final SendPort toGameManagerPort;
+  Isolate? _isolate;
   final _gameStateStream = StreamController<SinglePlayerState>();
 
   @override
@@ -18,7 +19,7 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
       'objectBoxReference': objectBoxStoreReference,
     };
 
-    await Isolate.spawn(runSinglePlayerGameManager, gameManagerData);
+    _isolate = await Isolate.spawn(runSinglePlayerGameManager, gameManagerData);
 
     fromGameManagerPort.listen(
       (message) {
@@ -30,6 +31,11 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
         }
       },
     );
+  }
+
+  void dispose() {
+    _isolate?.kill(priority: Isolate.immediate);
+    _isolate = null;
   }
 
   @override

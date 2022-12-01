@@ -1,4 +1,4 @@
-import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/domain/letter.dart';
 import 'package:flutter/material.dart';
 
 class TextKey extends StatelessWidget {

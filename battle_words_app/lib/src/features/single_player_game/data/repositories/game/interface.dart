@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:battle_words/src/api/object_box/object_box.dart';
-import 'package:battle_words/src/features/single_player_game/data/dao/game_manager.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/request_object.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';

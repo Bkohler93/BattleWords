@@ -1,8 +1,8 @@
 import 'package:battle_words/src/constants/game_details.dart';
-import 'package:battle_words/src/common/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 
@@ -74,7 +74,8 @@ class SinglePlayerGame {
 
     List<HiddenWord> hiddenWordsCopy = List<HiddenWord>.from(singlePlayerGame.hiddenWords);
 
-    KeyboardLetterMap keyboardLetterMap = Map<String, KeyboardLetterStatus>.from(singlePlayerGame.keyboardLetterMap);
+    KeyboardLetterMap keyboardLetterMap =
+        Map<String, KeyboardLetterStatus>.from(singlePlayerGame.keyboardLetterMap);
 
     int movesRemainingCopy = singlePlayerGame.movesRemaining;
 
@@ -127,7 +128,8 @@ extension MutableSinglePlayerGame on SinglePlayerGame {
     SinglePlayerGame singlePlayerGameCopy = SinglePlayerGame.from(this);
     switch (singlePlayerGameCopy.gameBoard[row][col].letter) {
       case "":
-        singlePlayerGameCopy.gameBoard[row][col] = singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
+        singlePlayerGameCopy.gameBoard[row][col] =
+            singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.empty);
         break;
       default:
         singlePlayerGameCopy.gameBoard[row][col] =

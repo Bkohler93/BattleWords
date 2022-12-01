@@ -1,9 +1,9 @@
-import 'package:battle_words/src/common/controllers/show_pause.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 class SinglePlayerPauseMenu extends StatefulWidget {
-  const SinglePlayerPauseMenu({Key? key, required this.isPauseMenuShowing, required this.showOrHidePauseMenu})
+  const SinglePlayerPauseMenu(
+      {Key? key, required this.isPauseMenuShowing, required this.showOrHidePauseMenu})
       : super(key: key);
   final bool isPauseMenuShowing;
   final Function showOrHidePauseMenu;

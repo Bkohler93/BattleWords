@@ -1,8 +1,8 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
-import 'package:battle_words/src/common/widgets/keyboard/presentation/keyboard.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/guess_display/display_string_cubit.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/presentation/keyboard.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,9 +13,11 @@ class GuessInputDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => HiddenWordsRepository(store: RepositoryProvider.of<ObjectBoxStore>(context)),
+      create: (context) =>
+          HiddenWordsRepository(store: RepositoryProvider.of<ObjectBoxStore>(context)),
       child: BlocProvider(
-        create: (context) => DisplayStringCubit(repository: RepositoryProvider.of<HiddenWordsRepository>(context)),
+        create: (context) =>
+            DisplayStringCubit(repository: RepositoryProvider.of<HiddenWordsRepository>(context)),
         child: GuessInputDisplayView(),
       ),
     );
