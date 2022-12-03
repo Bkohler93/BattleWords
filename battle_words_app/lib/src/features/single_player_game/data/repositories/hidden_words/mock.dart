@@ -22,4 +22,10 @@ class MockHiddenWordsRepository implements IHiddenWordsRepository {
   void closeStore() {
     // TODO: implement closeStore
   }
+
+  @override
+  FutureOr<void> init() {
+    // TODO: implement init
+    throw UnimplementedError();
+  }
 }

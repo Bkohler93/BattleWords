@@ -11,17 +11,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // debugPaintSizeEnabled = true;
     return Sizer(builder: (context, orientation, deviceType) {
-      return RepositoryProvider(
-        lazy: false,
-        create: (context) => ObjectBoxStore(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: Colors.white,
-          ),
-          home: HomePage(),
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: Colors.white,
         ),
+        home: HomePage(),
       );
     });
   }

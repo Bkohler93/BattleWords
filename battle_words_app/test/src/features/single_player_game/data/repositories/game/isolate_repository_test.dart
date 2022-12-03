@@ -19,7 +19,6 @@ void main() {
 
   group("SinglePlayerIsolateRepository", () {
     ObjectBoxStore? store;
-    late ByteData? storeReference;
     late Directory dir;
 
     setUp(() async {

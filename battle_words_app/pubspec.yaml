@@ -42,6 +42,8 @@ dependencies:
   objectbox_flutter_libs: any
   path_provider: ^2.0.11
   flutter_bloc: ^8.1.1
+  path_provider_android: ^2.0.22
+  path_provider_ios: ^2.0.11
 
 dev_dependencies:
   flutter_test:

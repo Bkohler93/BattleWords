@@ -15,7 +15,7 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
   final ISinglePlayerRepository repository;
 
   SinglePlayerBloc({required this.repository}) : super(const SinglePlayerState()) {
-    _handleGameStateStream();
+    // _handleGameStateStream();
     on<StateChangeEvent>(_updateUi);
     on<StartGameEvent>(_handleStartGameEvent);
     on<TapGameBoardTileEvent>(_handleTapGameBoardTileEvent);
@@ -32,8 +32,12 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     emit(event.state);
   }
 
-  void _handleStartGameEvent(StartGameEvent event, Emitter<SinglePlayerState> emit) {
-    repository.getSinglePlayerGame();
+  void _handleStartGameEvent(StartGameEvent event, Emitter<SinglePlayerState> emit) async {
+    await repository.init();
+
+    _handleGameStateStream();
+
+    // repository.getSinglePlayerGame();
   }
 
   void _handleTapGameBoardTileEvent(

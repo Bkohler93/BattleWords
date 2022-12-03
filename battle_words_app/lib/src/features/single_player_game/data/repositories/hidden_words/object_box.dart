@@ -1,8 +1,13 @@
 part of 'interface.dart';
 
 class HiddenWordsRepository implements IHiddenWordsRepository {
-  HiddenWordsRepository({required this.store});
-  final ObjectBoxStore store;
+  HiddenWordsRepository();
+  late final ObjectBoxStore store;
+
+  @override
+  FutureOr<void> init() async {
+    store = await ObjectBoxStore.create();
+  }
 
   @override
   List<HiddenWord> fetchHiddenWords() {
@@ -17,6 +22,6 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
   }
 
   void closeStore() {
-    store.store!.close();
+    store.store.close();
   }
 }

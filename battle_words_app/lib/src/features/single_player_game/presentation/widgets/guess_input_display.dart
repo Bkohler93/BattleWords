@@ -13,8 +13,7 @@ class GuessInputDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) =>
-          HiddenWordsRepository(store: RepositoryProvider.of<ObjectBoxStore>(context)),
+      create: (context) => HiddenWordsRepository(),
       child: BlocProvider(
         create: (context) =>
             DisplayStringCubit(repository: RepositoryProvider.of<HiddenWordsRepository>(context)),

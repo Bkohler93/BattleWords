@@ -1,9 +1,7 @@
 part of 'interface.dart';
 
 class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository {
-  SinglePlayerScoreObjectBoxRepository({required ByteData storeReference}) {
-    store = ObjectBoxStore(storeReference: storeReference);
-  }
+  SinglePlayerScoreObjectBoxRepository();
   late final ObjectBoxStore store;
 
   @override
@@ -59,5 +57,10 @@ class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository 
     store.updateScoreData(newScoreData);
 
     return SinglePlayerScoreState.from(newScoreData);
+  }
+
+  @override
+  FutureOr<void> init() async {
+    store = await ObjectBoxStore.create();
   }
 }

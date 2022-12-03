@@ -8,7 +8,7 @@ part of 'display_string_cubit.dart';
 //* 4 - Previously Guessed State: yellow-similar text, already guessed (FUNCTIONALITY NOT IMPLEMENTED)
 //* 5 - Guessing State: maybe animate the text away, this means the guessed word has been sent to the GameManager to create the next game state.
 
-enum DisplayStringStatus { normal, incorrectLength, invalid, previouslyGuessed, guessing }
+enum DisplayStringStatus { normal, incorrectLength, invalid, previouslyGuessed, guessing, loading }
 
 extension DisplayStringStatusX on DisplayStringStatus {
   bool get isNormal => this == DisplayStringStatus.normal;
@@ -16,6 +16,7 @@ extension DisplayStringStatusX on DisplayStringStatus {
   bool get isInvalid => this == DisplayStringStatus.invalid;
   bool get isPreviouslyGuessed => this == DisplayStringStatus.previouslyGuessed;
   bool get isGuessing => this == DisplayStringStatus.guessing;
+  bool get isLoading => this == DisplayStringStatus.loading;
 }
 
 class DisplayStringState extends Equatable {
@@ -43,7 +44,8 @@ class DisplayStringState extends Equatable {
     return DisplayStringState(
       displayString: displayString ?? this.displayString,
       displayStringStatus: displayStringStatus ?? this.displayStringStatus,
-      guessedWords: guessedWords ?? (guessedWord != null ? [...this.guessedWords, guessedWord] : this.guessedWords),
+      guessedWords: guessedWords ??
+          (guessedWord != null ? [...this.guessedWords, guessedWord] : this.guessedWords),
     );
   }
 }

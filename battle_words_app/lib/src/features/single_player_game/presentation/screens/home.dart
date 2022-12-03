@@ -1,3 +1,4 @@
+import 'package:battle_words/main.dart';
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/screen_route_link.dart';
@@ -14,9 +15,7 @@ class SinglePlayerHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      lazy: false,
-      create: (context) => SinglePlayerScoreObjectBoxRepository(
-          storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+      create: (context) => SinglePlayerScoreObjectBoxRepository(),
       child: BlocProvider<SinglePlayerScoreCubit>(
           create: ((context) => SinglePlayerScoreCubit(
                 repository: RepositoryProvider.of<SinglePlayerScoreObjectBoxRepository>(context),
@@ -34,6 +33,12 @@ class SinglePlayerHomeView extends StatefulWidget {
 }
 
 class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<SinglePlayerScoreCubit>(context).loadScoreData();
+  }
+
   @override
   Widget build(BuildContext context) {
     //lazy  load is active so repository and bloc will not be loaded until SinglePlayerGame page initializes

@@ -33,4 +33,10 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
   void dispose() {
     // TODO: implement dispose
   }
+
+  @override
+  FutureOr<void> init() {
+    // TODO: implement init
+    throw UnimplementedError();
+  }
 }

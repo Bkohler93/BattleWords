@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:battle_words/src/api/object_box/models/single_player_score.dart';
@@ -11,4 +12,5 @@ abstract class ISinglePlayerScoreRepository {
   SinglePlayerScoreState getScoreState();
   void setScoreState(SinglePlayerScoreState state);
   SinglePlayerScoreState updateScoreFromGameEnd({required GameStatus status});
+  FutureOr<void> init();
 }

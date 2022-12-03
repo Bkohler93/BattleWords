@@ -1,3 +1,4 @@
+import 'package:battle_words/main.dart';
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
@@ -23,14 +24,11 @@ class SinglePlayerPage extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ISinglePlayerRepository>(
-          lazy: false,
           //Isolate is created when SinglePlayerIsolateRepository is created
-          create: (context) => SinglePlayerIsolateRepository(
-              objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+          create: (context) => SinglePlayerIsolateRepository(),
         ),
         RepositoryProvider(
-          create: (context) => SinglePlayerScoreObjectBoxRepository(
-              storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+          create: (context) => SinglePlayerScoreObjectBoxRepository(),
         ),
       ],
       child: MultiBlocProvider(
@@ -68,6 +66,7 @@ class SinglePlayerView extends StatelessWidget {
         selector: ((state) => state.gameStatus),
         builder: (context, state) {
           if (state.isLoading) {
+            BlocProvider.of<SinglePlayerBloc>(context).add(StartGameEvent());
             return const CircularProgressIndicator();
           } else {
             return Stack(

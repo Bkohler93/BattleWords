@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -5,8 +7,15 @@ import 'package:equatable/equatable.dart';
 part 'display_string_state.dart';
 
 class DisplayStringCubit extends Cubit<DisplayStringState> {
-  DisplayStringCubit({required this.repository}) : super(const DisplayStringState(displayString: ""));
+  DisplayStringCubit({required this.repository})
+      : super(const DisplayStringState(displayString: ""));
   final HiddenWordsRepository repository;
+
+  FutureOr<void> init() async {
+    emit(state.copyWith(displayStringStatus: DisplayStringStatus.loading));
+    await repository.init();
+    emit(state.copyWith(displayStringStatus: DisplayStringStatus.normal));
+  }
 
   void handleTapBackspace() {
     if (state.displayString.isEmpty) {
