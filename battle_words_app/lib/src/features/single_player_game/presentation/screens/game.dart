@@ -23,7 +23,7 @@ class SinglePlayerPage extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<ISinglePlayerRepository>(
-          lazy: false,
+          // lazy: false,
           //Isolate is created when SinglePlayerIsolateRepository is created
           create: (context) => SinglePlayerIsolateRepository(
               objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
@@ -38,7 +38,7 @@ class SinglePlayerPage extends StatelessWidget {
           BlocProvider<SinglePlayerBloc>(
             create: (context) => SinglePlayerBloc(
               repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
-            ),
+            )..add(StartGameEvent()),
           ),
           BlocProvider(
             create: (context) => PauseMenuCubit(),

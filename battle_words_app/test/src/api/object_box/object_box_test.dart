@@ -15,25 +15,31 @@ void main() {
   });
 
   group("Test ObjectBoxStore constructor and _initialize() method", () {
-    final ObjectBoxStore objectBoxStore = ObjectBoxStore();
-    late final Directory dir;
+    final ObjectBoxStore objectBoxStore = ObjectBoxStore.createSync();
+    // late final Directory dir;
 
     test("ObjectBox() opens a store.", () {
       print(objectBoxStore.store.runtimeType);
       expect(objectBoxStore.store.runtimeType, Store);
     });
 
-    tearDown(() async {
-      dir.delete(recursive: true).then((value) => print("=== DB deleted: ${!value.existsSync()}"));
-    });
+    // tearDown(() async {
+    //   return Future(
+    //     () async {
+    //       await dir
+    //           .delete(recursive: true)
+    //           .then((value) => print("=== DB deleted: ${!value.existsSync()}"));
+    //     },
+    //   );
+    // });
 
-    setUp(() async {
-      return Future(
-        () async {
-          dir = await getApplicationDocumentsDirectory()
-              .then((dir) => Directory('${dir.path}/objectbox').create(recursive: true));
-        },
-      );
-    });
+    // setUp(() async {
+    //   return Future(
+    //     () async {
+    //       final appsDir = await getApplicationDocumentsDirectory();
+    //       dir = await Directory('${appsDir.path}/objectbox').create(recursive: true);
+    //     },
+    //   );
+    // });
   });
 }

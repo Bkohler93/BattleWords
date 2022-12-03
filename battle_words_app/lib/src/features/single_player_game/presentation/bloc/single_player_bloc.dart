@@ -15,14 +15,14 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
   final ISinglePlayerRepository repository;
 
   SinglePlayerBloc({required this.repository}) : super(const SinglePlayerState()) {
-    _handleGameStateStream();
+    // _handleGameStateStream();
     on<StateChangeEvent>(_updateUi);
     on<StartGameEvent>(_handleStartGameEvent);
     on<TapGameBoardTileEvent>(_handleTapGameBoardTileEvent);
     on<GuessWordEvent>(_handleGuessWordEvent);
   }
 
-  void _handleGameStateStream() {
+  void _listenForChanges() {
     repository.gameStateStream.listen((state) {
       add(StateChangeEvent(state: state));
     });
@@ -32,7 +32,19 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     emit(event.state);
   }
 
-  void _handleStartGameEvent(StartGameEvent event, Emitter<SinglePlayerState> emit) {
+  Future<void> _handleStartGameEvent(StartGameEvent event, Emitter<SinglePlayerState> emit) async {
+    //emit loading state
+    emit(state.copyWith(gameStatus: GameStatus.loading));
+
+    //init repository, connecting isolate
+    await repository.init();
+
+    _listenForChanges();
+
+    //wait for isolate to complete connection
+    final isolateConnected = await repository.isIsolateConnectedStream.first;
+
+    //call getSinglePlayerGame for repository to initiate isolate communication
     repository.getSinglePlayerGame();
   }
 

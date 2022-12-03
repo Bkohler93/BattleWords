@@ -20,9 +20,25 @@ abstract class IObjectBoxStore {
 }
 
 class ObjectBoxStore implements IObjectBoxStore {
-  ObjectBoxStore({ByteData? storeReference, this.directory}) {
+  /// This is used when RepositoryProvider provides this instance.
+  /// This happens when the app starts so timing **should** not be an issue.
+  ObjectBoxStore.createSync({ByteData? storeReference, this.directory}) {
     _initialize(storeReference: storeReference);
   }
+
+  /// Can not create an instance of ObjectBoxStore with regular constructor
+  ObjectBoxStore._();
+
+  /// Allows for asynchronous initialization. Useful for testing or
+  /// creating a store in a separate isolate.
+  static Future<ObjectBoxStore> createAsync({ByteData? storeReference}) async {
+    final objectBoxStore = ObjectBoxStore._();
+
+    await objectBoxStore._initialize(storeReference: storeReference);
+
+    return objectBoxStore;
+  }
+
   Store? store;
 
   late final Box<Word> wordBox;

@@ -19,8 +19,8 @@ void main() {
   });
 
   group("SinglePlayerScoreObjectBoxRepository", () {
-    ObjectBoxStore? store;
-    late ByteData? storeReference;
+    late ObjectBoxStore store;
+    late ByteData storeReference;
     late Directory dir;
 
     setUp(() async {
@@ -28,15 +28,14 @@ void main() {
         () async {
           dir = await getApplicationDocumentsDirectory()
               .then((dir) => Directory('${dir.path}/objectbox').create(recursive: true));
-          store = ObjectBoxStore();
-          await Future.delayed(Duration(milliseconds: 100))
-              .then((_) => storeReference = store!.reference);
+          store = await ObjectBoxStore.createAsync();
+          storeReference = store.reference;
         },
       );
     });
 
     test("setScoreState(state) sets a new state in  the store", () {
-      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference);
 
       final newState =
           SinglePlayerScoreState(currentWinStreak: 2, highestWinStreak: 3, totalGamesWon: 5);
@@ -51,7 +50,7 @@ void main() {
     });
 
     test("getScoreState returns a newly initialized SinglePlayerScoreState", () {
-      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference);
 
       final scoreState = scoreRepository.getScoreState();
 
@@ -63,7 +62,7 @@ void main() {
     test(
         "updateScoreFromGameEnd(status.win) returns a SinglePlayerScoreState with all properties incremented by 1 (increase win streak, # games won, current win streak)",
         () {
-      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference);
 
       final scoreState = scoreRepository.updateScoreFromGameEnd(status: GameStatus.win);
 
@@ -75,7 +74,7 @@ void main() {
     test(
         "updateScoreFromGameEnd(status.loss) returns a SinglePlayerScoreState with currentWinStreak set to 0 and other properties unadjusted",
         () {
-      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference);
 
       final scoreState = scoreRepository.updateScoreFromGameEnd(status: GameStatus.loss);
 
@@ -85,7 +84,7 @@ void main() {
     });
 
     test("updateScoreFromGameEnd(status.playing) returns throws an error", () {
-      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference!);
+      final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference);
 
       expect(() => scoreRepository.updateScoreFromGameEnd(status: GameStatus.playing),
           throwsException);
@@ -93,7 +92,7 @@ void main() {
 
     tearDown(() async {
       return Future(() async {
-        store!.clearAndCloseStore();
+        store.clearAndCloseStore();
         dir.delete(recursive: true).then(
               (value) => print("=== (score repository test) DB deleted: ${!value.existsSync()}"),
             );

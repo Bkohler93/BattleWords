@@ -20,7 +20,7 @@ void runSinglePlayerGameManager(Map<String, dynamic> data) async {
     final ReceivePort fromRepositoryPort = ReceivePort();
 
     //create repository for GameManager to retrieve words from
-    final objectBoxStore = ObjectBoxStore(storeReference: objectBoxReference);
+    final objectBoxStore = await ObjectBoxStore.createAsync(storeReference: objectBoxReference);
     final IHiddenWordsRepository hiddenWordsRepository =
         HiddenWordsRepository(store: objectBoxStore);
 

@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return Sizer(builder: (context, orientation, deviceType) {
       return RepositoryProvider(
         lazy: false,
-        create: (context) => ObjectBoxStore(),
+        create: (context) => ObjectBoxStore.createSync(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
