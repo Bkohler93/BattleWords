@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:battle_words/src/common/extensions/primitives.dart';
 import 'package:battle_words/src/constants/game_details.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/game/game.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/request_object.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
@@ -28,10 +29,12 @@ abstract class IGameManager {
 }
 
 class GameManager implements IGameManager {
-  GameManager(
-      {required this.toRepositoryPort,
-      required this.fromRepositoryPort,
-      required this.hiddenWordsRepository}) {
+  GameManager({
+    required this.toRepositoryPort,
+    required this.fromRepositoryPort,
+    required this.hiddenWordsRepository,
+    required this.singlePlayerWatchRepository,
+  }) {
     toRepositoryPort
         .send(fromRepositoryPort.sendPort); // send repository its port to send data to GameManager
     _initializeGame();
@@ -41,6 +44,7 @@ class GameManager implements IGameManager {
   IHiddenWordsRepository? hiddenWordsRepository;
   final SendPort toRepositoryPort;
   final ReceivePort fromRepositoryPort;
+  final SinglePlayerWatchRepository singlePlayerWatchRepository;
   late SinglePlayerState state;
 
   @override
@@ -71,8 +75,8 @@ class GameManager implements IGameManager {
             }
           case GameOver:
             {
-              fromRepositoryPort.close();
-              hiddenWordsRepository!.closeStore();
+              // fromRepositoryPort.close();
+              // hiddenWordsRepository!.closeStore();
             }
         }
       },
@@ -315,9 +319,9 @@ class GameManager implements IGameManager {
       keyboardLetterMap: keyboardLetterMap,
       gameStatus: GameStatus.playing,
     );
-    printIsolate("Sending initial state");
-    //send out initial state
-    toRepositoryPort.send(state);
+    printIsolate("Setting initial state");
+    //save state to database
+    singlePlayerWatchRepository.setSinglePlayerGame(state);
   }
 
   @override
@@ -342,7 +346,7 @@ class GameManager implements IGameManager {
 
   @override
   void _startSinglePlayerGame() {
-    toRepositoryPort.send(state);
+    singlePlayerWatchRepository.setSinglePlayerGame(state);
   }
 
   @override
@@ -366,7 +370,7 @@ class GameManager implements IGameManager {
     final SinglePlayerGameTile gameTile = state.gameBoard[row][col];
 
     if (!(gameTile.tileStatus.isHidden)) {
-      toRepositoryPort.send(state); //tile already uncovered..
+      singlePlayerWatchRepository.setSinglePlayerGame(state);
       return;
     }
 
@@ -380,7 +384,7 @@ class GameManager implements IGameManager {
     if (state.gameStatus != GameStatus.win) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }
-    toRepositoryPort.send(state);
+    singlePlayerWatchRepository.setSinglePlayerGame(state);
   }
 
   @override
@@ -417,7 +421,7 @@ class GameManager implements IGameManager {
 
     //add guessWord to state
     state = _addWordGuess(word);
-    toRepositoryPort.send(state);
+    singlePlayerWatchRepository.setSinglePlayerGame(state);
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/game/game.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/pause_menu/pause_menu_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
@@ -25,8 +26,9 @@ class SinglePlayerPage extends StatelessWidget {
         RepositoryProvider<ISinglePlayerRepository>(
           // lazy: false,
           //Isolate is created when SinglePlayerIsolateRepository is created
-          create: (context) => SinglePlayerIsolateRepository(
-              objectBoxStoreReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+          create: (context) => SinglePlayerWatchRepository(
+              store: RepositoryProvider.of<ObjectBoxStore>(context),
+              storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
         ),
         RepositoryProvider(
           create: (context) => SinglePlayerScoreObjectBoxRepository(

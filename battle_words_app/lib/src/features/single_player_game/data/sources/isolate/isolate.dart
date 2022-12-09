@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:battle_words/src/api/object_box/object_box.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/game/game.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/game_manager.dart';
@@ -24,10 +25,13 @@ void runSinglePlayerGameManager(Map<String, dynamic> data) async {
     final IHiddenWordsRepository hiddenWordsRepository =
         HiddenWordsRepository(store: objectBoxStore);
 
+    final singlePlayerWatchRepository = SinglePlayerWatchRepository(store: objectBoxStore);
+
     GameManager(
       toRepositoryPort: toRepositoryPort,
       hiddenWordsRepository: hiddenWordsRepository,
       fromRepositoryPort: fromRepositoryPort,
+      singlePlayerWatchRepository: singlePlayerWatchRepository,
     );
   } catch (err) {
     printIsolate(err.toString());

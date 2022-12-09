@@ -14,8 +14,6 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
   @override
   Stream<SinglePlayerState> get gameStateStream => _gameStateStream.stream;
 
-  Stream<bool> get isIsolateConnectedStream => _isIsolateConnected.stream;
-
   @override
   Future<void> init() async {
     await _spawnIsolate();

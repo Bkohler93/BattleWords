@@ -55,9 +55,28 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:1805410779307251895",
+      "lastPropertyId": "2:3997403214669059523",
+      "name": "SinglePlayerGameModel",
+      "properties": [
+        {
+          "id": "1:119781762709401367",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3997403214669059523",
+          "name": "jsonStringState",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:5707926258663747963",
+  "lastEntityId": "3:1805410779307251895",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
