@@ -27,7 +27,9 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
 
   void _listenForChanges() {
     repository.gameStateStream.listen((state) {
-      add(StateChangeEvent(state: state));
+      if (!isClosed) {
+        add(StateChangeEvent(state: state));
+      }
     });
   }
 
