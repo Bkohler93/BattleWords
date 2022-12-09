@@ -18,10 +18,14 @@ class SinglePlayerWatchRepository implements ISinglePlayerRepository {
   final ObjectBoxStore _store;
   final ByteData? _storeReference;
   late final SendPort toGameManagerPort;
+  late final Isolate isolate;
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    //TODO tell isolate to shut down
+    final request = GameOver();
+    toGameManagerPort.send(request);
+    isolate.kill();
   }
 
   @override
@@ -45,7 +49,7 @@ class SinglePlayerWatchRepository implements ISinglePlayerRepository {
       'objectBoxReference': _storeReference
     };
 
-    await Isolate.spawn(runSinglePlayerGameManager, gameManagerData);
+    isolate = await Isolate.spawn(runSinglePlayerGameManager, gameManagerData);
 
     toGameManagerPort = await fromGameManagerPort.first;
 

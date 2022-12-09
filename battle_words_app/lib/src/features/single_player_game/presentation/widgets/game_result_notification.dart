@@ -1,4 +1,5 @@
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/request_object.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';

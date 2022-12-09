@@ -23,6 +23,11 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     on<StartGameEvent>(_handleStartGameEvent);
     on<TapGameBoardTileEvent>(_handleTapGameBoardTileEvent);
     on<GuessWordEvent>(_handleGuessWordEvent);
+    on<GameOverEvent>(_handleGameOverEvent);
+  }
+
+  void _handleGameOverEvent(GameOverEvent event, Emitter<SinglePlayerState> emit) {
+    //TODO maybe do something here. Close block streams maybe
   }
 
   void _listenForChanges() {

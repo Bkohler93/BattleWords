@@ -1,4 +1,5 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
+import 'package:battle_words/src/api/shared_preferences/cubit/settings_cubit.dart';
 import 'package:battle_words/src/features/home_screen/presentation/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,13 +15,16 @@ class MyApp extends StatelessWidget {
       return RepositoryProvider(
         lazy: false,
         create: (context) => ObjectBoxStore.createSync(),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: Colors.white,
+        child: BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit()..loadSettings(),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              scaffoldBackgroundColor: Colors.white,
+            ),
+            home: HomePage(),
           ),
-          home: HomePage(),
         ),
       );
     });

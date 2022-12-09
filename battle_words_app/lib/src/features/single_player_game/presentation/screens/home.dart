@@ -1,4 +1,5 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
+import 'package:battle_words/src/api/shared_preferences/cubit/settings_cubit.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/screen_route_link.dart';
 import 'package:battle_words/src/features/home_screen/presentation/home.dart';
@@ -37,6 +38,23 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
   @override
   Widget build(BuildContext context) {
     //lazy  load is active so repository and bloc will not be loaded until SinglePlayerGame page initializes
+    BlocListener<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) =>
+          current.isFirstLaunch != previous.isFirstLaunch && current.isFirstLaunch,
+      listener: (context, state) => showDialog(
+        context: context,
+        builder: ((context) => AlertDialog(
+              content: Text('hello'),
+              actions: [
+                TextButton(
+                  child: Text('Ok'),
+                  onPressed: () =>
+                      BlocProvider.of<SettingsCubit>(context).updateSettings(isFirstLaunch: false),
+                )
+              ],
+            )),
+      ),
+    );
     return PageLayout(
       menuPage: true,
       child: Padding(
