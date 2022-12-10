@@ -16,6 +16,13 @@ class SettingsState extends Equatable {
   final bool isFirstLaunch;
   final SettingsStatus status;
 
+  SettingsState copyWith({bool? isFirstLaunch, SettingsStatus? status}) {
+    return SettingsState(
+      isFirstLaunch: isFirstLaunch ?? this.isFirstLaunch,
+      status: status ?? this.status,
+    );
+  }
+
   @override
   List<Object> get props => [isFirstLaunch, status];
 }

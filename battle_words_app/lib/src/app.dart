@@ -16,6 +16,8 @@ class MyApp extends StatelessWidget {
         lazy: false,
         create: (context) => ObjectBoxStore.createSync(),
         child: BlocProvider<SettingsCubit>(
+          lazy: false,
+          //change to `..resetSettings()` if needing to test single player tutorial
           create: (context) => SettingsCubit()..loadSettings(),
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

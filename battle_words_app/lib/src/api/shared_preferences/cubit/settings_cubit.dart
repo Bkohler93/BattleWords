@@ -9,17 +9,36 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   late final SharedPreferences sharedPreferences;
 
+  Future<void> resetSettings() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+
+    await sharedPreferences.setBool('isFirstLaunch', true);
+
+    emit(state.copyWith(isFirstLaunch: true, status: SettingsStatus.loaded));
+  }
+
   Future<void> loadSettings() async {
-    //TODO 1) load shared preferences instance, save into sharedPreferences
+    sharedPreferences = await SharedPreferences.getInstance();
 
-    //TODO 2) retrieve settings from shared preferences and store then into cubit state
+    bool? isFirstLaunch = sharedPreferences.getBool('isFirstLaunch');
 
-    //TODO 3) emit state with loaded
+    if (isFirstLaunch == null) {
+      await sharedPreferences.setBool('isFirstLaunch', true);
+      isFirstLaunch = true;
+    }
+
+    emit(state.copyWith(isFirstLaunch: isFirstLaunch, status: SettingsStatus.loaded));
   }
 
   Future<void> updateSettings({bool? isFirstLaunch}) async {
     //TODO update shared preferences for each parameter given
+    if (isFirstLaunch != null) {
+      await sharedPreferences.setBool('isFirstLaunch', isFirstLaunch);
+    }
 
     //TODO emit new state with updated settings
+    emit(
+      state.copyWith(isFirstLaunch: isFirstLaunch ?? state.isFirstLaunch),
+    );
   }
 }
