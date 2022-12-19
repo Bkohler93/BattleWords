@@ -201,6 +201,7 @@ class GameManager implements IGameManager {
       }
     }
 
+    //! Below can be deleted once above algorithm for placing words on board is fully tested
     // for (var hiddenWord in hiddenWords) {
     //   //place the word length of 5
     //   if (hiddenWord.length == 5) {
