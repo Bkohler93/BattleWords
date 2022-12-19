@@ -16,8 +16,18 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SinglePlayerPage extends StatelessWidget {
+class SinglePlayerPage extends StatefulWidget {
   const SinglePlayerPage({super.key});
+
+  @override
+  State<SinglePlayerPage> createState() => _SinglePlayerPageState();
+}
+
+class _SinglePlayerPageState extends State<SinglePlayerPage> {
+  void resetGame() {
+    print("resetting game");
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,16 +61,17 @@ class SinglePlayerPage extends StatelessWidget {
             ),
           ),
         ],
-        child: SinglePlayerView(),
+        child: SinglePlayerView(
+          resetGame: resetGame,
+        ),
       ),
     );
   }
 }
 
 class SinglePlayerView extends StatelessWidget {
-  const SinglePlayerView({
-    Key? key,
-  }) : super(key: key);
+  const SinglePlayerView({Key? key, required this.resetGame}) : super(key: key);
+  final VoidCallback resetGame;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +102,7 @@ class SinglePlayerView extends StatelessWidget {
                       ? GameResultNotification(
                           result: state,
                         )
-                      : Text(""),
+                      : const Text(""),
                 )),
                 Positioned(
                   // top: 2.h,
@@ -122,6 +133,7 @@ class SinglePlayerView extends StatelessWidget {
                           isPauseMenuShowing: state,
                           showOrHidePauseMenu:
                               BlocProvider.of<PauseMenuCubit>(context).showOrHidePauseMenu,
+                          resetGame: resetGame,
                         );
                       },
                     ),

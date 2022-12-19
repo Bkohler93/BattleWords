@@ -55,12 +55,12 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 200,
                           child: Text("Tutorial goes here"),
                         ),
                         TextButton(
-                          child: Text('dismiss'),
+                          child: const Text('dismiss'),
                           onPressed: () {
                             BlocProvider.of<SettingsCubit>(context)
                                 .updateSettings(isFirstLaunch: false);
@@ -161,8 +161,7 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
               ),
               Expanded(
                 flex: 1,
-                child: Container(
-                    child: Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(),
@@ -178,7 +177,7 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
                       context,
                     ),
                   ],
-                )),
+                ),
               ),
               Expanded(
                 flex: 1,

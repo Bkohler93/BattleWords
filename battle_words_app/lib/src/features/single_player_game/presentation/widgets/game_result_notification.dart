@@ -43,7 +43,7 @@ class GameResultNotification extends StatelessWidget {
                                     height: 1,
                                     width: 1,
                                   )
-                                : Text('${state[index].word}',
+                                : Text(state[index].word,
                                     style: const TextStyle(
                                       color: Colors.white,
                                     )),

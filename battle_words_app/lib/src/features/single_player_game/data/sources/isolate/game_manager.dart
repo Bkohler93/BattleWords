@@ -102,8 +102,8 @@ class GameManager implements IGameManager {
       while (!placed) {
         int col = random.nextInt(6);
         int row = random.nextInt(6);
-        int direction = random.nextInt(2); // 0 for horizontal, 1 for vertical
-        if (direction == 0) {
+        bool isHorizontal = random.nextBool();
+        if (isHorizontal) {
           // check if word fits horizontally
           if (col + hiddenWord.word.length > 6) {
             continue;
