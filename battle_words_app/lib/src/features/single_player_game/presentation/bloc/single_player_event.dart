@@ -22,3 +22,7 @@ class StateChangeEvent implements SinglePlayerEvent {
   StateChangeEvent({required this.state});
   final SinglePlayerState state;
 }
+
+class GameOverEvent implements SinglePlayerEvent {
+  GameOverEvent();
+}

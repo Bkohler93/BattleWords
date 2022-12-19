@@ -67,7 +67,6 @@ class GuessInputDisplayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final guessInputState = ref.watch(guessWordInputControllerProvider);
     /// BlocBuilder provides the keyboardLetterMap for the Keyboard widget.
     return BlocBuilder<DisplayStringCubit, DisplayStringState>(
       builder: (context, state) {

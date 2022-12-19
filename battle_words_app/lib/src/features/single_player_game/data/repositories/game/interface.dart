@@ -25,4 +25,6 @@ abstract class ISinglePlayerRepository {
   FutureOr<void> updateGameByGuessingWord({required String word});
   Stream<SinglePlayerState> get gameStateStream;
   void dispose();
+  // Stream<bool> get isIsolateConnectedStream;
+  Future<void> init();
 }

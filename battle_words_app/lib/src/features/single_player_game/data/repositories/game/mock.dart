@@ -33,4 +33,14 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
   void dispose() {
     // TODO: implement dispose
   }
+
+  @override
+  init() {
+    // TODO: implement init
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement isIsolateConnectedStream
+  Stream<bool> get isIsolateConnectedStream => throw UnimplementedError();
 }

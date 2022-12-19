@@ -1,7 +1,20 @@
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-enum TileStatus { hidden, empty, letterFound, wordFound }
+part 'game_tile.g.dart';
+
+@JsonEnum()
+enum TileStatus {
+  @JsonValue('hidden')
+  hidden,
+  @JsonValue('empty')
+  empty,
+  @JsonValue('letterFound')
+  letterFound,
+  @JsonValue('wordFound')
+  wordFound
+}
 
 extension TileStatusX on TileStatus {
   bool get isHidden => this == TileStatus.hidden;
@@ -11,6 +24,7 @@ extension TileStatusX on TileStatus {
 }
 
 @immutable
+@JsonSerializable()
 class SinglePlayerGameTile {
   final TileCoordinates coordinates;
   final TileStatus tileStatus;
@@ -32,6 +46,10 @@ class SinglePlayerGameTile {
 
   bool isEmpty() => letter.isEmpty;
   bool isNotEmpty() => letter.isNotEmpty;
+
+  factory SinglePlayerGameTile.fromJson(Map<String, dynamic> json) =>
+      _$SinglePlayerGameTileFromJson(json);
+  Map<String, dynamic> toJson() => _$SinglePlayerGameTileToJson(this);
 }
 
 extension MutableSinglePlayerGameTile on SinglePlayerGameTile {

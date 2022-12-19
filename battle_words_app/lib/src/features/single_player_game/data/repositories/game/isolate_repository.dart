@@ -2,18 +2,24 @@ part of 'interface.dart';
 
 class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
   SinglePlayerIsolateRepository({required this.objectBoxStoreReference}) {
-    _spawnIsolate();
+    // _spawnIsolate();
   }
   final ByteData objectBoxStoreReference;
   final ReceivePort fromGameManagerPort = ReceivePort();
   late final SendPort toGameManagerPort;
   Isolate? _isolate;
   final _gameStateStream = StreamController<SinglePlayerState>();
+  final _isIsolateConnected = StreamController<bool>();
 
   @override
   Stream<SinglePlayerState> get gameStateStream => _gameStateStream.stream;
 
-  void _spawnIsolate() async {
+  @override
+  Future<void> init() async {
+    await _spawnIsolate();
+  }
+
+  Future<void> _spawnIsolate() async {
     final gameManagerData = {
       'gameManagerToRepositoryPort': fromGameManagerPort.sendPort,
       'objectBoxReference': objectBoxStoreReference,
@@ -26,6 +32,8 @@ class SinglePlayerIsolateRepository implements ISinglePlayerRepository {
         if (message is SendPort) {
           print("(main isolate): repository received toGameManagerPort");
           toGameManagerPort = message;
+          _isIsolateConnected.sink
+              .add(true); //send to bloc that the isolate has been fully connected
         } else {
           _gameStateStream.sink.add(message);
         }

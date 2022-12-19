@@ -3,28 +3,38 @@ import 'package:battle_words/src/features/single_player_game/data/repositories/g
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'single_player_event.dart';
 part 'single_player_state.dart';
+part 'single_player_bloc.g.dart';
 
 class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
   final ISinglePlayerRepository repository;
 
   SinglePlayerBloc({required this.repository}) : super(const SinglePlayerState()) {
-    _handleGameStateStream();
+    // _handleGameStateStream();
     on<StateChangeEvent>(_updateUi);
     on<StartGameEvent>(_handleStartGameEvent);
     on<TapGameBoardTileEvent>(_handleTapGameBoardTileEvent);
     on<GuessWordEvent>(_handleGuessWordEvent);
+    on<GameOverEvent>(_handleGameOverEvent);
   }
 
-  void _handleGameStateStream() {
+  void _handleGameOverEvent(GameOverEvent event, Emitter<SinglePlayerState> emit) {
+    //TODO maybe do something here. Close block streams maybe
+  }
+
+  void _listenForChanges() {
     repository.gameStateStream.listen((state) {
-      add(StateChangeEvent(state: state));
+      if (!isClosed) {
+        add(StateChangeEvent(state: state));
+      }
     });
   }
 
@@ -32,7 +42,19 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     emit(event.state);
   }
 
-  void _handleStartGameEvent(StartGameEvent event, Emitter<SinglePlayerState> emit) {
+  Future<void> _handleStartGameEvent(StartGameEvent event, Emitter<SinglePlayerState> emit) async {
+    //emit loading state
+    emit(state.copyWith(gameStatus: GameStatus.loading));
+
+    //init repository, connecting isolate
+    await repository.init();
+
+    _listenForChanges();
+
+    //wait for isolate to complete connection
+    // final isolateConnected = await repository.isIsolateConnectedStream.first;
+
+    //call getSinglePlayerGame for repository to initiate isolate communication
     repository.getSinglePlayerGame();
   }
 

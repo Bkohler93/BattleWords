@@ -1,6 +1,20 @@
 part of 'single_player_bloc.dart';
 
-enum GameStatus { initial, loading, playing, win, loss, failure }
+@JsonEnum()
+enum GameStatus {
+  @JsonValue('initial')
+  initial,
+  @JsonValue('loading')
+  loading,
+  @JsonValue('playing')
+  playing,
+  @JsonValue('win')
+  win,
+  @JsonValue('loss')
+  loss,
+  @JsonValue('failure')
+  failure,
+}
 
 extension GameStatusX on GameStatus {
   bool get isInitial => this == GameStatus.initial;
@@ -12,13 +26,14 @@ extension GameStatusX on GameStatus {
 }
 
 @immutable
+@JsonSerializable()
 class SinglePlayerState extends Equatable {
-  final GameBoard gameBoard;
+  final List<List<SinglePlayerGameTile>> gameBoard; //enum GameBoartd
   final List<String> wordsGuessed;
   final List<HiddenWord> hiddenWords;
   final int movesRemaining;
   final GameStatus gameStatus;
-  final KeyboardLetterMap keyboardLetterMap; //Map<String, KeyboardLetterStatus>
+  final Map<String, KeyboardLetterStatus> keyboardLetterMap; //KeyboardLettermap
 
   const SinglePlayerState({
     this.gameBoard = const [],
@@ -86,4 +101,8 @@ class SinglePlayerState extends Equatable {
         keyboardLetterMap,
         wordsGuessed,
       ];
+
+  factory SinglePlayerState.fromJson(Map<String, dynamic> json) =>
+      _$SinglePlayerStateFromJson(json);
+  Map<String, dynamic> toJson() => _$SinglePlayerStateToJson(this);
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:battle_words/src/api/object_box/models/single_player_game.dart';
 import 'package:battle_words/src/api/object_box/models/single_player_score.dart';
 import 'package:battle_words/src/api/object_box/models/word.dart';
 import 'package:battle_words/src/api/object_box/objectbox.g.dart';
@@ -12,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 
 part 'package:battle_words/src/features/single_player_game/data/sources/object_box/word.dart';
 part 'package:battle_words/src/features/single_player_game/data/sources/object_box/single_player_score.dart';
+part 'package:battle_words/src/features/single_player_game/data/sources/object_box/single_player_game.dart';
 
 abstract class IObjectBoxStore {
   Future<void> _initialize({ByteData? storeReference});
@@ -20,18 +22,35 @@ abstract class IObjectBoxStore {
 }
 
 class ObjectBoxStore implements IObjectBoxStore {
-  ObjectBoxStore({ByteData? storeReference, this.directory}) {
-    _initialize(storeReference: storeReference);
-  }
+  /// This is used when RepositoryProvider provides this instance.
+  /// This happens when the app starts so timing **should** not be an issue.
   Store? store;
 
   late final Box<Word> wordBox;
   late final Box<SinglePlayerScore> singlePlayerScoreBox;
+  late final Box<SinglePlayerGameModel> singlePlayerGameBox;
   bool reset = RESET_DATABASE;
   String? directory;
 
+  /// Can not create an instance of ObjectBoxStore with regular constructor
+  ObjectBoxStore._();
+
   @override
   ByteData get reference => store!.reference;
+
+  ObjectBoxStore.createSync({ByteData? storeReference, this.directory}) {
+    _initialize(storeReference: storeReference);
+  }
+
+  /// Allows for asynchronous initialization. Useful for testing or
+  /// creating a store in a separate isolate.
+  static Future<ObjectBoxStore> createAsync({ByteData? storeReference}) async {
+    final objectBoxStore = ObjectBoxStore._();
+
+    await objectBoxStore._initialize(storeReference: storeReference);
+
+    return objectBoxStore;
+  }
 
   /// Ensures database has been filled with valid words. If not filled, reads the
   /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
@@ -50,6 +69,7 @@ class ObjectBoxStore implements IObjectBoxStore {
       store = Store.fromReference(getObjectBoxModel(), storeReference);
       wordBox = store!.box<Word>();
       singlePlayerScoreBox = store!.box<SinglePlayerScore>();
+      singlePlayerGameBox = store!.box<SinglePlayerGameModel>();
     } else if (store == null) {
       if (directory != null) {
         await Directory('$directory').create(recursive: true);
@@ -57,6 +77,7 @@ class ObjectBoxStore implements IObjectBoxStore {
       store = await openStore(directory: directory);
       wordBox = store!.box<Word>();
       singlePlayerScoreBox = store!.box<SinglePlayerScore>();
+      singlePlayerGameBox = store!.box<SinglePlayerGameModel>();
     }
 
     //initial launch, initialize score data to all zeros
@@ -84,6 +105,7 @@ class ObjectBoxStore implements IObjectBoxStore {
   void clearAndCloseStore() {
     singlePlayerScoreBox.removeAll();
     wordBox.removeAll();
+    singlePlayerGameBox.removeAll();
     store!.close();
   }
 }
