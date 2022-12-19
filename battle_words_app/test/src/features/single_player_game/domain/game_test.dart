@@ -8,122 +8,125 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-void main() {
-  test("SinglePlayerGame constructor initializes all required attributes", () {
-    final gameBoard = createGameboard();
-    final hiddenWords = createMockHiddenWords(); //["yup", "here", "sauce"]
-    final gameResult = GameResult.playing;
-    final movesRemaining = START_NUM_OF_MOVES;
-    final keyboardLetterMap = createBlankKeyboardLetterMap();
+//! This file contains test for old Domain/game.dart 
+//! Need to update using the SinglePlayerState that SinglePlayerBloc uses
 
-    final testGame = SinglePlayerGame(
-        gameBoard: gameBoard,
-        hiddenWords: hiddenWords,
-        movesRemaining: movesRemaining,
-        gameResult: gameResult,
-        keyboardLetterMap: keyboardLetterMap);
+// void main() {
+//   test("SinglePlayerGame constructor initializes all required attributes", () {
+//     final gameBoard = createGameboard();
+//     final hiddenWords = createMockHiddenWords(); //["yup", "here", "sauce"]
+//     final gameResult = GameResult.playing;
+//     final movesRemaining = START_NUM_OF_MOVES;
+//     final keyboardLetterMap = createBlankKeyboardLetterMap();
 
-    expect(testGame.gameBoard is GameBoard, true);
-    expect(testGame.gameResult is GameResult, true);
-    expect(testGame.hiddenWords is List<HiddenWord>, true);
-    expect(testGame.keyboardLetterMap is KeyboardLetterMap, true);
-    expect(testGame.movesRemaining is int, true);
-  });
+//     final testGame = SinglePlayerGame(
+//         gameBoard: gameBoard,
+//         hiddenWords: hiddenWords,
+//         movesRemaining: movesRemaining,
+//         gameResult: gameResult,
+//         keyboardLetterMap: keyboardLetterMap);
 
-  test("SinglePlayerGame.generate() creates a valid SinglePlayerGame", () {
-    final testGame = SinglePlayerGame.generate();
+//     expect(testGame.gameBoard is GameBoard, true);
+//     expect(testGame.gameResult is GameResult, true);
+//     expect(testGame.hiddenWords is List<HiddenWord>, true);
+//     expect(testGame.keyboardLetterMap is KeyboardLetterMap, true);
+//     expect(testGame.movesRemaining is int, true);
+//   });
 
-    final matchBoardSize = 36;
-    final matchHiddenWordsLength = 3;
-    final matchMovesRemaining = START_NUM_OF_MOVES;
+//   test("SinglePlayerGame.generate() creates a valid SinglePlayerGame", () {
+//     final testGame = SinglePlayerGame.generate();
 
-    final actualBoardSize = testGame.gameBoard.length * testGame.gameBoard[0].length;
-    final actualHiddenWordsLength = testGame.hiddenWords.length;
-    final actualMovesRemaining = testGame.movesRemaining;
+//     final matchBoardSize = 36;
+//     final matchHiddenWordsLength = 3;
+//     final matchMovesRemaining = START_NUM_OF_MOVES;
 
-    expect(actualHiddenWordsLength, matchHiddenWordsLength);
-    expect(actualMovesRemaining, matchMovesRemaining);
-    expect(actualBoardSize, matchBoardSize);
-  });
+//     final actualBoardSize = testGame.gameBoard.length * testGame.gameBoard[0].length;
+//     final actualHiddenWordsLength = testGame.hiddenWords.length;
+//     final actualMovesRemaining = testGame.movesRemaining;
 
-  test(
-      "SinglePlayerGame.copyWith(movesRemaining: 3) returns a SinglePlayerGame while only updating movesRemaining",
-      () {
-    final testGame = SinglePlayerGame.generate();
-    final updatedGame = testGame.copyWith(movesRemaining: 3);
+//     expect(actualHiddenWordsLength, matchHiddenWordsLength);
+//     expect(actualMovesRemaining, matchMovesRemaining);
+//     expect(actualBoardSize, matchBoardSize);
+//   });
 
-    final matchMovesRemaining = 3;
-    final actualMovesRemaining = updatedGame.movesRemaining;
+//   test(
+//       "SinglePlayerGame.copyWith(movesRemaining: 3) returns a SinglePlayerGame while only updating movesRemaining",
+//       () {
+//     final testGame = SinglePlayerGame.generate();
+//     final updatedGame = testGame.copyWith(movesRemaining: 3);
 
-    expect(actualMovesRemaining, matchMovesRemaining);
-  });
+//     final matchMovesRemaining = 3;
+//     final actualMovesRemaining = updatedGame.movesRemaining;
 
-  test(
-      "SinglePlayerGame.copyWith(gameBoard: [gameboard with all tiles set to TileStatus.empty]) returns a SinglePlayerGame while only updating the gameBoard",
-      () {
-    final testGame = SinglePlayerGame.generate();
-    final updatedGameBoard = List.generate(
-        GAME_BOARD_SIZE,
-        (row) => List.generate(
-            GAME_BOARD_SIZE,
-            (col) => SinglePlayerGameTile(
-                coordinates: TileCoordinates(col: col, row: row), tileStatus: TileStatus.empty)));
+//     expect(actualMovesRemaining, matchMovesRemaining);
+//   });
 
-    final updatedGame = testGame.copyWith(gameBoard: updatedGameBoard);
+//   test(
+//       "SinglePlayerGame.copyWith(gameBoard: [gameboard with all tiles set to TileStatus.empty]) returns a SinglePlayerGame while only updating the gameBoard",
+//       () {
+//     final testGame = SinglePlayerGame.generate();
+//     final updatedGameBoard = List.generate(
+//         GAME_BOARD_SIZE,
+//         (row) => List.generate(
+//             GAME_BOARD_SIZE,
+//             (col) => SinglePlayerGameTile(
+//                 coordinates: TileCoordinates(col: col, row: row), tileStatus: TileStatus.empty)));
 
-    final matchIsEveryTileEmpty = true;
-    final actualIsEveryTileEmpty = updatedGame.gameBoard.every(
-      (row) => row.every((tile) => tile.tileStatus == TileStatus.empty),
-    );
+//     final updatedGame = testGame.copyWith(gameBoard: updatedGameBoard);
 
-    expect(actualIsEveryTileEmpty, matchIsEveryTileEmpty);
-  });
+//     final matchIsEveryTileEmpty = true;
+//     final actualIsEveryTileEmpty = updatedGame.gameBoard.every(
+//       (row) => row.every((tile) => tile.tileStatus == TileStatus.empty),
+//     );
 
-  test(
-      "SinglePlayerGame.copyWith(hiddenWords: newHiddenWords) returns a SinglePlayerGame while only updating the hiddenWords",
-      () {
-    final testGame = SinglePlayerGame.generate();
-    final updatedHiddenWords = [
-      HiddenWord(word: "new"),
-      HiddenWord(word: "what"),
-      HiddenWord(word: "cheese")
-    ];
+//     expect(actualIsEveryTileEmpty, matchIsEveryTileEmpty);
+//   });
 
-    final updatedGame = testGame.copyWith(hiddenWords: updatedHiddenWords);
+//   test(
+//       "SinglePlayerGame.copyWith(hiddenWords: newHiddenWords) returns a SinglePlayerGame while only updating the hiddenWords",
+//       () {
+//     final testGame = SinglePlayerGame.generate();
+//     final updatedHiddenWords = [
+//       HiddenWord(word: "new"),
+//       HiddenWord(word: "what"),
+//       HiddenWord(word: "cheese")
+//     ];
 
-    final matchHiddenWords = ["new", "what", "cheese"];
-    final actualHiddenWords = updatedGame.hiddenWords.map((hiddenWord) => hiddenWord.word).toList();
+//     final updatedGame = testGame.copyWith(hiddenWords: updatedHiddenWords);
 
-    expect(actualHiddenWords, matchHiddenWords);
-  });
+//     final matchHiddenWords = ["new", "what", "cheese"];
+//     final actualHiddenWords = updatedGame.hiddenWords.map((hiddenWord) => hiddenWord.word).toList();
 
-  test(
-      "SinglePlayerGame.copyWith(gameResult: [GameResult.win]) returns a SinglePlayerGame while only updating the gameResult to GameResult.win",
-      () {
-    final testGame = SinglePlayerGame.generate();
+//     expect(actualHiddenWords, matchHiddenWords);
+//   });
 
-    final updatedGame = testGame.copyWith(gameResult: GameResult.win);
+//   test(
+//       "SinglePlayerGame.copyWith(gameResult: [GameResult.win]) returns a SinglePlayerGame while only updating the gameResult to GameResult.win",
+//       () {
+//     final testGame = SinglePlayerGame.generate();
 
-    final matchGameResult = GameResult.win;
-    final actualGameResult = updatedGame.gameResult;
+//     final updatedGame = testGame.copyWith(gameResult: GameResult.win);
 
-    expect(actualGameResult, matchGameResult);
-  });
+//     final matchGameResult = GameResult.win;
+//     final actualGameResult = updatedGame.gameResult;
 
-  test(
-      "SinglePlayerGame.copyWith(keyboardLetterMap: [KeyboardLetterMap all keys set to KeyboardLetterStatus.complete]) returns a SinglePlayerGame while only updating every key on keyboardLettermap to KeyboardLetterStatus.complete",
-      () {
-    final testGame = SinglePlayerGame.generate();
-    final updatedKeyboardLetterMap = createBlankKeyboardLetterMap().map(
-      (key, value) => MapEntry(key, KeyboardLetterStatus.complete),
-    );
+//     expect(actualGameResult, matchGameResult);
+//   });
 
-    final updatedGame = testGame.copyWith(keyboardLetterMap: updatedKeyboardLetterMap);
+//   test(
+//       "SinglePlayerGame.copyWith(keyboardLetterMap: [KeyboardLetterMap all keys set to KeyboardLetterStatus.complete]) returns a SinglePlayerGame while only updating every key on keyboardLettermap to KeyboardLetterStatus.complete",
+//       () {
+//     final testGame = SinglePlayerGame.generate();
+//     final updatedKeyboardLetterMap = createBlankKeyboardLetterMap().map(
+//       (key, value) => MapEntry(key, KeyboardLetterStatus.complete),
+//     );
 
-    final matchAreAllKeyStatusesComplete = true;
-    final actualAreAllKeyStatusesComplete = updatedGame.keyboardLetterMap.values
-        .every((letterStatus) => letterStatus == KeyboardLetterStatus.complete);
+//     final updatedGame = testGame.copyWith(keyboardLetterMap: updatedKeyboardLetterMap);
 
-    expect(actualAreAllKeyStatusesComplete, matchAreAllKeyStatusesComplete);
-  });
-}
+//     final matchAreAllKeyStatusesComplete = true;
+//     final actualAreAllKeyStatusesComplete = updatedGame.keyboardLetterMap.values
+//         .every((letterStatus) => letterStatus == KeyboardLetterStatus.complete);
+
+//     expect(actualAreAllKeyStatusesComplete, matchAreAllKeyStatusesComplete);
+//   });
+// }

@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^2.0.15
   awesome_dialog: ^3.0.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -53,6 +54,7 @@ dev_dependencies:
   objectbox_generator: any
   bloc_test: ^9.1.0
   json_serializable: ^6.5.4
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
