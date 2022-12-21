@@ -5,6 +5,7 @@ import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -40,7 +41,9 @@ void main() {
           store.clearAndCloseStore();
           if (dir.existsSync()) {
             final entity = await dir.delete(recursive: true);
-            print("=== (isolate repository test) DB deleted: ${!entity.existsSync()}");
+            if (kDebugMode) {
+              print("=== (isolate repository test) DB deleted: ${!entity.existsSync()}");
+            }
           }
           // dir.delete(recursive: true).then(
           //       (value) =>
@@ -102,7 +105,9 @@ void main() {
 
             //state that is being tested for updated TileStatus
             predicate<SinglePlayerState>((state) {
-              print(state.gameBoard[updateRow][updateCol].tileStatus);
+              if (kDebugMode) {
+                print(state.gameBoard[updateRow][updateCol].tileStatus);
+              }
               final isTileUncovered =
                   state.gameBoard[updateRow][updateCol].tileStatus != TileStatus.hidden;
               expect(isTileUncovered, true);
@@ -117,7 +122,9 @@ void main() {
 
       await repository.init();
       final connected = await repository.isIsolateConnectedStream.first;
-      print(connected);
+      if (kDebugMode) {
+        print(connected);
+      }
       late final guessWord; //will be determined by first incoming state
 
       expect(

@@ -2,16 +2,6 @@ part of 'interface.dart';
 
 class MockSinglePlayerRepository implements ISinglePlayerRepository {
   @override
-  FutureOr<SinglePlayerState> getSinglePlayerGame() async {
-    return SinglePlayerState.generate();
-  }
-
-  @override
-  FutureOr<bool> setSinglePlayerGame(SinglePlayerState singlePlayerGame) async {
-    return true;
-  }
-
-  @override
   FutureOr<void> updateGameByTileTap({required int col, required int row}) {
     final state = SinglePlayerState.generate();
 
@@ -40,7 +30,7 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
     throw UnimplementedError();
   }
 
-  @override
-  // TODO: implement isIsolateConnectedStream
-  Stream<bool> get isIsolateConnectedStream => throw UnimplementedError();
+  // @override
+  // // TODO: implement isIsolateConnectedStream
+  // Stream<bool> get isIsolateConnectedStream => throw UnimplementedError();
 }

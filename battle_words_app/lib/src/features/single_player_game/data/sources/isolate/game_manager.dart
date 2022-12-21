@@ -1,12 +1,11 @@
 import 'dart:isolate';
 import 'dart:math';
 
-import 'package:battle_words/src/common/extensions/primitives.dart';
 import 'package:battle_words/src/constants/game_details.dart';
-import 'package:battle_words/src/features/single_player_game/data/repositories/game/game.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/object_box_repository.dart';
 import 'package:battle_words/src/features/single_player_game/data/sources/isolate/request_object.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
-import 'package:battle_words/src/features/single_player_game/data/sources/isolate/isolate.dart';
+import 'package:battle_words/src/features/single_player_game/data/sources/isolate/main.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
@@ -14,26 +13,12 @@ import 'package:battle_words/src/features/single_player_game/presentation/bloc/s
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/domain/letter.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
 
-abstract class IGameManager {
-  void _listen();
-  void _initializeGame();
-  bool _doesTileHaveAdjacentFilledTiles(GameBoard gameBoard, int tempRow, int tempCol);
-  Direction _randomDirection();
-  void _startSinglePlayerGame();
-  SinglePlayerState flipTile({required int row, required int col});
-  void _updateGameByTileTap({required int col, required int row});
-  void _updateGameByGuessingWord({required String word});
-  SinglePlayerState _fillKeyboardLetters(SinglePlayerState singlePlayerGame, String letter);
-  SinglePlayerState _checkIfWin({required SinglePlayerState singlePlayerGame});
-  SinglePlayerState _reduceMovesRemaining({required SinglePlayerState singlePlayerGame});
-}
-
-class GameManager implements IGameManager {
+class GameManager {
   GameManager({
     required this.toRepositoryPort,
     required this.fromRepositoryPort,
     required this.hiddenWordsRepository,
-    required this.singlePlayerWatchRepository,
+    required this.objectBoxRepository,
   }) {
     toRepositoryPort
         .send(fromRepositoryPort.sendPort); // send repository its port to send data to GameManager
@@ -44,10 +29,9 @@ class GameManager implements IGameManager {
   IHiddenWordsRepository? hiddenWordsRepository;
   final SendPort toRepositoryPort;
   final ReceivePort fromRepositoryPort;
-  final SinglePlayerWatchRepository singlePlayerWatchRepository;
+  final IsolateObjectBoxRepository objectBoxRepository;
   late SinglePlayerState state;
 
-  @override
   void _listen() {
     printIsolate("Game Manager started listening");
     fromRepositoryPort.listen(
@@ -83,7 +67,6 @@ class GameManager implements IGameManager {
     );
   }
 
-  @override
   void _initializeGame() {
     printIsolate("Initializing game");
     final List<HiddenWord> hiddenWords = hiddenWordsRepository!.fetchHiddenWords();
@@ -427,35 +410,13 @@ class GameManager implements IGameManager {
     );
     printIsolate("Setting initial state");
     //save state to database
-    singlePlayerWatchRepository.setSinglePlayerGame(state);
+    objectBoxRepository.updateSinglePlayerState(state);
   }
 
-  @override
-  bool _doesTileHaveAdjacentFilledTiles(GameBoard gameBoard, int tempRow, int tempCol) {
-    //checks tile above
-    return ((tempRow != 0 ? !gameBoard[tempRow - 1][tempCol].isEmpty() : false) ||
-
-        //checks tile below
-        (tempRow != GAME_BOARD_SIZE - 1 ? !gameBoard[tempRow + 1][tempCol].isEmpty() : false) ||
-
-        //checks tile to the right
-        (tempCol != GAME_BOARD_SIZE - 1 ? !gameBoard[tempRow][tempCol + 1].isEmpty() : false) ||
-
-        //checks tile to the left
-        (tempCol != 0 ? !gameBoard[tempRow][tempCol - 1].isEmpty() : false));
-  }
-
-  @override
-  Direction _randomDirection() {
-    return Random().nextInt(2) == 1 ? Direction.horizontal : Direction.horizontal;
-  }
-
-  @override
   void _startSinglePlayerGame() {
-    singlePlayerWatchRepository.setSinglePlayerGame(state);
+    objectBoxRepository.updateSinglePlayerState(state);
   }
 
-  @override
   SinglePlayerState flipTile({required int row, required int col}) {
     SinglePlayerState singlePlayerGameCopy = state;
     switch (singlePlayerGameCopy.gameBoard[row][col].letter) {
@@ -471,12 +432,11 @@ class GameManager implements IGameManager {
     return singlePlayerGameCopy;
   }
 
-  @override
   void _updateGameByTileTap({required int col, required int row}) {
     final SinglePlayerGameTile gameTile = state.gameBoard[row][col];
 
     if (!(gameTile.tileStatus.isHidden)) {
-      singlePlayerWatchRepository.setSinglePlayerGame(state);
+      objectBoxRepository.updateSinglePlayerState(state);
       return;
     }
 
@@ -490,10 +450,9 @@ class GameManager implements IGameManager {
     if (state.gameStatus != GameStatus.win) {
       state = _reduceMovesRemaining(singlePlayerGame: state);
     }
-    singlePlayerWatchRepository.setSinglePlayerGame(state);
+    objectBoxRepository.updateSinglePlayerState(state);
   }
 
-  @override
   void _updateGameByGuessingWord({required String word}) {
     bool isExactMatch = false;
 
@@ -527,10 +486,9 @@ class GameManager implements IGameManager {
 
     //add guessWord to state
     state = _addWordGuess(word);
-    singlePlayerWatchRepository.setSinglePlayerGame(state);
+    objectBoxRepository.updateSinglePlayerState(state);
   }
 
-  @override
   SinglePlayerState _fillKeyboardLetters(SinglePlayerState singlePlayerGame, String letter) {
     //set [KeyboardLetterStatus] to [complete] if every instance of current letter is found on gameboard
 
@@ -565,7 +523,6 @@ class GameManager implements IGameManager {
   }
 
   /// Returns false if any tile on the gameboard that has a letter is still hidden
-  @override
   SinglePlayerState _checkIfWin({required SinglePlayerState singlePlayerGame}) {
     var singlePlayerGameCopy = singlePlayerGame;
     bool areAllHiddenWordsFound = true;
@@ -596,7 +553,6 @@ class GameManager implements IGameManager {
     }
   }
 
-  @override
   SinglePlayerState _reduceMovesRemaining({required SinglePlayerState singlePlayerGame}) {
     //reduce moves remaining
     singlePlayerGame =

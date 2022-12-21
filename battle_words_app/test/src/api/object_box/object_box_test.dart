@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/api/object_box/objectbox.g.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,7 +20,9 @@ void main() {
     // late final Directory dir;
 
     test("ObjectBox() opens a store.", () {
-      print(objectBoxStore.store.runtimeType);
+      if (kDebugMode) {
+        print(objectBoxStore.store.runtimeType);
+      }
       expect(objectBoxStore.store.runtimeType, Store);
     });
 

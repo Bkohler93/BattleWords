@@ -8,6 +8,7 @@ import 'package:battle_words/src/api/object_box/models/word.dart';
 import 'package:battle_words/src/api/object_box/objectbox.g.dart';
 import 'package:battle_words/src/constants/api.dart';
 import 'package:battle_words/src/constants/hidden_word_exceptions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -59,9 +60,11 @@ class ObjectBoxStore implements IObjectBoxStore {
   Future<void> _initialize({ByteData? storeReference}) async {
     if (reset) {
       Directory dir = await getApplicationDocumentsDirectory();
-      Directory('${dir.path}/objectbox/')
-          .delete(recursive: true)
-          .then((FileSystemEntity value) => print("DB Deleted: ${value.existsSync()}"));
+      Directory('${dir.path}/objectbox/').delete(recursive: true).then((FileSystemEntity value) {
+        if (kDebugMode) {
+          print("DB Deleted: ${value.existsSync()}");
+        }
+      });
       reset = false;
     }
 
@@ -94,7 +97,9 @@ class ObjectBoxStore implements IObjectBoxStore {
       );
     }
 
-    print('=== database accessed');
+    if (kDebugMode) {
+      print('=== database accessed');
+    }
   }
 
   @override

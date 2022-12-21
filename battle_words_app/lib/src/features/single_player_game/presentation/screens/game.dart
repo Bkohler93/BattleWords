@@ -1,6 +1,5 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
-import 'package:battle_words/src/features/single_player_game/data/repositories/game/game.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/pause_menu/pause_menu_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
@@ -13,6 +12,7 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/moves_remaining_display.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/pause_menu.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/word_status_indicator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +25,9 @@ class SinglePlayerPage extends StatefulWidget {
 
 class _SinglePlayerPageState extends State<SinglePlayerPage> {
   void resetGame() {
-    print("resetting game");
+    if (kDebugMode) {
+      print("resetting game");
+    }
     setState(() {});
   }
 
@@ -36,7 +38,7 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
         RepositoryProvider<ISinglePlayerRepository>(
           // lazy: false,
           //Isolate is created when SinglePlayerIsolateRepository is created
-          create: (context) => SinglePlayerWatchRepository(
+          create: (context) => SinglePlayerObjectBoxRepository(
               store: RepositoryProvider.of<ObjectBoxStore>(context),
               storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
         ),
@@ -49,7 +51,7 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
         providers: [
           BlocProvider<SinglePlayerBloc>(
             create: (context) => SinglePlayerBloc(
-              repository: RepositoryProvider.of<ISinglePlayerRepository>(context),
+              singlePlayerRepository: RepositoryProvider.of<ISinglePlayerRepository>(context),
             )..add(StartGameEvent()),
           ),
           BlocProvider(

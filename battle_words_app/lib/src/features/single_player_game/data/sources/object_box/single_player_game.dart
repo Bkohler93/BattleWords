@@ -18,7 +18,7 @@ extension SinglePlayerGameAccessor on ObjectBoxStore {
     }
   }
 
-  Stream<SinglePlayerGameModel> listenForGameChanges() {
+  Stream<SinglePlayerGameModel> listenForNewGameStates() {
     return singlePlayerGameBox.query().watch().map((query) => query.find()[0]);
   }
 

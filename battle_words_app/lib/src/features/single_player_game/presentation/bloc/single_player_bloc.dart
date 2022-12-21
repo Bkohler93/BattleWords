@@ -15,10 +15,12 @@ part 'single_player_state.dart';
 part 'single_player_bloc.g.dart';
 
 class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
-  final ISinglePlayerRepository repository;
+  final ISinglePlayerRepository singlePlayerRepository;
+  late final Stream<SinglePlayerState> incomingStateStream;
 
-  SinglePlayerBloc({required this.repository}) : super(const SinglePlayerState()) {
+  SinglePlayerBloc({required this.singlePlayerRepository}) : super(const SinglePlayerState()) {
     // _handleGameStateStream();
+    incomingStateStream = singlePlayerRepository.gameStateStream;
     on<StateChangeEvent>(_updateUi);
     on<StartGameEvent>(_handleStartGameEvent);
     on<TapGameBoardTileEvent>(_handleTapGameBoardTileEvent);
@@ -27,11 +29,12 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
   }
 
   void _handleGameOverEvent(GameOverEvent event, Emitter<SinglePlayerState> emit) {
-    //TODO maybe do something here. Close block streams maybe
+    // TODO maybe do something here. Should implement with StreamController to allow closing of stream.
+    // incomingStateStreamController.close();
   }
 
   void _listenForChanges() {
-    repository.gameStateStream.listen((state) {
+    incomingStateStream.listen((state) {
       if (!isClosed) {
         add(StateChangeEvent(state: state));
       }
@@ -47,7 +50,7 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     emit(state.copyWith(gameStatus: GameStatus.loading));
 
     //init repository, connecting isolate
-    await repository.init();
+    await singlePlayerRepository.init();
 
     _listenForChanges();
 
@@ -55,15 +58,15 @@ class SinglePlayerBloc extends Bloc<SinglePlayerEvent, SinglePlayerState> {
     // final isolateConnected = await repository.isIsolateConnectedStream.first;
 
     //call getSinglePlayerGame for repository to initiate isolate communication
-    repository.getSinglePlayerGame();
+    // repository.getSinglePlayerGame();
   }
 
   void _handleTapGameBoardTileEvent(
       TapGameBoardTileEvent event, Emitter<SinglePlayerState> emit) async {
-    await repository.updateGameByTileTap(col: event.col, row: event.row);
+    await singlePlayerRepository.updateGameByTileTap(col: event.col, row: event.row);
   }
 
   void _handleGuessWordEvent(GuessWordEvent event, Emitter<SinglePlayerState> emit) async {
-    await repository.updateGameByGuessingWord(word: event.word);
+    await singlePlayerRepository.updateGameByGuessingWord(word: event.word);
   }
 }

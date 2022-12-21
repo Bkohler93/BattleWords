@@ -7,7 +7,11 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
   @override
   List<HiddenWord> fetchHiddenWords() {
     final List<Word> words = store.getRandomWords();
-    for (var word in words) print(word.text);
+    for (var word in words) {
+      if (kDebugMode) {
+        print(word.text);
+      }
+    }
     return words.map((word) => HiddenWord(word: word.text, letterCoords: {})).toList();
   }
 
@@ -16,6 +20,7 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
     return store.isWordInDatabase(word);
   }
 
+  @override
   void closeStore() {
     store.store!.close();
   }
