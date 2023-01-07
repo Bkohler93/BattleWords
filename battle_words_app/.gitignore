@@ -47,3 +47,6 @@ app.*.map.json
 
 # ObjectBox
 objectbox.g.dart
+
+# Firebase
+/lib/firebase_options.dart

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "577335333518",
+    "project_id": "wordbattlegame-1c60d",
+    "storage_bucket": "wordbattlegame-1c60d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577335333518:android:d2096d66c2230ea2b1efdf",
+        "android_client_info": {
+          "package_name": "com.example.wardle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577335333518-t69tktdjmdmro5v00e440l63f9r7disl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWTmQL4yk3xmIvMKay-pJKzD-kulrFtMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577335333518-t69tktdjmdmro5v00e440l63f9r7disl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "577335333518-8p38j3jd46k38sdruo4on9vg3p7sttug.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.battleWords"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
