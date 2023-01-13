@@ -46,6 +46,7 @@ dependencies:
   shared_preferences: ^2.0.15
   awesome_dialog: ^3.0.2
   firebase_core: ^2.4.0
+  web_socket_channel: ^2.3.0
 
 
 dev_dependencies:
