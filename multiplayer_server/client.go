@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -63,6 +64,7 @@ func (c *Client) readPump() {
 	for {
 		_, action, err := c.conn.ReadMessage()
 		if err != nil {
+			c.room.remove <- c
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
 			}
@@ -123,6 +125,7 @@ func (c *Client) writePump() {
 }
 
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("=== User has connected: %v\n", time.Now())
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -131,13 +134,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	room := hub.rooms.getOpenRoom()
 	if room == nil {
-		room = &Room{hub: hub,
-			isOpen:     true,
-			client_one: nil,
-			client_two: nil,
-			game:       newGame(),
-			process:    make(chan []byte, 256),
-		}
+		room = newRoom(hub)
 		go room.run()
 		hub.rooms.addRoom(room)
 	}
@@ -152,7 +149,6 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	//Client is also sent to the Room stored above via the client.room.place channel, which accepts *Client
 	client.hub.register <- client
 	client.room.place <- client
-
 	// Allow collection of memory referenced by the caller by doing all work in
 	// new goroutines.
 	go client.writePump()
