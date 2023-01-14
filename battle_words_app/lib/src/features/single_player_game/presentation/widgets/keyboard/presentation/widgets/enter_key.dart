@@ -12,24 +12,31 @@ class EnterKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: flex,
       child: Padding(
         padding: const EdgeInsets.all(1.0),
         child: Container(
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.black45), borderRadius: BorderRadius.all(Radius.elliptical(5, 10))),
+              border: Border.all(color: colorScheme.background),
+              borderRadius: BorderRadius.all(Radius.elliptical(5, 10))),
           // using Material and InkWell acts like GestureDetector but also
           // includes the visual droplet effect.
           child: Material(
+            color: colorScheme.primary,
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
             child: InkWell(
               onTap: () {
                 onEnter?.call();
               },
-              child: Container(
-                child: Center(child: Text("ENTER")),
-              ),
+              child: const Center(
+                  child: Text(
+                "GUESS",
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              )),
             ),
           ),
         ),

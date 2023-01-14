@@ -12,6 +12,7 @@ class GameBoardTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return BlocSelector<SinglePlayerBloc, SinglePlayerState, SinglePlayerGameTile>(
       selector: (state) {
         return state.gameBoard[row][col];
@@ -27,22 +28,25 @@ class GameBoardTileWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border.all(
                   color: state.tileStatus == TileStatus.hidden
-                      ? Colors.black38
+                      ? colorScheme.primary
                       : state.tileStatus == TileStatus.letterFound
-                          ? Colors.green.shade100
+                          ? colorScheme.tertiary
                           : state.tileStatus == TileStatus.wordFound
-                              ? Colors.green.shade500
-                              : Colors.black12,
+                              ? colorScheme.primary
+                              : colorScheme.secondary,
                   width: 3,
                 ),
                 borderRadius: const BorderRadius.all(
                   Radius.circular(4.0),
                 ),
               ),
-              child: state.tileStatus == TileStatus.hidden ? Text("") : Text("${state.letter.toUpperCase()}"),
+              child: state.tileStatus == TileStatus.hidden
+                  ? Text("")
+                  : Text("${state.letter.toUpperCase()}"),
             ),
             onTap: () {
-              BlocProvider.of<SinglePlayerBloc>(context).add(TapGameBoardTileEvent(col: col, row: row));
+              BlocProvider.of<SinglePlayerBloc>(context)
+                  .add(TapGameBoardTileEvent(col: col, row: row));
             },
           ),
         );

@@ -12,23 +12,27 @@ class BackspaceKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: flex,
       child: Padding(
         padding: const EdgeInsets.all(1.0),
         child: Container(
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.black45), borderRadius: BorderRadius.all(Radius.elliptical(5, 10))),
+              border: Border.all(color: colorScheme.background),
+              borderRadius: const BorderRadius.all(Radius.elliptical(5, 10))),
           child: Material(
-            borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
-            color: Colors.white,
+            borderRadius: const BorderRadius.all(Radius.elliptical(5, 10)),
+            color: colorScheme.primary,
             child: InkWell(
               onTap: () {
                 onBackspace?.call();
               },
-              child: Container(
-                child: Center(
-                  child: Icon(Icons.backspace, color: Colors.black87),
+              child: Center(
+                child: Icon(
+                  Icons.backspace,
+                  color: Colors.white,
+                  size: 20,
                 ),
               ),
             ),

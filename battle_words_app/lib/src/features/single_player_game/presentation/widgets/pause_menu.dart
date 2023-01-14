@@ -26,7 +26,7 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
       // constraints: BoxConstraints.loose(Size(40.h, 80.w)),
       curve: Curves.linear,
       duration: const Duration(milliseconds: 300),
-      color: Colors.grey.shade400,
+      color: Theme.of(context).colorScheme.tertiary,
       height: widget.isPauseMenuShowing ? 40.h : 0.h,
       width: widget.isPauseMenuShowing ? 80.w : 0.w,
       child: widget.isPauseMenuShowing

@@ -16,10 +16,8 @@ class SettingsPageState extends State<SettingsPage> {
           child: Icon(Icons.home),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        body: Container(
-          child: Text(
-            "Settings Page",
-          ),
+        body: const Text(
+          "Settings Page",
         ),
       ),
     );

@@ -15,10 +15,11 @@ class GameResultNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       height: 40.h,
       width: 70.w,
-      color: Colors.black87,
+      color: colorScheme.onBackground,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: (8.h).toDouble()),
         child: BlocSelector<SinglePlayerBloc, SinglePlayerState, List<HiddenWord>>(
@@ -29,12 +30,11 @@ class GameResultNotification extends StatelessWidget {
               children: [
                 Text(
                   result.isWin ? "Winner" : "Loser",
-                  style: const TextStyle(color: Colors.white),
                 ),
                 (state.any((hiddenWord) => !hiddenWord.isWordFound))
                     ? Column(children: [
                         const Text("Words you missed",
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: List.generate(
@@ -44,10 +44,9 @@ class GameResultNotification extends StatelessWidget {
                                     height: 1,
                                     width: 1,
                                   )
-                                : Text(state[index].word,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    )),
+                                : Text(
+                                    state[index].word,
+                                  ),
                           ),
                         )
                       ])

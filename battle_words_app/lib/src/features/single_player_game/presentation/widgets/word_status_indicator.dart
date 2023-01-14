@@ -45,6 +45,7 @@ class WordStatusIndicator extends StatelessWidget {
                 child: CustomPaint(
                   painter: CirclePainter(
                     isLetterFound: state.areLettersFound[index],
+                    colorScheme: Theme.of(context).colorScheme,
                   ),
                 ),
               ),
@@ -57,13 +58,14 @@ class WordStatusIndicator extends StatelessWidget {
 }
 
 class CirclePainter extends CustomPainter {
-  CirclePainter({required this.isLetterFound});
+  CirclePainter({required this.isLetterFound, required this.colorScheme});
   final bool isLetterFound;
+  final ColorScheme colorScheme;
 
   @override
   void paint(Canvas canvas, Size size) {
     var dotPaint = Paint()
-      ..color = Colors.black
+      ..color = colorScheme.onBackground
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
@@ -72,7 +74,7 @@ class CirclePainter extends CustomPainter {
     if (isLetterFound) {
       dotPaint
         ..style = PaintingStyle.fill
-        ..color = Colors.green;
+        ..color = colorScheme.primary;
 
       canvas.drawCircle(const Offset(0, 0), 5, dotPaint);
     }

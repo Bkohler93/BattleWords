@@ -1,70 +1,45 @@
+import 'package:battle_words/src/common/widgets/page_layout.dart';
+import 'package:battle_words/src/common/widgets/screen_route_link.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/status.dart' as status;
 
-class MultiplayerHomePage extends StatefulWidget {
-  const MultiplayerHomePage({super.key});
+class MultiplayerHomeScreen extends StatefulWidget {
+  const MultiplayerHomeScreen({super.key});
 
   @override
-  State<MultiplayerHomePage> createState() => _MultiplayerHomePageState();
+  State<MultiplayerHomeScreen> createState() => MultiplayerHomeScreenState();
 }
 
-class _MultiplayerHomePageState extends State<MultiplayerHomePage> {
-  final textController = TextEditingController();
-  String message = "";
-  late final WebSocketChannel channel;
-
-  @override
-  void initState() {
-    super.initState();
-
-    //connect websocket
-    final wsUrl = Uri.parse('ws://${dotenv.env['LOCALIP']}:8080/ws');
-    channel = WebSocketChannel.connect(wsUrl);
-
-    channel.stream.listen((data) {
-      setState(() {
-        message = data;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    channel.sink.close(status.goingAway);
-    super.dispose();
-  }
-
-  void sendInput() {
-    //send through websocket
-    channel.sink.add(textController.text);
-  }
-
+class MultiplayerHomeScreenState extends State<MultiplayerHomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          floatingActionButton: ElevatedButton(
-            child: Icon(Icons.home),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          body: Column(
+    final colorScheme = Theme.of(context).colorScheme;
+    return PageLayout(
+      menuPage: true,
+      child: Column(children: [
+        Expanded(
+          flex: 1,
+          child: Container(color: colorScheme.background),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(color: colorScheme.background),
+        ),
+        Expanded(
+          flex: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Spacer(),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  message,
-                  style: TextStyle(fontSize: 45),
-                ),
-              ),
-              TextField(
-                controller: textController,
-              ),
-              TextButton(onPressed: sendInput, child: Text("Send"))
+              screenRoute('/multiplayer/profile', "Profile", context),
+              screenRoute('/multiplayer/matchmaking', "Find Game", context),
+              screenRoute('/', "Return to Home", context),
             ],
-          )),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(color: colorScheme.background),
+        ),
+      ]),
     );
   }
 }

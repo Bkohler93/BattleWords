@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 enum PauseStatus { selected, unselected }
 
 class PauseButton extends StatefulWidget {
-  const PauseButton({super.key, required this.showOrHidePauseMenu, required this.isPauseMenuShowing});
+  const PauseButton(
+      {super.key, required this.showOrHidePauseMenu, required this.isPauseMenuShowing});
   final void Function() showOrHidePauseMenu;
   final bool isPauseMenuShowing;
 
@@ -25,7 +26,8 @@ class _PauseButtonState extends State<PauseButton> with SingleTickerProviderStat
       height: 50,
       child: GestureDetector(
         onTap: widget.showOrHidePauseMenu,
-        child: PausePainterAnimation(status: widget.isPauseMenuShowing ? PauseStatus.selected : PauseStatus.unselected),
+        child: PausePainterAnimation(
+            status: widget.isPauseMenuShowing ? PauseStatus.selected : PauseStatus.unselected),
       ),
     );
   }
@@ -42,7 +44,8 @@ class PausePainterAnimation extends StatefulWidget {
 /// maintains state of animation.
 /// _controller uses a ticker to control and move to next frames
 /// _animation holds the Tween (inbetween two values) to control current displacement to control icon manipulation
-class PausePainterAnimationState extends State<PausePainterAnimation> with SingleTickerProviderStateMixin {
+class PausePainterAnimationState extends State<PausePainterAnimation>
+    with SingleTickerProviderStateMixin {
   late Animation _animation;
   late AnimationController _controller;
 
@@ -68,8 +71,9 @@ class PausePainterAnimationState extends State<PausePainterAnimation> with Singl
 
     if (oldWidget.status != widget.status) {
       _controller.reset();
-      _animation = _controller.drive(
-          widget.status == PauseStatus.selected ? Tween<double>(begin: 0, end: 5) : Tween<double>(begin: 5, end: 0))
+      _animation = _controller.drive(widget.status == PauseStatus.selected
+          ? Tween<double>(begin: 0, end: 5)
+          : Tween<double>(begin: 5, end: 0))
         ..addListener(() {
           setState(() {});
         });
@@ -87,7 +91,10 @@ class PausePainterAnimationState extends State<PausePainterAnimation> with Singl
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: PausePainter(changeAmount: _animation.value),
+      painter: PausePainter(
+        changeAmount: _animation.value,
+        colorScheme: Theme.of(context).colorScheme,
+      ),
       child: const SizedBox(
         width: 15,
         height: 15,
@@ -98,8 +105,9 @@ class PausePainterAnimationState extends State<PausePainterAnimation> with Singl
 
 ///paints the button with current displacement amount to the canvas.
 class PausePainter extends CustomPainter {
-  PausePainter({required this.changeAmount});
+  PausePainter({required this.changeAmount, required this.colorScheme});
   final double changeAmount;
+  final ColorScheme colorScheme;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -110,7 +118,7 @@ class PausePainter extends CustomPainter {
     final leftP2 = Offset(size.width / 2 - 10 + (changeAmount * 2), size.height / 2 + 15);
 
     final paint = Paint()
-      ..color = Colors.black
+      ..color = colorScheme.onBackground
       ..strokeWidth = 3;
     canvas.drawLine(rightP1, rightP2, paint);
     canvas.drawLine(leftP1, leftP2, paint);

@@ -17,34 +17,29 @@ class TextKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: flex,
       child: Padding(
         padding: const EdgeInsets.all(1.0),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black45),
+            border: Border.all(color: colorScheme.background),
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
           ),
           child: Material(
-            surfaceTintColor: Colors.black87,
+            surfaceTintColor: colorScheme.tertiary,
             elevation: 5.0,
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
             color: status == KeyboardLetterStatus.unchecked
-                ? Colors.white
-                : status == KeyboardLetterStatus.complete
-                    ? Colors.green.shade300
-                    : status == KeyboardLetterStatus.incomplete
-                        ? Colors.yellow.shade300
-                        : status == KeyboardLetterStatus.empty
-                            ? Colors.grey
-                            : Colors.red.shade300,
+                ? colorScheme.primary
+                : colorScheme.tertiary,
             child: InkWell(
               onTap: () {
                 onTextInput.call(letter);
               },
-              child: Container(
-                child: Center(child: Text(letter)),
+              child: Center(
+                child: Text(letter),
               ),
             ),
           ),

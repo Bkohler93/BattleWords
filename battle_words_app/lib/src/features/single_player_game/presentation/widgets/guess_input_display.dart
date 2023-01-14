@@ -50,6 +50,7 @@ class GuessInputDisplayView extends StatelessWidget {
                 decoration: TextDecoration.underline,
                 fontSize: 30,
                 color: status.isInvalid
+                    //TODO How are we going to alert users of these different scenarios (the colors arent good, need a little message or something)
                     ? Colors.red
                     : status.isPreviouslyGuessed
                         ? Colors.amber

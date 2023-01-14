@@ -32,7 +32,7 @@ class Keyboard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 12.0),
       child: Container(
-        height: MediaQuery.of(context).size.height / 5,
+        height: MediaQuery.of(context).size.height * (2 / 9),
         child: Column(
           children: [
             //build each row of keyboard
@@ -48,170 +48,179 @@ class Keyboard extends StatelessWidget {
 
   Expanded buildRowOne() {
     return Expanded(
-      child: Row(
-        children: [
-          TextKey(
-            status: letterMap["q"]!,
-            letter: "q",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "w",
-            status: letterMap["w"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "e",
-            status: letterMap["e"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "r",
-            status: letterMap["r"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "t",
-            status: letterMap["t"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "y",
-            status: letterMap["y"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["u"]!,
-            letter: "u",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["i"]!,
-            letter: "i",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["o"]!,
-            letter: "o",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["p"]!,
-            letter: "p",
-            onTextInput: _textInputHandler,
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        child: Row(
+          children: [
+            TextKey(
+              status: letterMap["q"]!,
+              letter: "q",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "w",
+              status: letterMap["w"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "e",
+              status: letterMap["e"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "r",
+              status: letterMap["r"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "t",
+              status: letterMap["t"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "y",
+              status: letterMap["y"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["u"]!,
+              letter: "u",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["i"]!,
+              letter: "i",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["o"]!,
+              letter: "o",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["p"]!,
+              letter: "p",
+              onTextInput: _textInputHandler,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Expanded buildRowTwo() {
     return Expanded(
-      child: Row(
-        children: [
-          SizedBox(width: 15),
-          TextKey(
-            letter: 'a',
-            status: letterMap["a"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "s",
-            status: letterMap["s"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["d"]!,
-            letter: "d",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["f"]!,
-            letter: "f",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["g"]!,
-            letter: "g",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "h",
-            status: letterMap["h"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["j"]!,
-            letter: "j",
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            letter: "k",
-            status: letterMap["k"]!,
-            onTextInput: _textInputHandler,
-          ),
-          TextKey(
-            status: letterMap["l"]!,
-            letter: "l",
-            onTextInput: _textInputHandler,
-          ),
-          SizedBox(width: 15),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Row(
+          children: [
+            SizedBox(width: 15),
+            TextKey(
+              letter: 'a',
+              status: letterMap["a"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "s",
+              status: letterMap["s"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["d"]!,
+              letter: "d",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["f"]!,
+              letter: "f",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["g"]!,
+              letter: "g",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "h",
+              status: letterMap["h"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["j"]!,
+              letter: "j",
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              letter: "k",
+              status: letterMap["k"]!,
+              onTextInput: _textInputHandler,
+            ),
+            TextKey(
+              status: letterMap["l"]!,
+              letter: "l",
+              onTextInput: _textInputHandler,
+            ),
+            SizedBox(width: 15),
+          ],
+        ),
       ),
     );
   }
 
   Expanded buildRowThree(onEnter) {
     return Expanded(
-      child: Row(children: [
-        EnterKey(flex: 5, onEnter: onEnter),
-        TextKey(
-          letter: 'z',
-          status: letterMap['z']!,
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        TextKey(
-          status: letterMap["x"]!,
-          letter: "x",
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        TextKey(
-          letter: "c",
-          status: letterMap["c"]!,
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        TextKey(
-          status: letterMap["v"]!,
-          letter: "v",
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        TextKey(
-          status: letterMap["b"]!,
-          letter: "b",
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        TextKey(
-          status: letterMap["n"]!,
-          letter: "n",
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        TextKey(
-          status: letterMap["m"]!,
-          letter: "m",
-          flex: 4,
-          onTextInput: _textInputHandler,
-        ),
-        BackspaceKey(
-          onBackspace: _backspaceHandler,
-          flex: 5,
-        ),
-      ]),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        child: Row(children: [
+          EnterKey(flex: 5, onEnter: onEnter),
+          TextKey(
+            letter: 'z',
+            status: letterMap['z']!,
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          TextKey(
+            status: letterMap["x"]!,
+            letter: "x",
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          TextKey(
+            letter: "c",
+            status: letterMap["c"]!,
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          TextKey(
+            status: letterMap["v"]!,
+            letter: "v",
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          TextKey(
+            status: letterMap["b"]!,
+            letter: "b",
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          TextKey(
+            status: letterMap["n"]!,
+            letter: "n",
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          TextKey(
+            status: letterMap["m"]!,
+            letter: "m",
+            flex: 4,
+            onTextInput: _textInputHandler,
+          ),
+          BackspaceKey(
+            onBackspace: _backspaceHandler,
+            flex: 5,
+          ),
+        ]),
+      ),
     );
   }
 }

@@ -33,6 +33,5 @@ TextStyle _defaultMenuTextStyle() => const TextStyle(
       fontSize: 20,
       fontStyle: FontStyle.normal,
       decoration: TextDecoration.none,
-      color: Colors.black,
       fontWeight: FontWeight.w400,
     );
