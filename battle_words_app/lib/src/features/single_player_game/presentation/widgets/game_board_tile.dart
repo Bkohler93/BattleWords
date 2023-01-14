@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,6 @@ class GameBoardTileWidget extends StatelessWidget {
         return state.gameBoard[row][col];
       },
       builder: (context, state) {
-        print(state.tileStatus);
         return Padding(
           padding: const EdgeInsets.all(3.0),
           child: GestureDetector(
@@ -27,17 +28,37 @@ class GameBoardTileWidget extends StatelessWidget {
               width: 5.h,
               height: 5.h,
               decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: state.tileStatus == TileStatus.letterFound
+                        ? [colorScheme.inverseSurface, colorScheme.surfaceVariant]
+                        : state.tileStatus == TileStatus.hidden
+                            ? [colorScheme.primaryContainer, colorScheme.primary]
+                            : state.tileStatus == TileStatus.empty
+                                ? [
+                                    colorScheme.background,
+                                    colorScheme.onBackground,
+                                  ]
+                                : state.tileStatus == TileStatus.wordFound
+                                    ? [
+                                        colorScheme.onSecondary,
+                                        colorScheme.secondary,
+                                      ]
+                                    : []),
                 color: state.tileStatus == TileStatus.letterFound
                     ? colorScheme.inverseSurface
                     : state.tileStatus == TileStatus.wordFound
                         ? colorScheme.secondary
-                        : colorScheme.primary,
+                        : state.tileStatus == TileStatus.empty
+                            ? colorScheme.background
+                            : colorScheme.primary,
                 border: Border.all(
                   color: state.tileStatus == TileStatus.letterFound
                       ? colorScheme.inverseSurface
                       : state.tileStatus == TileStatus.wordFound
                           ? colorScheme.secondary
-                          : colorScheme.primary,
+                          : colorScheme.primaryContainer,
                   width: 3,
                 ),
                 borderRadius: const BorderRadius.all(

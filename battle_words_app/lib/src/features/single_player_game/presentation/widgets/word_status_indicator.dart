@@ -3,8 +3,6 @@ import 'package:battle_words/src/features/single_player_game/domain/hidden_word.
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sizer/sizer.dart';
 
 class WordStatusIndicatorRow extends StatelessWidget {
   const WordStatusIndicatorRow({super.key});
@@ -65,9 +63,9 @@ class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var dotPaint = Paint()
-      ..color = colorScheme.onBackground
+      ..color = colorScheme.surface
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     canvas.drawCircle(const Offset(0, 0), 5, dotPaint);
 

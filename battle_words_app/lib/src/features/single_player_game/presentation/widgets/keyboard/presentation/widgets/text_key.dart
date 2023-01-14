@@ -25,15 +25,16 @@ class TextKey extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: colorScheme.background),
-            borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
+            borderRadius: const BorderRadius.all(Radius.elliptical(5, 10)),
           ),
           child: Material(
             surfaceTintColor: colorScheme.tertiary,
             elevation: 5.0,
-            borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
-            color: status == KeyboardLetterStatus.unchecked
-                ? colorScheme.primary
-                : colorScheme.secondary,
+            borderRadius: const BorderRadius.all(Radius.elliptical(5, 10)),
+            //key should be blacked out if it has been checked AND the letter status is either empty or complete
+            color: status == KeyboardLetterStatus.empty || status == KeyboardLetterStatus.complete
+                ? colorScheme.secondary
+                : colorScheme.primary,
             child: InkWell(
               onTap: () {
                 onTextInput.call(letter);
@@ -42,9 +43,7 @@ class TextKey extends StatelessWidget {
                 child: Text(
                   letter,
                   style: TextStyle(
-                    color: status == KeyboardLetterStatus.unchecked
-                        ? colorScheme.surface
-                        : colorScheme.background,
+                    color: colorScheme.surface,
                   ),
                 ),
               ),

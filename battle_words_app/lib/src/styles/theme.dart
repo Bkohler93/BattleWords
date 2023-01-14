@@ -59,7 +59,7 @@ final ThemeData themeData = ThemeData(
     hintColor: null,
     hoverColor: null,
     secondaryHeaderColor: null,
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: const IconThemeData(color: Colors.white),
     indicatorColor: null,
     inputDecorationTheme: null,
     listTileTheme: null,

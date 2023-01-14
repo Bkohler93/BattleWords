@@ -24,10 +24,21 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return AnimatedContainer(
-      // constraints: BoxConstraints.loose(Size(40.h, 80.w)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: colorScheme.surface.withAlpha(230),
+        boxShadow: [
+          BoxShadow(
+            blurStyle: BlurStyle.outer,
+            blurRadius: 10.0,
+            // spreadRadius: 10.0,
+            color: colorScheme.surface,
+            // offset: Offset.fromDirection(pi * 1 / 4, 5.0),
+          )
+        ],
+      ),
       curve: Curves.linear,
       duration: const Duration(milliseconds: 300),
-      color: colorScheme.surface,
       height: widget.isPauseMenuShowing ? 40.h : 0.h,
       width: widget.isPauseMenuShowing ? 80.w : 0.w,
       child: widget.isPauseMenuShowing
@@ -75,7 +86,7 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
                                 Navigator.of(context).pop(true);
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => SinglePlayerPage(),
+                                    builder: (context) => const SinglePlayerPage(),
                                   ),
                                 );
                               },
