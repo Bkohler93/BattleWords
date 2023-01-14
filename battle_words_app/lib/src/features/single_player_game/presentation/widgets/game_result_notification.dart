@@ -5,6 +5,7 @@ import 'package:battle_words/src/features/single_player_game/presentation/bloc/s
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 import 'package:sizer/sizer.dart';
 
 //* take out the required parameters, access them using BlocBuilder
@@ -62,8 +63,10 @@ class GameResultNotification extends StatelessWidget {
                         BlocProvider.of<SinglePlayerScoreCubit>(context)
                             .handleGameEnd(status: result);
                       }
+
+                      //close connections to isolate, shut down isolate.
                       RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
-                      Navigator.of(context).pop(true);
+                      context.pop(true);
                     },
                     label: const Text("Main Menu"),
                   ),

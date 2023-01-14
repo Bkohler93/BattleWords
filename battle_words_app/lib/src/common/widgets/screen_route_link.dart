@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 
 Widget screenRoute(
-  Widget screen,
+  String path,
   String linkName,
   BuildContext context, {
   void Function()? onReturn,
 }) =>
     GestureDetector(
-      onTap: () => Navigator.of(context)
-          .push(
-        MaterialPageRoute(
-          builder: (context) => screen,
-        ),
-      )
-          .then(
-        (value) {
-          if (value.runtimeType == bool) {
-            onReturn == null ? null : onReturn();
+      onTap: () async {
+        if (onReturn == null) {
+          context.go(path);
+        } else {
+          final bool? load = await context.push<bool>(path);
+
+          if (load ?? false) {
+            onReturn();
           }
-        },
-      ),
+        }
+      },
       child: SizedBox(
         width: double.infinity,
         child: Text(

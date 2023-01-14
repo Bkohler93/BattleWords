@@ -5,14 +5,14 @@ import 'package:battle_words/src/features/single_player_game/presentation/screen
 import 'package:battle_words/src/features/user_settings/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => HomePageState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return PageLayout(
@@ -37,9 +37,9 @@ class HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  screenRoute(SinglePlayerHomePage(), "Single Player", context),
-                  screenRoute(MultiplayerHomePage(), "Multiplayer", context),
-                  screenRoute(SettingsPage(), "Settings", context),
+                  screenRoute('/single-player', "Single Player", context),
+                  screenRoute('/multiplayer', "Multiplayer", context),
+                  screenRoute('/settings', "Settings", context),
                 ],
               ),
             ),

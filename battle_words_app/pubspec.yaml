@@ -47,6 +47,7 @@ dependencies:
   awesome_dialog: ^3.0.2
   firebase_core: ^2.4.0
   web_socket_channel: ^2.3.0
+  go_router_flow: ^6.0.0
 
 
 dev_dependencies:

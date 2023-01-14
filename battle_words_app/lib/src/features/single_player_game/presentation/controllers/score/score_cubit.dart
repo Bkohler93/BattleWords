@@ -14,6 +14,7 @@ class SinglePlayerScoreCubit extends Cubit<SinglePlayerScoreState> {
 
   void reloadScoreData() {
     final state = repository.getScoreState();
+    print("retrieved updated score data");
     emit(state);
   }
 

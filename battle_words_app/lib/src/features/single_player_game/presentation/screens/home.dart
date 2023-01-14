@@ -2,7 +2,7 @@ import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/api/shared_preferences/cubit/settings_cubit.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/screen_route_link.dart';
-import 'package:battle_words/src/features/home_screen/presentation/home.dart';
+import 'package:battle_words/src/features/home_screen/home.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/screens/game.dart';
@@ -166,13 +166,13 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
                   children: [
                     SizedBox(),
                     screenRoute(
-                      SinglePlayerPage(),
+                      '/single-player/play',
                       "Play",
                       context,
                       onReturn: BlocProvider.of<SinglePlayerScoreCubit>(context).reloadScoreData,
                     ),
                     screenRoute(
-                      HomePage(),
+                      '/',
                       "Back to Home",
                       context,
                     ),
