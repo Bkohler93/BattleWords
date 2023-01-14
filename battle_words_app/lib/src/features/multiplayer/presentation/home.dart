@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
@@ -19,7 +20,7 @@ class _MultiplayerHomePageState extends State<MultiplayerHomePage> {
     super.initState();
 
     //connect websocket
-    final wsUrl = Uri.parse('ws://192.168.0.249:8080/ws');
+    final wsUrl = Uri.parse('ws://${dotenv.env['LOCALIP']}:8080/ws');
     channel = WebSocketChannel.connect(wsUrl);
 
     channel.stream.listen((data) {

@@ -50,3 +50,7 @@ objectbox.g.dart
 
 # Firebase
 /lib/firebase_options.dart
+
+
+# environment variables
+.env

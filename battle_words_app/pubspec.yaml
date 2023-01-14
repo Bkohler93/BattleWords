@@ -48,7 +48,7 @@ dependencies:
   firebase_core: ^2.4.0
   web_socket_channel: ^2.3.0
   go_router_flow: ^6.0.0
-
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -57,7 +57,6 @@ dev_dependencies:
   objectbox_generator: any
   bloc_test: ^9.1.0
   json_serializable: ^6.5.4
-
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -81,8 +80,9 @@ flutter:
     # - assets/wordlists/google-10000-english.txt
     - assets/wordlists/raun_scrabble.txt
     # - assets/wordlists/word_list.txt
-  # - assets/databases/data.mdb
-  # - assets/databases/lock.mdb
+    # - assets/databases/data.mdb
+    # - assets/databases/lock.mdb
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -113,5 +113,5 @@ flutter:
 objectbox:
   # Writes objectbox-model.json and objectbox.g.dart to lib/api/object_box
   output_dir:
-    lib: src/api/object_box 
+    lib: src/api/object_box
     test: src/api/object_box
