@@ -22,11 +22,12 @@ class SinglePlayerPauseMenu extends StatefulWidget {
 class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AnimatedContainer(
       // constraints: BoxConstraints.loose(Size(40.h, 80.w)),
       curve: Curves.linear,
       duration: const Duration(milliseconds: 300),
-      color: Theme.of(context).colorScheme.tertiary,
+      color: colorScheme.surface,
       height: widget.isPauseMenuShowing ? 40.h : 0.h,
       width: widget.isPauseMenuShowing ? 80.w : 0.w,
       child: widget.isPauseMenuShowing
@@ -36,9 +37,10 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
                   flex: 1,
                   child: Container(
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       "Pause",
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                          fontSize: 32, fontWeight: FontWeight.w400, color: colorScheme.background),
                     ),
                   ),
                 ),
@@ -53,7 +55,12 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 24.0),
                             child: GestureDetector(
-                              child: const Text("Continue"),
+                              child: Text(
+                                "Continue",
+                                style: TextStyle(
+                                  color: colorScheme.background,
+                                ),
+                              ),
                               onTap: () {
                                 widget.showOrHidePauseMenu();
                               },
@@ -62,26 +69,38 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 24.0),
                             child: GestureDetector(
-                                onTap: () {
-                                  RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
-                                  // widget.resetGame();
-                                  Navigator.of(context).pop(true);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => SinglePlayerPage(),
-                                    ),
-                                  );
-                                },
-                                child: const Text("New Game")),
+                              onTap: () {
+                                RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
+                                // widget.resetGame();
+                                Navigator.of(context).pop(true);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => SinglePlayerPage(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "New Game",
+                                style: TextStyle(
+                                  color: colorScheme.background,
+                                ),
+                              ),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 24.0),
                             child: GestureDetector(
-                                onTap: () {
-                                  RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
-                                  Navigator.of(context).pop(true);
-                                },
-                                child: const Text("Quit")),
+                              onTap: () {
+                                RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
+                                Navigator.of(context).pop(true);
+                              },
+                              child: Text(
+                                "Quit",
+                                style: TextStyle(
+                                  color: colorScheme.background,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

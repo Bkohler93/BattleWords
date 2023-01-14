@@ -18,6 +18,7 @@ class GameBoardTileWidget extends StatelessWidget {
         return state.gameBoard[row][col];
       },
       builder: (context, state) {
+        print(state.tileStatus);
         return Padding(
           padding: const EdgeInsets.all(3.0),
           child: GestureDetector(
@@ -26,14 +27,17 @@ class GameBoardTileWidget extends StatelessWidget {
               width: 5.h,
               height: 5.h,
               decoration: BoxDecoration(
+                color: state.tileStatus == TileStatus.letterFound
+                    ? colorScheme.inverseSurface
+                    : state.tileStatus == TileStatus.wordFound
+                        ? colorScheme.secondary
+                        : colorScheme.primary,
                 border: Border.all(
-                  color: state.tileStatus == TileStatus.hidden
-                      ? colorScheme.primary
-                      : state.tileStatus == TileStatus.letterFound
-                          ? colorScheme.tertiary
-                          : state.tileStatus == TileStatus.wordFound
-                              ? colorScheme.primary
-                              : colorScheme.secondary,
+                  color: state.tileStatus == TileStatus.letterFound
+                      ? colorScheme.inverseSurface
+                      : state.tileStatus == TileStatus.wordFound
+                          ? colorScheme.secondary
+                          : colorScheme.primary,
                   width: 3,
                 ),
                 borderRadius: const BorderRadius.all(
@@ -42,7 +46,14 @@ class GameBoardTileWidget extends StatelessWidget {
               ),
               child: state.tileStatus == TileStatus.hidden
                   ? Text("")
-                  : Text("${state.letter.toUpperCase()}"),
+                  : Text(
+                      state.letter.toUpperCase(),
+                      style: TextStyle(
+                        color: state.tileStatus == TileStatus.wordFound
+                            ? colorScheme.inverseSurface
+                            : colorScheme.surface,
+                      ),
+                    ),
             ),
             onTap: () {
               BlocProvider.of<SinglePlayerBloc>(context)

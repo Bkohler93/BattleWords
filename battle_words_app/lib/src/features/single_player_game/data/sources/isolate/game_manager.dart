@@ -544,6 +544,15 @@ class GameManager {
       //set current hiddenWord.found to true
       if (isHiddenWordUncovered) {
         hiddenWord.isWordFound = true;
+
+        //set tile status on letters found to TileStatus.wordFound
+        for (var i = 0; i < hiddenWord.length; i++) {
+          final row = hiddenWord.letterCoords![i]!.row;
+          final col = hiddenWord.letterCoords![i]!.col;
+
+          singlePlayerGameCopy.gameBoard[row][col] =
+              singlePlayerGameCopy.gameBoard[row][col].uncover(TileStatus.wordFound);
+        }
       }
     }
     if (areAllHiddenWordsFound) {

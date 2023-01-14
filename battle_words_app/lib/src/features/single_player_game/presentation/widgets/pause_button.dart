@@ -118,7 +118,7 @@ class PausePainter extends CustomPainter {
     final leftP2 = Offset(size.width / 2 - 10 + (changeAmount * 2), size.height / 2 + 15);
 
     final paint = Paint()
-      ..color = colorScheme.onBackground
+      ..color = colorScheme.surface
       ..strokeWidth = 3;
     canvas.drawLine(rightP1, rightP2, paint);
     canvas.drawLine(leftP1, leftP2, paint);

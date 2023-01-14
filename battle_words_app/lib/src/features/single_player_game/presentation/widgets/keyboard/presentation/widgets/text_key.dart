@@ -33,13 +33,20 @@ class TextKey extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.elliptical(5, 10)),
             color: status == KeyboardLetterStatus.unchecked
                 ? colorScheme.primary
-                : colorScheme.tertiary,
+                : colorScheme.secondary,
             child: InkWell(
               onTap: () {
                 onTextInput.call(letter);
               },
               child: Center(
-                child: Text(letter),
+                child: Text(
+                  letter,
+                  style: TextStyle(
+                    color: status == KeyboardLetterStatus.unchecked
+                        ? colorScheme.surface
+                        : colorScheme.background,
+                  ),
+                ),
               ),
             ),
           ),

@@ -36,7 +36,11 @@ class GuessInputDisplay extends StatelessWidget {
 class GuessInputDisplayView extends StatelessWidget {
   const GuessInputDisplayView({super.key});
 
-  List<Widget> buildDisplay(String displayString, DisplayStringStatus status) {
+  List<Widget> buildDisplay(
+    String displayString,
+    DisplayStringStatus status,
+    ColorScheme colorScheme,
+  ) {
     List<Widget> widgetList = [];
 
     // create a new text widget for each letter of guessInput
@@ -47,18 +51,19 @@ class GuessInputDisplayView extends StatelessWidget {
           child: Text(
             displayString[i],
             style: TextStyle(
-                decoration: TextDecoration.underline,
-                fontSize: 30,
-                color: status.isInvalid
-                    //TODO How are we going to alert users of these different scenarios (the colors arent good, need a little message or something)
-                    ? Colors.red
-                    : status.isPreviouslyGuessed
-                        ? Colors.amber
-                        : status.isGuessing
-                            ? Colors.green
-                            : status.isIncorrectLength
-                                ? Colors.purple
-                                : Colors.black),
+              decoration: TextDecoration.underline,
+              fontSize: 30,
+              color: status.isInvalid
+                  //TODO How are we going to alert users of these different scenarios (the colors arent good, need a little message or something)
+                  ? Colors.red
+                  : status.isPreviouslyGuessed
+                      ? Colors.amber
+                      : status.isGuessing
+                          ? Colors.green
+                          : status.isIncorrectLength
+                              ? Colors.purple
+                              : colorScheme.surface,
+            ),
           ),
         ),
       );
@@ -68,6 +73,8 @@ class GuessInputDisplayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     /// BlocBuilder provides the keyboardLetterMap for the Keyboard widget.
     return BlocBuilder<DisplayStringCubit, DisplayStringState>(
       builder: (context, state) {
@@ -88,6 +95,7 @@ class GuessInputDisplayView extends StatelessWidget {
                   ...buildDisplay(
                     state.displayString,
                     state.displayStringStatus,
+                    colorScheme,
                   )
                 ],
               ),
