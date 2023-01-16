@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-class PageLayout extends StatelessWidget {
-  const PageLayout({super.key, required this.child, required this.menuPage});
+class ScreenLayout extends StatelessWidget {
+  const ScreenLayout({super.key, required this.child, required this.menuPage});
   final Widget child;
   final bool menuPage;
 

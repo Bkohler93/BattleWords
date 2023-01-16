@@ -77,7 +77,7 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
             );
           });
         }
-        return PageLayout(
+        return ScreenLayout(
           menuPage: true,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

@@ -9,11 +9,9 @@ class SinglePlayerPauseMenu extends StatefulWidget {
     Key? key,
     required this.isPauseMenuShowing,
     required this.showOrHidePauseMenu,
-    required this.resetGame,
   }) : super(key: key);
   final bool isPauseMenuShowing;
   final Function showOrHidePauseMenu;
-  final VoidCallback resetGame;
 
   @override
   State<SinglePlayerPauseMenu> createState() => SinglePlayerPauseMenuState();
@@ -82,7 +80,6 @@ class SinglePlayerPauseMenuState extends State<SinglePlayerPauseMenu> {
                             child: GestureDetector(
                               onTap: () {
                                 RepositoryProvider.of<ISinglePlayerRepository>(context).dispose();
-                                // widget.resetGame();
                                 Navigator.of(context).pop(true);
                                 Navigator.of(context).push(
                                   MaterialPageRoute(

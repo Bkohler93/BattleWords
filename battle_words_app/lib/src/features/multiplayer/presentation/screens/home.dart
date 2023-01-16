@@ -13,7 +13,7 @@ class MultiplayerHomeScreenState extends State<MultiplayerHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return PageLayout(
+    return ScreenLayout(
       menuPage: true,
       child: Column(children: [
         Expanded(

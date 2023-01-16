@@ -1,6 +1,7 @@
 import 'package:battle_words/src/features/home_screen/home.dart';
-import 'package:battle_words/src/features/multiplayer/presentation/game.dart';
-import 'package:battle_words/src/features/multiplayer/presentation/home.dart';
+import 'package:battle_words/src/features/multiplayer/presentation/screens/matchmaking.dart';
+import 'package:battle_words/src/features/multiplayer/presentation/screens/home.dart';
+import 'package:battle_words/src/features/multiplayer/presentation/screens/profile.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/screens/game.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/screens/home.dart';
 import 'package:go_router_flow/go_router_flow.dart';
@@ -23,7 +24,7 @@ final GoRouter router = GoRouter(routes: [
         routes: <GoRoute>[
           GoRoute(
             path: 'profile',
-            builder: (context, state) => throw UnimplementedError(),
+            builder: (context, state) => const MultiplayerProfileScreen(),
           ),
           GoRoute(
               path: 'matchmaking',

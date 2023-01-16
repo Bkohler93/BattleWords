@@ -13,7 +13,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return PageLayout(
+    return ScreenLayout(
       menuPage: true,
       child: Column(
         children: <Widget>[

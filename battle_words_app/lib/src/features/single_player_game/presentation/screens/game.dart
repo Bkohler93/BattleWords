@@ -24,12 +24,12 @@ class SinglePlayerPage extends StatefulWidget {
 }
 
 class _SinglePlayerPageState extends State<SinglePlayerPage> {
-  void resetGame() {
-    if (kDebugMode) {
-      print("resetting game");
-    }
-    setState(() {});
-  }
+  // void resetGame() {
+  //   if (kDebugMode) {
+  //     print("resetting game");
+  //   }
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -63,21 +63,18 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
             ),
           ),
         ],
-        child: SinglePlayerView(
-          resetGame: resetGame,
-        ),
+        child: const SinglePlayerView(),
       ),
     );
   }
 }
 
 class SinglePlayerView extends StatelessWidget {
-  const SinglePlayerView({Key? key, required this.resetGame}) : super(key: key);
-  final VoidCallback resetGame;
+  const SinglePlayerView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return PageLayout(
+    return ScreenLayout(
       menuPage: false,
       child: BlocSelector<SinglePlayerBloc, SinglePlayerState, GameStatus>(
         selector: ((state) => state.gameStatus),
@@ -135,7 +132,6 @@ class SinglePlayerView extends StatelessWidget {
                           isPauseMenuShowing: state,
                           showOrHidePauseMenu:
                               BlocProvider.of<PauseMenuCubit>(context).showOrHidePauseMenu,
-                          resetGame: resetGame,
                         );
                       },
                     ),
