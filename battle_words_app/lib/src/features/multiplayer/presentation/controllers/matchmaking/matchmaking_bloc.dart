@@ -1,8 +1,7 @@
 import 'package:battle_words/src/features/multiplayer/data/repository.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 part 'matchmaking_event.dart';
 part 'matchmaking_state.dart';

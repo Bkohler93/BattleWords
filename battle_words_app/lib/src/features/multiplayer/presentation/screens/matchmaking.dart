@@ -1,3 +1,4 @@
+import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/multiplayer/data/repository.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/matchmaking/matchmaking_bloc.dart';
 import 'package:flutter/material.dart';
@@ -32,58 +33,54 @@ class MatchmakingView extends StatefulWidget {
 class _MatchmakingViewState extends State<MatchmakingView> {
   final textController = TextEditingController();
   String message = "";
-  late final WebSocketChannel channel;
-
-  @override
-  void initState() {
-    super.initState();
-
-    //connect websocket
-    final wsUrl = Uri.parse('ws://${dotenv.env['LOCALIP']}:8080/ws');
-    channel = WebSocketChannel.connect(wsUrl);
-
-    channel.stream.listen((data) {
-      setState(() {
-        message = data;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    channel.sink.close(status.goingAway);
-    super.dispose();
-  }
-
-  void sendInput() {
-    //send through websocket
-    channel.sink.add(textController.text);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          floatingActionButton: ElevatedButton(
-            child: Icon(Icons.home),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          body: Column(
-            children: [
-              Spacer(),
-              Expanded(
-                flex: 2,
-                child: Text(
-                  message,
-                  style: TextStyle(fontSize: 45),
+    return ScreenLayout(
+      menuPage: false,
+      child: BlocBuilder<MatchmakingBloc, MatchmakingState>(
+        builder: (context, state) {
+          if (state.runtimeType == MatchmakingSearching) {
+            return Center(
+              child: Column(children: const [
+                Text("Finding match"),
+              ]),
+            );
+          } else if (state.runtimeType == MatchmakingFoundGame) {
+            return Center(
+                child: Column(children: [
+              const Text("Found Game"),
+              TextButton(
+                child: const Text(
+                  "Ready",
                 ),
-              ),
-              TextField(
-                controller: textController,
-              ),
-              TextButton(onPressed: sendInput, child: Text("Send"))
-            ],
-          )),
+                onPressed: () => print("pressed reaady button"),
+              )
+            ]));
+          } else if (state.runtimeType == MatchmakingReady) {
+            return Center(
+                child: Column(
+              children: const [
+                Text("Awaiting opponent to ready up"),
+              ],
+            ));
+          } else if (state.runtimeType == MatchmakingOpponentTimeout) {
+            return Center(
+                child: Column(
+              children: const [
+                Text(
+                  "Opponent failed to respond in time",
+                )
+              ],
+            ));
+          } else {
+            return Center(
+                child: Column(
+              children: const [Text("Error")],
+            ));
+          }
+        },
+      ),
     );
   }
 }
