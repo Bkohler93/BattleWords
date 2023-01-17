@@ -49,6 +49,7 @@ dependencies:
   web_socket_channel: ^2.3.0
   go_router_flow: ^6.0.0
   flutter_dotenv: ^5.0.2
+  bloc_concurrency: ^0.2.0
 
 dev_dependencies:
   flutter_test:

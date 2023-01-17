@@ -3,22 +3,16 @@ import 'package:battle_words/src/features/multiplayer/data/repository.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/matchmaking/matchmaking_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/status.dart' as status;
 
 class MatchmakingScreen extends StatelessWidget {
   const MatchmakingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => MatchmakingRepository(),
-      child: BlocProvider<MatchmakingBloc>(
-        create: (context) => MatchmakingBloc(matchmakingRepo: RepositoryProvider.of(context))
-          ..add(InitializeMatchmaking()),
-        child: MatchmakingView(),
-      ),
+    return BlocProvider<MatchmakingBloc>(
+      create: (context) => MatchmakingBloc(matchmakingRepo: RepositoryProvider.of(context))
+        ..add(InitializeMatchmaking()),
+      child: const MatchmakingView(),
     );
   }
 }
@@ -40,13 +34,13 @@ class _MatchmakingViewState extends State<MatchmakingView> {
       menuPage: false,
       child: BlocBuilder<MatchmakingBloc, MatchmakingState>(
         builder: (context, state) {
-          if (state.runtimeType == MatchmakingSearching) {
+          if (state.isMatchmakingSearching) {
             return Center(
               child: Column(children: const [
                 Text("Finding match"),
               ]),
             );
-          } else if (state.runtimeType == MatchmakingFoundGame) {
+          } else if (state.isMatchmakingFoundGame) {
             return Center(
                 child: Column(children: [
               const Text("Found Game"),
@@ -57,20 +51,32 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                 onPressed: () => print("pressed reaady button"),
               )
             ]));
-          } else if (state.runtimeType == MatchmakingReady) {
+          } else if (state.isMatchmakingReady) {
             return Center(
                 child: Column(
               children: const [
                 Text("Awaiting opponent to ready up"),
               ],
             ));
-          } else if (state.runtimeType == MatchmakingOpponentTimeout) {
+          } else if (state.isMatchmakingOpponentTimeout) {
             return Center(
                 child: Column(
               children: const [
                 Text(
                   "Opponent failed to respond in time",
                 )
+              ],
+            ));
+          } else if (state.isMatchmakingStartGame) {
+            //wait for animations to complete on starting game
+            Future.delayed(const Duration(seconds: 1), () {
+              //TODO send to multiplayer game page
+              //context.go('multiplayer-game')
+            });
+            return Center(
+                child: Column(
+              children: const [
+                Text("Starting Game"),
               ],
             ));
           } else {

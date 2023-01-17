@@ -17,7 +17,7 @@ part 'package:battle_words/src/features/single_player_game/data/sources/object_b
 part 'package:battle_words/src/features/single_player_game/data/sources/object_box/single_player_game.dart';
 
 abstract class IObjectBoxStore {
-  Future<void> _initialize({ByteData? storeReference});
+  // Future<void> _initialize({ByteData? storeReference});
   ByteData get reference;
   void closeStore();
 }
@@ -56,7 +56,6 @@ class ObjectBoxStore implements IObjectBoxStore {
   /// Ensures database has been filled with valid words. If not filled, reads the
   /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
   /// txt file name.
-  @override
   Future<void> _initialize({ByteData? storeReference}) async {
     if (reset) {
       Directory dir = await getApplicationDocumentsDirectory();
@@ -118,7 +117,6 @@ class ObjectBoxStore implements IObjectBoxStore {
 class MockObjectBoxStore implements IObjectBoxStore {
   MockObjectBoxStore(); //do not call initialize on mock store
 
-  @override
   Future<void> _initialize({ByteData? storeReference}) {
     throw UnimplementedError();
   }

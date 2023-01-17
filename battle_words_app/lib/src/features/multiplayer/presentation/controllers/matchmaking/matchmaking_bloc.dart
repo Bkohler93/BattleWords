@@ -1,5 +1,6 @@
 import 'package:battle_words/src/features/multiplayer/data/repository.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,7 +12,7 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
 
   MatchmakingBloc({required this.matchmakingRepo}) : super(MatchmakingSearching()) {
     on<InitializeMatchmaking>((event, emit) async {
-      await emit.forEach(matchmakingRepo.connectAndListen(), onData: (status) {
+      await emit.forEach(matchmakingRepo.onNewState, onData: (status) {
         switch (status.status) {
           case MatchmakingStatus.gameFound:
             return MatchmakingFoundGame();
@@ -21,11 +22,13 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
             return MatchmakingConnectionError();
           case MatchmakingStatus.opponentDeclined:
             return MatchmakingOpponentTimeout();
+          case MatchmakingStatus.startingGame:
+            return MatchmakingStartGame();
           default:
             return MatchmakingConnectionError();
         }
       });
-    });
+    }, transformer: restartable()); //restart process if new data is received
 
     on<PressPlayButton>((event, emit) {
       //send to server "ready"

@@ -26,7 +26,9 @@ enum MatchmakingStatus {
   @JsonValue('connectionError')
   connectionError,
   @JsonValue('opponentDeclined')
-  opponentDeclined
+  opponentDeclined,
+  @JsonValue('startingGame')
+  startingGame,
 }
 
 extension MatchmakingStatusX on MatchmakingStatus {

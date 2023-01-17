@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
@@ -6,15 +7,35 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MatchmakingRepository {
   late final WebSocketChannel channel;
+  final StreamController<MatchmakingServerStatus> _onNewState = StreamController();
+  late StreamSubscription<dynamic> subscription;
 
-  Stream<MatchmakingServerStatus> connectAndListen() async* {
+  Stream<MatchmakingServerStatus> get onNewState => _onNewState.stream.asBroadcastStream();
+
+  void connectAndListen() async {
     final wsUrl = Uri.parse('ws://${dotenv.env['LOCALIP']}:8080/ws');
     channel = WebSocketChannel.connect(wsUrl);
 
-    await for (dynamic data in channel.stream) {
-      final status = MatchmakingServerStatus.fromJson(jsonDecode(data));
+    subscription = channel.stream.listen(
+      (event) => _onNewState.sink.add(
+        MatchmakingServerStatus.fromJson(
+          jsonDecode(event),
+        ),
+      ),
+    );
+  }
 
-      yield status;
-    }
+  void stopListening() {
+    subscription.cancel();
+  }
+
+  void resumeListening() {
+    subscription = channel.stream.listen(
+      (event) => _onNewState.sink.add(
+        MatchmakingServerStatus.fromJson(
+          jsonDecode(event),
+        ),
+      ),
+    );
   }
 }
