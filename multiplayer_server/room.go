@@ -51,6 +51,9 @@ func (r *Room) run() {
 				fmt.Println("=== a room received its second client")
 				r.client_two = client
 				r.isOpen = false
+
+				r.client_one.send <- startGame()
+				r.client_two.send <- startGame()
 			}
 		case action := <-r.process:
 			fmt.Println("received an action")
@@ -60,7 +63,7 @@ func (r *Room) run() {
 			responseStr := "{'status':'startingGame'}"
 			r.client_one.send <- []byte(responseStr)
 
-			//determine what type of action (tap key, guess word, continue, etc.)
+			//determine what type of action (matchmaking, setup, tap key, guess word, continue, etc.)
 			//TODO
 
 			//perform game logic using r.game and associated method with action and update state accordingly

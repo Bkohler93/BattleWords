@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:battle_words/src/helpers/json.dart';
 
 class MatchmakingRepository {
   MatchmakingRepository({required this.webSocketManager});
   final WebSocketManager webSocketManager;
-  StreamController<MatchmakingServerState> webSocketManagerController = StreamController();
+  StreamController<MatchmakingServerState> streamController = StreamController();
 
-  Stream<MatchmakingServerState> get stateStream => webSocketManagerController.stream;
+  Stream<MatchmakingServerState> get stateStream => streamController.stream;
   void stopListening() {
     //TODO
   }
@@ -22,16 +22,15 @@ class MatchmakingRepository {
 
     webSocketManager.stream.listen(
       (data) {
-        //go server returns string with ' around names instead of ", which is required by Flutter's jsonDecode method.
-        final jsonData = data.replaceAll("'", '"');
+        final jsonData = fixGoJson(data);
         final MatchmakingServerState status = MatchmakingServerState.fromJson(jsonDecode(jsonData));
-        webSocketManagerController.sink.add(status);
+        streamController.sink.add(status);
       },
       onError: (err) {
         final MatchmakingServerState status =
             MatchmakingServerState(status: MatchmakingServerStatus.connectionError);
-        print(err);
-        webSocketManagerController.sink.add(status);
+        log(err);
+        streamController.sink.add(status);
       },
     );
 
