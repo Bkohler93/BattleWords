@@ -3,22 +3,22 @@ import 'package:json_annotation/json_annotation.dart';
 part 'matchmaking.g.dart';
 
 @JsonSerializable()
-class MatchmakingServerStatus {
-  MatchmakingServerStatus({required this.status});
+class MatchmakingServerState {
+  MatchmakingServerState({required this.status});
 
-  final MatchmakingStatus status;
+  final MatchmakingServerStatus status;
 
   /// Connect the generated [_$PersonFromJson] function to the `fromJson`
   /// factory.
-  factory MatchmakingServerStatus.fromJson(Map<String, dynamic> json) =>
-      _$MatchmakingServerStatusFromJson(json);
+  factory MatchmakingServerState.fromJson(Map<String, dynamic> json) =>
+      _$MatchmakingServerStateFromJson(json);
 
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
-  Map<String, dynamic> toJson() => _$MatchmakingServerStatusToJson(this);
+  Map<String, dynamic> toJson() => _$MatchmakingServerStateToJson(this);
 }
 
 @JsonEnum()
-enum MatchmakingStatus {
+enum MatchmakingServerStatus {
   @JsonValue('gameFound')
   gameFound,
   @JsonValue('ready')
@@ -29,11 +29,15 @@ enum MatchmakingStatus {
   opponentDeclined,
   @JsonValue('startingGame')
   startingGame,
+  @JsonValue('testStart')
+  testStart,
 }
 
-extension MatchmakingStatusX on MatchmakingStatus {
-  bool get isGameFound => this == MatchmakingStatus.gameFound;
-  bool get isReady => this == MatchmakingStatus.ready;
-  bool get isConnectionError => this == MatchmakingStatus.connectionError;
-  bool get isOpponentDeclined => this == MatchmakingStatus.opponentDeclined;
+extension MatchmakingStatusX on MatchmakingServerStatus {
+  bool get isGameFound => this == MatchmakingServerStatus.gameFound;
+  bool get isReady => this == MatchmakingServerStatus.ready;
+  bool get isConnectionError => this == MatchmakingServerStatus.connectionError;
+  bool get isOpponentDeclined => this == MatchmakingServerStatus.opponentDeclined;
+  bool get isStartingGame => this == MatchmakingServerStatus.startingGame;
+  bool get isTestStart => this == MatchmakingServerStatus.testStart;
 }

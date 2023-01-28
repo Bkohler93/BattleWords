@@ -1,6 +1,5 @@
 import 'package:battle_words/src/features/multiplayer/data/repository.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,34 +10,49 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
   final MatchmakingRepository matchmakingRepo;
 
   MatchmakingBloc({required this.matchmakingRepo}) : super(MatchmakingSearching()) {
+    on<FindMatch>(
+      (event, emit) async {
+        await emit.forEach(
+          matchmakingRepo.stateStream,
+          onData: (state) {
+            switch (state.status) {
+              case MatchmakingServerStatus.gameFound:
+                return MatchmakingFoundGame();
+              case MatchmakingServerStatus.ready:
+                return MatchmakingReady();
+              case MatchmakingServerStatus.connectionError:
+                return MatchmakingConnectionError();
+              case MatchmakingServerStatus.opponentDeclined:
+                return MatchmakingOpponentTimeout();
+              case MatchmakingServerStatus.startingGame:
+                matchmakingRepo.stopListening();
+                return MatchmakingStartGame();
+              default:
+                return MatchmakingConnectionError();
+            }
+          },
+          onError: (error, stackTrace) => MatchmakingConnectionError(),
+        );
+      },
+    );
     on<InitializeMatchmaking>((event, emit) async {
-      await emit.forEach(matchmakingRepo.onNewState, onData: (status) {
-        switch (status.status) {
-          case MatchmakingStatus.gameFound:
-            return MatchmakingFoundGame();
-          case MatchmakingStatus.ready:
-            return MatchmakingReady();
-          case MatchmakingStatus.connectionError:
-            return MatchmakingConnectionError();
-          case MatchmakingStatus.opponentDeclined:
-            return MatchmakingOpponentTimeout();
-          case MatchmakingStatus.startingGame:
-            return MatchmakingStartGame();
-          default:
-            return MatchmakingConnectionError();
-        }
-      });
-    }, transformer: restartable()); //restart process if new data is received
+      emit(MatchmakingConnecting());
+      await matchmakingRepo.connect();
+      add(FindMatch());
+    });
 
-    on<PressPlayButton>((event, emit) {
+    on<PressPlayButton>((event, emit) async {
       //send to server "ready"
+      await matchmakingRepo.sendReady();
 
       //emit MatchmakingReady
     });
-    on<RetryMatchmaking>((event, emit) {
-      //emit MatchmakingSearching state
 
-      //disconnect websocket, reconnect to server
-    });
+    //! RetryMatchmaking needs to be implemented
+    // on<RetryMatchmaking>((event, emit) async {
+    //   emit(MatchmakingConnecting());
+    //   await matchmakingRepo.reconnect();
+    //   add(FindMatch());
+    // });
   }
 }

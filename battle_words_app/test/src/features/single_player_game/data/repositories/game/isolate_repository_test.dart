@@ -55,13 +55,13 @@ void main() {
 
     test("getSinglePlayerGame results in gameStateStream sending back a new SinglePlayerGame state",
         () async {
-      final SinglePlayerIsolateRepository repository =
-          SinglePlayerIsolateRepository(objectBoxStoreReference: storeReference);
+      final SinglePlayerObjectBoxRepository repository =
+          SinglePlayerObjectBoxRepository(store: store);
 
       await repository.init();
       await repository.isIsolateConnectedStream.first;
 
-      repository.getSinglePlayerGame();
+      // repository.getSinglePlayerGame();
 
       expect(repository.gameStateStream, emits(predicate((value) {
         expect(value.runtimeType, SinglePlayerState);
@@ -83,8 +83,8 @@ void main() {
     // });
 
     test("updateGameByTileTap returns a state with the correct tile set to uncovered", () async {
-      final SinglePlayerIsolateRepository repository =
-          SinglePlayerIsolateRepository(objectBoxStoreReference: storeReference);
+      final SinglePlayerObjectBoxRepository repository =
+          SinglePlayerObjectBoxRepository(store: store);
 
       await repository.init();
       await repository.isIsolateConnectedStream.first; //wait for isolate connection to complete
@@ -117,8 +117,8 @@ void main() {
     });
 
     test("updateGameByGuessingWord updates the gamestate based on guessing the word", () async {
-      final SinglePlayerIsolateRepository repository =
-          SinglePlayerIsolateRepository(objectBoxStoreReference: storeReference);
+      final SinglePlayerObjectBoxRepository repository =
+          SinglePlayerObjectBoxRepository(store: store);
 
       await repository.init();
       final connected = await repository.isIsolateConnectedStream.first;

@@ -1,5 +1,4 @@
 import 'package:battle_words/src/constants/game_details.dart';
-import 'package:battle_words/src/features/single_player_game/domain/game.dart';
 import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';

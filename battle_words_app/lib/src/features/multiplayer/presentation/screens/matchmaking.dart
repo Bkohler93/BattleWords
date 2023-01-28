@@ -1,5 +1,6 @@
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/multiplayer/data/repository.dart';
+import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/matchmaking/matchmaking_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,10 +10,14 @@ class MatchmakingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MatchmakingBloc>(
-      create: (context) => MatchmakingBloc(matchmakingRepo: RepositoryProvider.of(context))
-        ..add(InitializeMatchmaking()),
-      child: const MatchmakingView(),
+    return RepositoryProvider(
+      create: (context) => MatchmakingRepository(webSocketManager: WebSocketManager()),
+      child: BlocProvider<MatchmakingBloc>(
+        create: (context) =>
+            MatchmakingBloc(matchmakingRepo: RepositoryProvider.of<MatchmakingRepository>(context))
+              ..add(InitializeMatchmaking()),
+        child: const MatchmakingView(),
+      ),
     );
   }
 }
@@ -40,6 +45,12 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                 Text("Finding match"),
               ]),
             );
+          } else if (state.isMatchmakingConnecting) {
+            return Center(
+              child: Column(children: const [
+                Text("Connecting"),
+              ]),
+            );
           } else if (state.isMatchmakingFoundGame) {
             return Center(
                 child: Column(children: [
@@ -48,7 +59,10 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                 child: const Text(
                   "Ready",
                 ),
-                onPressed: () => print("pressed reaady button"),
+                onPressed: () {
+                  print("pressed reaady button");
+                  BlocProvider.of<MatchmakingBloc>(context).add(PressPlayButton());
+                },
               )
             ]));
           } else if (state.isMatchmakingReady) {
@@ -79,10 +93,15 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                 Text("Starting Game"),
               ],
             ));
-          } else {
+          } else if (state.isMatchmakingConnectionError) {
             return Center(
                 child: Column(
               children: const [Text("Error")],
+            ));
+          } else {
+            return Center(
+                child: Column(
+              children: const [Text("Unknown Error")],
             ));
           }
         },

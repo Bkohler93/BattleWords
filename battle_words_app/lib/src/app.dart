@@ -21,9 +21,6 @@ class MyApp extends StatelessWidget {
             lazy: false,
             create: (context) => ObjectBoxStore.createSync(),
           ),
-          RepositoryProvider(
-            create: (context) => MatchmakingRepository(),
-          ),
         ],
         child: BlocProvider<SettingsCubit>(
           lazy: false,

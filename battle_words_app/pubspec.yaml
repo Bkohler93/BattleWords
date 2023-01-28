@@ -50,6 +50,8 @@ dependencies:
   go_router_flow: ^6.0.0
   flutter_dotenv: ^5.0.2
   bloc_concurrency: ^0.2.0
+  rxdart: ^0.27.7
+  mocktail: ^0.3.0
 
 dev_dependencies:
   flutter_test:

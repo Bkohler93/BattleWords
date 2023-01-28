@@ -54,6 +54,12 @@ func (r *Room) run() {
 			}
 		case action := <-r.process:
 			fmt.Println("received an action")
+
+			//! Temporary communication test with single client
+			fmt.Println(string(action))
+			responseStr := "{'status':'startingGame'}"
+			r.client_one.send <- []byte(responseStr)
+
 			//determine what type of action (tap key, guess word, continue, etc.)
 			//TODO
 
@@ -64,8 +70,8 @@ func (r *Room) run() {
 			//TODO
 
 			//* actions are resent to both clients.
-			r.client_one.send <- action
-			r.client_two.send <- action
+			// r.client_one.send <- action
+			// r.client_two.send <- action
 		}
 	}
 }
