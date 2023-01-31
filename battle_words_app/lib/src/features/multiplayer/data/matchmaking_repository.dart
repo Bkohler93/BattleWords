@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:battle_words/src/features/multiplayer/data/helpers.dart';
 import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
 import 'package:battle_words/src/helpers/json.dart';
@@ -25,10 +26,20 @@ class MatchmakingRepository {
       (data) {
         final jsonData = fixGoJson(data);
         try {
-          final MatchmakingServerState status =
-              MatchmakingServerState.fromJson(jsonDecode(jsonData));
+          final data = jsonDecode(jsonData);
+
+          // ensure the current phase is matchmaking
+          if (data['phase'] != 'matchmaking') {
+            throw Exception('Not matchmaking response');
+          }
+
+          // remove 'phase' field from data
+          Map<String, dynamic> filteredData = filterOutPhase(data);
+
+          final MatchmakingServerState status = MatchmakingServerState.fromJson(filteredData);
           streamController.sink.add(status);
-        } catch (_) {
+        } catch (err) {
+          // print(err.toString());
           // Do nothing, the data received is not a MatchmakingServerState
         }
       },
