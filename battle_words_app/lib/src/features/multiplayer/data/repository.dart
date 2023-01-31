@@ -29,15 +29,19 @@ class MatchmakingRepository {
       onError: (err) {
         final MatchmakingServerState status =
             MatchmakingServerState(status: MatchmakingServerStatus.connectionError);
-        log(err);
-        streamController.sink.add(status);
+        log(err.toString());
+        streamController.sink.addError(status);
       },
     );
 
     //! Temporary write to server to test communication
-    final response =
-        jsonEncode(MatchmakingServerState(status: MatchmakingServerStatus.testStart).toJson());
-    webSocketManager.write(response);
+    // final response =
+    //     jsonEncode(MatchmakingServerState(status: MatchmakingServerStatus.testStart).toJson());
+    // webSocketManager.write(response);
+  }
+
+  reconnect() async {
+    await webSocketManager.connect();
   }
 
   //* Response subject to change.

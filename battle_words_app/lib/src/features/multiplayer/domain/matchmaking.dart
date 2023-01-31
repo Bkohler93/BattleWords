@@ -23,6 +23,8 @@ enum MatchmakingServerStatus {
   gameFound,
   @JsonValue('ready')
   ready,
+  @JsonValue('findingGame')
+  findingGame,
   @JsonValue('connectionError')
   connectionError,
   @JsonValue('opponentDeclined')
@@ -34,6 +36,7 @@ enum MatchmakingServerStatus {
 }
 
 extension MatchmakingStatusX on MatchmakingServerStatus {
+  bool get isFindingGame => this == MatchmakingServerStatus.findingGame;
   bool get isGameFound => this == MatchmakingServerStatus.gameFound;
   bool get isReady => this == MatchmakingServerStatus.ready;
   bool get isConnectionError => this == MatchmakingServerStatus.connectionError;

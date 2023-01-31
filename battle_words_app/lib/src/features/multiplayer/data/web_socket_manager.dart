@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:web_socket_channel/io.dart';
@@ -54,9 +53,4 @@ class WebSocketManager {
       _behaviorSubject.addError(err);
     }
   }
-
-  //! Needs to be implemented for RetryMatchmaking to work
-  // Future<void> disconnect() async {
-  //   _behaviorSubject.drain();
-  // }
 }

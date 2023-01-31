@@ -8,7 +8,7 @@ abstract class MatchmakingState extends Equatable {
 }
 
 extension MachmakingStateX on MatchmakingState {
-  bool get isMatchmakingSearching => runtimeType == MatchmakingSearching;
+  bool get isMatchmakingFindingGame => runtimeType == MatchmakingFindingGame;
   bool get isMatchmakingFoundGame => runtimeType == MatchmakingFoundGame;
   bool get isMatchmakingReady => runtimeType == MatchmakingReady;
   bool get isMatchmakingConnectionError => runtimeType == MatchmakingConnectionError;
@@ -18,7 +18,7 @@ extension MachmakingStateX on MatchmakingState {
 }
 
 // First the app needs to connect to the server via websocket. MatchmakingSearching will be the state of the screen during this initializing. After the server is conneceted to and a game has been found, the state will change to MatchmakingFoundGame. After the user hits "Ready" after the button appear when swtiching t..
-class MatchmakingSearching extends MatchmakingState {}
+class MatchmakingFindingGame extends MatchmakingState {}
 
 class MatchmakingFoundGame extends MatchmakingState {}
 

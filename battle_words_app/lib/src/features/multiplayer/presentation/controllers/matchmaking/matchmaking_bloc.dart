@@ -9,20 +9,22 @@ part 'matchmaking_state.dart';
 class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
   final MatchmakingRepository matchmakingRepo;
 
-  MatchmakingBloc({required this.matchmakingRepo}) : super(MatchmakingSearching()) {
+  MatchmakingBloc({required this.matchmakingRepo}) : super(MatchmakingConnecting()) {
     on<FindMatch>(
       (event, emit) async {
         await emit.forEach(
           matchmakingRepo.stateStream,
           onData: (state) {
             switch (state.status) {
-              case MatchmakingServerStatus.gameFound:
-                return MatchmakingFoundGame();
-              case MatchmakingServerStatus.ready:
-                return MatchmakingReady();
               case MatchmakingServerStatus.connectionError:
                 return MatchmakingConnectionError();
+              case MatchmakingServerStatus.findingGame:
+                return MatchmakingFindingGame();
+              case MatchmakingServerStatus.gameFound:
+                return MatchmakingReady();
               case MatchmakingServerStatus.opponentDeclined:
+                return MatchmakingFoundGame();
+              case MatchmakingServerStatus.ready:
                 return MatchmakingOpponentTimeout();
               case MatchmakingServerStatus.startingGame:
                 matchmakingRepo.stopListening();
@@ -31,7 +33,9 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
                 return MatchmakingConnectionError();
             }
           },
-          onError: (error, stackTrace) => MatchmakingConnectionError(),
+          onError: (error, stackTrace) {
+            return MatchmakingConnectionError();
+          },
         );
       },
     );
@@ -43,16 +47,16 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
 
     on<PressPlayButton>((event, emit) async {
       //send to server "ready"
-      await matchmakingRepo.sendReady();
+      // await matchmakingRepo.sendReady();
 
       //emit MatchmakingReady
     });
 
     //! RetryMatchmaking needs to be implemented
-    // on<RetryMatchmaking>((event, emit) async {
-    //   emit(MatchmakingConnecting());
-    //   await matchmakingRepo.reconnect();
-    //   add(FindMatch());
-    // });
+    on<RetryMatchmaking>((event, emit) async {
+      emit(MatchmakingConnecting());
+      await matchmakingRepo.reconnect();
+      emit(MatchmakingFindingGame());
+    });
   }
 }
