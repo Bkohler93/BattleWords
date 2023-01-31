@@ -20,11 +20,17 @@ class MatchmakingRepository {
   connect() async {
     await webSocketManager.connect();
 
+    // Listens to the webSocketManager's state stream but only adds a new state to the bloc if it is a MatchmakingServerState
     webSocketManager.stream.listen(
       (data) {
         final jsonData = fixGoJson(data);
-        final MatchmakingServerState status = MatchmakingServerState.fromJson(jsonDecode(jsonData));
-        streamController.sink.add(status);
+        try {
+          final MatchmakingServerState status =
+              MatchmakingServerState.fromJson(jsonDecode(jsonData));
+          streamController.sink.add(status);
+        } catch (_) {
+          // Do nothing, the data received is not a MatchmakingServerState
+        }
       },
       onError: (err) {
         final MatchmakingServerState status =

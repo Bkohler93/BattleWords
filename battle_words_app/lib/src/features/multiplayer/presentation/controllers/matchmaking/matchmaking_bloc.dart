@@ -1,4 +1,4 @@
-import 'package:battle_words/src/features/multiplayer/data/repository.dart';
+import 'package:battle_words/src/features/multiplayer/data/matchmaking_repository.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -15,22 +15,26 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
         await emit.forEach(
           matchmakingRepo.stateStream,
           onData: (state) {
-            switch (state.status) {
-              case MatchmakingServerStatus.connectionError:
-                return MatchmakingConnectionError();
-              case MatchmakingServerStatus.findingGame:
-                return MatchmakingFindingGame();
-              case MatchmakingServerStatus.gameFound:
-                return MatchmakingReady();
-              case MatchmakingServerStatus.opponentDeclined:
-                return MatchmakingFoundGame();
-              case MatchmakingServerStatus.ready:
-                return MatchmakingOpponentTimeout();
-              case MatchmakingServerStatus.startingGame:
-                matchmakingRepo.stopListening();
-                return MatchmakingStartGame();
-              default:
-                return MatchmakingConnectionError();
+            if (state.runtimeType == MatchmakingServerState) {
+              switch (state.status) {
+                case MatchmakingServerStatus.connectionError:
+                  return MatchmakingConnectionError();
+                case MatchmakingServerStatus.findingGame:
+                  return MatchmakingFindingGame();
+                case MatchmakingServerStatus.gameFound:
+                  return MatchmakingReady();
+                case MatchmakingServerStatus.opponentDeclined:
+                  return MatchmakingFoundGame();
+                case MatchmakingServerStatus.ready:
+                  return MatchmakingOpponentTimeout();
+                case MatchmakingServerStatus.startingGame:
+                  matchmakingRepo.stopListening();
+                  return MatchmakingStartGame();
+                default:
+                  return MatchmakingConnectionError();
+              }
+            } else {
+              return MatchmakingConnecting();
             }
           },
           onError: (error, stackTrace) {
@@ -56,7 +60,6 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
     on<RetryMatchmaking>((event, emit) async {
       emit(MatchmakingConnecting());
       await matchmakingRepo.reconnect();
-      emit(MatchmakingFindingGame());
     });
   }
 }

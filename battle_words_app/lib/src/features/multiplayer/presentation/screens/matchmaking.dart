@@ -1,5 +1,5 @@
 import 'package:battle_words/src/common/widgets/page_layout.dart';
-import 'package:battle_words/src/features/multiplayer/data/repository.dart';
+import 'package:battle_words/src/features/multiplayer/data/matchmaking_repository.dart';
 import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/matchmaking/matchmaking_bloc.dart';
 import 'package:flutter/material.dart';

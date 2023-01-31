@@ -1,7 +1,7 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/api/shared_preferences/cubit/settings_cubit.dart';
 import 'package:battle_words/src/features/home_screen/home.dart';
-import 'package:battle_words/src/features/multiplayer/data/repository.dart';
+import 'package:battle_words/src/features/multiplayer/data/matchmaking_repository.dart';
 import 'package:battle_words/src/routes.dart';
 import 'package:battle_words/src/styles/theme.dart';
 import 'package:flutter/material.dart';
