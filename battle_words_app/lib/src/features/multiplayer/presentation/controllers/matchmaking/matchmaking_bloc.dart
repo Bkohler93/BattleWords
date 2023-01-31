@@ -22,11 +22,11 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
                 case MatchmakingServerStatus.findingGame:
                   return MatchmakingFindingGame();
                 case MatchmakingServerStatus.gameFound:
-                  return MatchmakingReady();
-                case MatchmakingServerStatus.opponentDeclined:
                   return MatchmakingFoundGame();
-                case MatchmakingServerStatus.ready:
+                case MatchmakingServerStatus.opponentDeclined:
                   return MatchmakingOpponentTimeout();
+                case MatchmakingServerStatus.ready:
+                  return MatchmakingReady();
                 case MatchmakingServerStatus.startingGame:
                   matchmakingRepo.stopListening();
                   return MatchmakingStartGame();

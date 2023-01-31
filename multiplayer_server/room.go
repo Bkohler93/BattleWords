@@ -47,13 +47,21 @@ func (r *Room) run() {
 			if r.client_one == nil {
 				fmt.Println("=== a room received its first client")
 				r.client_one = client
+
+				responseObj := newServerResponse("matchmaking", "findingGame", nil)
+				response := serverResponseToJson(responseObj)
+				r.client_one.send <- []byte(response)
+
 			} else {
 				fmt.Println("=== a room received its second client")
 				r.client_two = client
 				r.isOpen = false
 
-				r.client_one.send <- startGame()
-				r.client_two.send <- startGame()
+				responseObj := newServerResponse("matchmaking", "gameFound", nil)
+				response := serverResponseToJson(responseObj)
+
+				r.client_one.send <- []byte(response)
+				r.client_two.send <- []byte(response)
 			}
 		case action := <-r.process:
 			fmt.Println("received an action")
@@ -62,6 +70,15 @@ func (r *Room) run() {
 			fmt.Println(string(action))
 			responseStr := "{'status':'startingGame'}"
 			r.client_one.send <- []byte(responseStr)
+
+			//TODO
+			//* process action and turn it into correct ActionObject (ReadyAction, SetupAction, GameAction)
+
+			//* switch(actionObject)
+			//*		case ReadyAction:
+			//*			r.game.setPlayerReady(actionObject)
+			//*			if (r.game.bothPlayersReady)
+			//*				r.client_one.send
 
 			//determine what type of action (matchmaking, setup, tap key, guess word, continue, etc.)
 			//TODO
