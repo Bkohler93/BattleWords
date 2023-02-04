@@ -10,9 +10,9 @@ import 'package:battle_words/src/helpers/json.dart';
 class MatchmakingRepository {
   MatchmakingRepository({required this.webSocketManager});
   final WebSocketManager webSocketManager;
-  StreamController<MatchmakingServerState> streamController = StreamController();
+  StreamController<ServerMatchmakingState> streamController = StreamController();
 
-  Stream<MatchmakingServerState> get stateStream => streamController.stream;
+  Stream<ServerMatchmakingState> get stateStream => streamController.stream;
   void stopListening() {
     //TODO
   }
@@ -23,38 +23,28 @@ class MatchmakingRepository {
 
     // Listens to the webSocketManager's state stream but only adds a new state to the bloc if it is a MatchmakingServerState
     webSocketManager.stream.listen(
-      (data) {
-        final jsonData = fixGoJson(data);
+      (serverResponse) {
         try {
-          final data = jsonDecode(jsonData);
+          final data = jsonDecode(serverResponse);
 
-          // ensure the current phase is matchmaking
-          if (data['phase'] != 'matchmaking') {
-            throw Exception('Not matchmaking response');
-          }
+          ServerMatchmakingState state = ServerMatchmakingState.fromJson(data);
 
-          // remove 'phase' field from data
-          Map<String, dynamic> filteredData = filterOutPhase(data);
-
-          final MatchmakingServerState status = MatchmakingServerState.fromJson(filteredData);
-          streamController.sink.add(status);
+          streamController.sink.add(state);
         } catch (err) {
-          // print(err.toString());
+          print('Skipping, state is not a ServerMatchmakingState');
           // Do nothing, the data received is not a MatchmakingServerState
         }
       },
       onError: (err) {
-        final MatchmakingServerState status =
-            MatchmakingServerState(status: MatchmakingServerStatus.connectionError);
+        final ServerMatchmakingState status = ServerMatchmakingState(
+          status: ServerMatchmakingStatus.connectionError,
+          phase: MultiplayerPhase.matchmaking,
+          data: null,
+        );
         log(err.toString());
         streamController.sink.addError(status);
       },
     );
-
-    //! Temporary write to server to test communication
-    // final response =
-    //     jsonEncode(MatchmakingServerState(status: MatchmakingServerStatus.testStart).toJson());
-    // webSocketManager.write(response);
   }
 
   reconnect() async {
@@ -63,12 +53,12 @@ class MatchmakingRepository {
 
   //* Response subject to change.
   sendReady() {
-    final response = MatchmakingServerState(status: MatchmakingServerStatus.ready).toJson();
+    final response = jsonEncode(ServerMatchmakingState(
+      status: ServerMatchmakingStatus.ready,
+      phase: MultiplayerPhase.matchmaking,
+      data: null,
+    ).toJson());
+    print(response);
     webSocketManager.write(response);
   }
-
-  //! WebSocketManager.disconnect needs to be implemented for this to work
-  // reconnect() async {
-  //   await webSocketManager.disconnect();
-  // }
 }

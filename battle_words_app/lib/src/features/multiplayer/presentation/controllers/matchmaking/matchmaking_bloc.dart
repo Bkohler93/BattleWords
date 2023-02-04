@@ -15,19 +15,19 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
         await emit.forEach(
           matchmakingRepo.stateStream,
           onData: (state) {
-            if (state.runtimeType == MatchmakingServerState) {
+            if (state.runtimeType == ServerMatchmakingState) {
               switch (state.status) {
-                case MatchmakingServerStatus.connectionError:
+                case ServerMatchmakingStatus.connectionError:
                   return MatchmakingConnectionError();
-                case MatchmakingServerStatus.findingGame:
+                case ServerMatchmakingStatus.findingGame:
                   return MatchmakingFindingGame();
-                case MatchmakingServerStatus.gameFound:
+                case ServerMatchmakingStatus.gameFound:
                   return MatchmakingFoundGame();
-                case MatchmakingServerStatus.opponentDeclined:
+                case ServerMatchmakingStatus.opponentDeclined:
                   return MatchmakingOpponentTimeout();
-                case MatchmakingServerStatus.ready:
+                case ServerMatchmakingStatus.ready:
                   return MatchmakingReady();
-                case MatchmakingServerStatus.startingGame:
+                case ServerMatchmakingStatus.endMatchmaking:
                   matchmakingRepo.stopListening();
                   return MatchmakingStartGame();
                 default:
@@ -51,9 +51,7 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
 
     on<PressPlayButton>((event, emit) async {
       //send to server "ready"
-      // await matchmakingRepo.sendReady();
-
-      //emit MatchmakingReady
+      await matchmakingRepo.sendReady();
     });
 
     //! RetryMatchmaking needs to be implemented

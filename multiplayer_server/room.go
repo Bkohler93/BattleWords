@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Room struct {
 	client_one *Client
@@ -40,6 +43,7 @@ func (r *Room) run() {
 		case _ = <-r.remove:
 			// determine which client has been received, if it is client_one that means this room should Close.
 			//
+			fmt.Println("=== removing client and closing room")
 			//* right now this closes the room if either user disconnects/presses Home. This leaves the other player in a frozen state but when an iteration with game flow comes in, the process of removing the room will align with the game loop. Right now it's a little weird.
 			r.hub.closeRoom <- r
 		case client := <-r.place:
@@ -48,32 +52,38 @@ func (r *Room) run() {
 				fmt.Println("=== a room received its first client")
 				r.client_one = client
 
-				responseObj := newServerResponse("matchmaking", "findingGame", nil)
-				response := serverResponseToJson(responseObj)
-				r.client_one.send <- []byte(response)
+				responseObj := &ServerResponse{Phase: Matchmaking, Status: FindingGame, Data: nil}
+				response, _ := json.Marshal(responseObj)
+
+				r.client_one.send <- response
 
 			} else {
 				fmt.Println("=== a room received its second client")
 				r.client_two = client
 				r.isOpen = false
 
-				responseObj := newServerResponse("matchmaking", "gameFound", nil)
-				response := serverResponseToJson(responseObj)
+				responseObj := &ServerResponse{Phase: Matchmaking, Status: GameFound, Data: nil}
+				response, _ := json.Marshal(responseObj)
 
-				r.client_one.send <- []byte(response)
-				r.client_two.send <- []byte(response)
+				r.client_one.send <- response
+				r.client_two.send <- response
 			}
 		case action := <-r.process:
 			fmt.Println("received an action")
 
 			//! Temporary communication test with single client
 			fmt.Println(string(action))
-			responseStr := "{'status':'startingGame'}"
-			r.client_one.send <- []byte(responseStr)
+			// responseStr := "{'status':'startingGame'}"
+			// r.client_one.send <- []byte(responseStr)
+			var response ServerResponse
+			if err := json.Unmarshal(action, &response); err != nil {
+				fmt.Println("Could not unmarshal that... action shown below:")
+				fmt.Println(err)
+			}
 
+			fmt.Printf("User submitted action: %s\t%s\n", response.Phase, response.Status)
 			//TODO
 			//* process action and turn it into correct ActionObject (ReadyAction, SetupAction, GameAction)
-
 			//* switch(actionObject)
 			//*		case ReadyAction:
 			//*			r.game.setPlayerReady(actionObject)
