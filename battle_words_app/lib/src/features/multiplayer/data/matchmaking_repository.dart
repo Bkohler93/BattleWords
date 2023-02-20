@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:battle_words/src/features/auth/auth.dart';
 import 'package:battle_words/src/features/multiplayer/data/helpers.dart';
 import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
@@ -27,6 +28,7 @@ class MatchmakingRepository {
         try {
           final data = jsonDecode(serverResponse);
 
+          //TODO
           ServerMatchmakingState state = ServerMatchmakingState.fromJson(data);
 
           streamController.sink.add(state);
@@ -42,6 +44,7 @@ class MatchmakingRepository {
           data: null,
         );
         log(err.toString());
+        print(jsonEncode(status.toJson()));
         streamController.sink.addError(status);
       },
     );
@@ -56,7 +59,7 @@ class MatchmakingRepository {
     final response = jsonEncode(ServerMatchmakingState(
       status: ServerMatchmakingStatus.ready,
       phase: MultiplayerPhase.matchmaking,
-      data: null,
+      data: {'authenticate': auth},
     ).toJson());
     print(response);
     webSocketManager.write(response);

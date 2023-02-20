@@ -77,6 +77,8 @@ class ServerMatchmakingState {
 
 @JsonEnum()
 enum ServerMatchmakingStatus {
+  @JsonValue('authenticate')
+  authenticate,
   @JsonValue('connectionError')
   connectionError,
   @JsonValue('findingGame')
@@ -94,6 +96,7 @@ enum ServerMatchmakingStatus {
 }
 
 extension MatchmakingStatusX on ServerMatchmakingStatus {
+  bool get isAuthenticate => this == ServerMatchmakingStatus.authenticate;
   bool get isConnectionError => this == ServerMatchmakingStatus.connectionError;
   bool get isFindingGame => this == ServerMatchmakingStatus.findingGame;
   bool get isGameFound => this == ServerMatchmakingStatus.gameFound;

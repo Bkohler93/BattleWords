@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/Jeffail/gabs"
 )
 
 type Room struct {
@@ -52,8 +54,9 @@ func (r *Room) run() {
 				fmt.Println("=== a room received its first client")
 				r.client_one = client
 
-				responseObj := &ServerResponse{Phase: Matchmaking, Status: FindingGame, Data: nil}
-				response, _ := json.Marshal(responseObj)
+				responseObj := &ServerGameState[MatchmakingState]{Phase: Matchmaking, State: MatchmakingState{Status: FindingGame, Data: nil}}
+
+				response := responseObj.JsonBlob()
 
 				r.client_one.send <- response
 
@@ -62,33 +65,29 @@ func (r *Room) run() {
 				r.client_two = client
 				r.isOpen = false
 
-				responseObj := &ServerResponse{Phase: Matchmaking, Status: GameFound, Data: nil}
+				responseObj := &ServerGameState[MatchmakingState]{Phase: Matchmaking, State: MatchmakingState{Status: GameFound, Data: nil}}
+
 				response, _ := json.Marshal(responseObj)
 
 				r.client_one.send <- response
 				r.client_two.send <- response
 			}
 		case action := <-r.process:
-			fmt.Println("received an action")
 
-			//! Temporary communication test with single client
-			fmt.Println(string(action))
-			// responseStr := "{'status':'startingGame'}"
-			// r.client_one.send <- []byte(responseStr)
-			var response ServerResponse
-			if err := json.Unmarshal(action, &response); err != nil {
-				fmt.Println("Could not unmarshal that... action shown below:")
+			//TODO
+			//1. turn action into GameAction struct
+
+			//2. perform logic on InGameState based on GameAction
+
+			//3. send updated GameStateView to both clients
+			jsonParsed, err := gabs.ParseJSON(action)
+			if err != nil {
 				fmt.Println(err)
 			}
 
-			fmt.Printf("User submitted action: %s\t%s\n", response.Phase, response.Status)
-			//TODO
-			//* process action and turn it into correct ActionObject (ReadyAction, SetupAction, GameAction)
-			//* switch(actionObject)
-			//*		case ReadyAction:
-			//*			r.game.setPlayerReady(actionObject)
-			//*			if (r.game.bothPlayersReady)
-			//*				r.client_one.send
+			value, _ := jsonParsed.Path("phase").Data().(string)
+
+			fmt.Printf("parsed phase: %s", value)
 
 			//determine what type of action (matchmaking, setup, tap key, guess word, continue, etc.)
 			//TODO

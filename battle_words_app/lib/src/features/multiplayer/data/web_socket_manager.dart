@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -40,6 +43,21 @@ class WebSocketManager {
       );
 
       _channel = IOWebSocketChannel(ws);
+
+      var uid = const Uuid();
+      final authData = jsonEncode(ServerMatchmakingState(
+        status: ServerMatchmakingStatus.authenticate,
+        phase: MultiplayerPhase.matchmaking,
+        data: {
+          'authenticate': {
+            'uid': uid.v1(),
+          },
+        },
+      ).toJson());
+
+      // send request body with uid (found in Auth class when implemented)
+      _channel.sink.add(authData);
+
       //feed stream into BehaviorSubject, account for error
       _channel.stream.listen(
         (event) {

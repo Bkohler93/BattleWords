@@ -43,6 +43,8 @@ type Client struct {
 	room *Room
 
 	conn *websocket.Conn
+
+	uid string
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -147,6 +149,7 @@ func (c *Client) writePump() {
 // serveWs() serves a websocket to the client and assigns the client to a room
 func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("=== User has connected: %v\n", time.Now())
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -161,11 +164,20 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		hub.rooms.addRoom(room)
 	}
 
+	//TODO handle authentication here to save uid in Client's uid field.
+	_, msg, err := conn.ReadMessage()
+
+	// remove client from room on websocket read error
+	if err != nil {
+		fmt.Println("Did not receieve auth from client")
+	}
+
 	// when creating a Client, also need to include the room stored above.
 	client := &Client{hub: hub,
 		room: room,
 		conn: conn,
 		send: make(chan []byte, 256),
+		uid:  string(msg), //! <-- This shouldnt work yet, need to filter out the uid from the msg first
 	}
 
 	//Client is also sent to the Room stored above via the client.room.place channel, which accepts *Client
