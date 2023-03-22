@@ -3,8 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/Jeffail/gabs"
 )
 
 type Room struct {
@@ -12,9 +10,13 @@ type Room struct {
 	client_two *Client
 	game       *Game
 
-	process chan []byte // receive from clients to process a GameAction made by client
-	place   chan *Client
-	remove  chan *Client
+	process    chan []byte //data received from clients
+	place      chan *Client
+	remove     chan *Client
+	gameUpdate chan *ClientStateInGame //Game uses this channel to send states for clients to view current state of game
+
+	//TODO FIGURE OUT HOW TO ASSOCIATE ROOM WITH A GAME (look over how hub/client/room all connect to each other)
+	// createGame chan *Game
 
 	hub *Hub
 
@@ -25,12 +27,12 @@ func newRoom(hub *Hub) *Room {
 	return &Room{
 		client_one: nil,
 		client_two: nil,
-		game:       newGame(),
-		process:    make(chan []byte),
-		place:      make(chan *Client),
-		remove:     make(chan *Client),
-		hub:        hub,
-		isOpen:     true,
+		// game:       newGame(),
+		process: make(chan []byte),
+		place:   make(chan *Client),
+		remove:  make(chan *Client),
+		hub:     hub,
+		isOpen:  true,
 	}
 }
 
@@ -49,45 +51,55 @@ func (r *Room) run() {
 			//* right now this closes the room if either user disconnects/presses Home. This leaves the other player in a frozen state but when an iteration with game flow comes in, the process of removing the room will align with the game loop. Right now it's a little weird.
 			r.hub.closeRoom <- r
 		case client := <-r.place:
-			//assign incoming client as client_one if available, otherwise client_two
+
 			if r.client_one == nil {
 				fmt.Println("=== a room received its first client")
 				r.client_one = client
 
-				responseObj := &ServerGameState[MatchmakingState]{Phase: Matchmaking, State: MatchmakingState{Status: FindingGame, Data: nil}}
+				response := &ServerStateMatchmaking{MatchmakingStep: "FindingGame"}
+				responseByte, err := json.Marshal(response)
+				if err != nil {
+					panic(err)
+				}
 
-				response := responseObj.JsonBlob()
-
-				r.client_one.send <- response
+				r.client_one.send <- responseByte
 
 			} else {
 				fmt.Println("=== a room received its second client")
 				r.client_two = client
 				r.isOpen = false
 
-				responseObj := &ServerGameState[MatchmakingState]{Phase: Matchmaking, State: MatchmakingState{Status: GameFound, Data: nil}}
+				response := &ServerStateMatchmaking{MatchmakingStep: "GameFound"}
+				responseByte, err := json.Marshal(response)
 
-				response, _ := json.Marshal(responseObj)
+				if err != nil {
+					panic(err)
+				}
 
-				r.client_one.send <- response
-				r.client_two.send <- response
+				r.client_one.send <- responseByte
+				r.client_two.send <- responseByte
 			}
+
 		case action := <-r.process:
+			var clientStateMatchmaking ClientStateMatchmaking
+			var clientStateSetup ClientStateSetup
+			var clientStateInGame ClientStateInGame
 
-			//TODO
-			//1. turn action into GameAction struct
-
-			//2. perform logic on InGameState based on GameAction
-
-			//3. send updated GameStateView to both clients
-			jsonParsed, err := gabs.ParseJSON(action)
+			err := json.Unmarshal(action, &clientStateMatchmaking)
 			if err != nil {
-				fmt.Println(err)
+				err = json.Unmarshal(action, &clientStateSetup)
+				if err != nil {
+					err = json.Unmarshal(action, &clientStateInGame)
+				} else {
+					//! at this point r.game has not yet been initialize. WHERE TO INITIALIZE THIS? LOOK AT HOW hub/client/room all connect to each other.
+					// r.game.play <- &clientStateInGame
+				}
+			} else {
+				//! at this point r.game has not yet been initialized. WHERE TO INITIALIZE THIS? LOOK AT HOW hub/client/room all connect to each other.
+				// r.game.matchmaking <- &clientStateMatchmaking
 			}
-
-			value, _ := jsonParsed.Path("phase").Data().(string)
-
-			fmt.Printf("parsed phase: %s", value)
+			fmt.Println(clientStateMatchmaking.MatchmakingStep)
+			fmt.Println(clientStateMatchmaking.ClientId)
 
 			//determine what type of action (matchmaking, setup, tap key, guess word, continue, etc.)
 			//TODO

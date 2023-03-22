@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:battle_words/src/features/auth/auth.dart';
-import 'package:battle_words/src/features/multiplayer/data/helpers.dart';
 import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
-import 'package:battle_words/src/helpers/json.dart';
 
 class MatchmakingRepository {
   MatchmakingRepository({required this.webSocketManager});
@@ -28,23 +26,20 @@ class MatchmakingRepository {
         try {
           final data = jsonDecode(serverResponse);
 
-          //TODO
           ServerMatchmakingState state = ServerMatchmakingState.fromJson(data);
 
           streamController.sink.add(state);
         } catch (err) {
+          print(err);
           print('Skipping, state is not a ServerMatchmakingState');
           // Do nothing, the data received is not a MatchmakingServerState
         }
       },
       onError: (err) {
         final ServerMatchmakingState status = ServerMatchmakingState(
-          status: ServerMatchmakingStatus.connectionError,
-          phase: MultiplayerPhase.matchmaking,
-          data: null,
+          matchmakingStep: MatchmakingStep.connectionError,
         );
         log(err.toString());
-        print(jsonEncode(status.toJson()));
         streamController.sink.addError(status);
       },
     );
@@ -56,12 +51,8 @@ class MatchmakingRepository {
 
   //* Response subject to change.
   sendReady() {
-    final response = jsonEncode(ServerMatchmakingState(
-      status: ServerMatchmakingStatus.ready,
-      phase: MultiplayerPhase.matchmaking,
-      data: {'authenticate': auth},
-    ).toJson());
-    print(response);
+    final response = jsonEncode(
+        ClientMatchmakingState(matchmakingStep: MatchmakingStep.ready, clientId: auth).toJson());
     webSocketManager.write(response);
   }
 }

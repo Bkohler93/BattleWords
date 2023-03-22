@@ -2,53 +2,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'matchmaking.g.dart';
 
-//* Change this to ServerResponse object
-@JsonEnum()
-enum MultiplayerPhase {
-  @JsonValue('matchmaking')
-  matchmaking,
-  @JsonValue('setup')
-  setup,
-  @JsonValue('inGame')
-  inGame,
-}
-
-extension MultiplayerPhaseX on MultiplayerPhase {
-  bool get isMatchmaking => this == MultiplayerPhase.matchmaking;
-  bool get isSetup => this == MultiplayerPhase.setup;
-  bool get isInGame => this == MultiplayerPhase.inGame;
-}
-
-// @JsonSerializable()
-// class ServerResponse {
-//   ServerResponse({required this.phase, required this.state, required this.data});
-//   final Phase phase;
-//   final ServerResponseState state;
-//   //! This can be MatchmakingServerState / SetupServerState / InGameServerState
-//   final Map<String, dynamic> data;
-// }
-
-// @JsonSerializable()
-// class ServerResponseState {
-//   ServerResponseState(this.phase);
-//   final MultiplayerPhase phase;
-
-//   /// Connect the generated [_$PersonFromJson] function to the `fromJson`
-//   /// factory.
-//   factory ServerResponseState.fromJson(Map<String, dynamic> json) =>
-//       _$ServerResponseStateFromJson(json);
-
-//   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
-//   Map<String, dynamic> toJson() => _$ServerResponseStateToJson(this);
-// }
-
+/// state that matchmaking is currently in. This is received from the server
 @JsonSerializable()
 class ServerMatchmakingState {
-  ServerMatchmakingState({required this.status, required this.phase, required this.data});
+  ServerMatchmakingState({required this.matchmakingStep});
 
-  final MultiplayerPhase phase;
-  final ServerMatchmakingStatus status;
-  final Map<String, dynamic>? data;
+  @JsonKey(name: 'MatchmakingStep')
+  final MatchmakingStep matchmakingStep;
 
   /// Connect the generated [_$PersonFromJson] function to the `fromJson`
   /// factory.
@@ -60,48 +20,54 @@ class ServerMatchmakingState {
   Map<String, dynamic> toJson() => _$ServerMatchmakingStateToJson(this);
 }
 
-// @JsonSerializable()
-// class MatchmakingServerState {
-//   MatchmakingServerState({required this.status});
-
-//   final ServerMatchmakingStatus status;
-
-//   /// Connect the generated [_$PersonFromJson] function to the `fromJson`
-//   /// factory.
-//   factory MatchmakingServerState.fromJson(Map<String, dynamic> json) =>
-//       _$MatchmakingServerStateFromJson(json);
-
-//   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
-//   Map<String, dynamic> toJson() => _$MatchmakingServerStateToJson(this);
-// }
-
 @JsonEnum()
-enum ServerMatchmakingStatus {
-  @JsonValue('authenticate')
+enum MatchmakingStep {
+  @JsonValue('Authenticate')
   authenticate,
-  @JsonValue('connectionError')
+  @JsonValue('ConnectionError')
   connectionError,
-  @JsonValue('findingGame')
+  @JsonValue('FindingGame')
   findingGame,
-  @JsonValue('gameFound')
+  @JsonValue('GameFound')
   gameFound,
-  @JsonValue('ready')
+  @JsonValue('Ready')
   ready,
-  @JsonValue('awaitingOpponentReady')
+  @JsonValue('AwaitingOpponentReady')
   awaitingOpponentReady,
-  @JsonValue('opponentDeclined')
+  @JsonValue('OpponentDeclined')
   opponentDeclined,
-  @JsonValue('endMatchmaking')
+  @JsonValue('EndMatchmaking')
   endMatchmaking,
 }
 
-extension MatchmakingStatusX on ServerMatchmakingStatus {
-  bool get isAuthenticate => this == ServerMatchmakingStatus.authenticate;
-  bool get isConnectionError => this == ServerMatchmakingStatus.connectionError;
-  bool get isFindingGame => this == ServerMatchmakingStatus.findingGame;
-  bool get isGameFound => this == ServerMatchmakingStatus.gameFound;
-  bool get isReady => this == ServerMatchmakingStatus.ready;
-  bool get isAwaitingOpponentReady => this == ServerMatchmakingStatus.awaitingOpponentReady;
-  bool get isOpponentDeclined => this == ServerMatchmakingStatus.opponentDeclined;
-  bool get isEndMatchmaking => this == ServerMatchmakingStatus.endMatchmaking;
+extension MatchmakingStatusX on MatchmakingStep {
+  bool get isAuthenticate => this == MatchmakingStep.authenticate;
+  bool get isConnectionError => this == MatchmakingStep.connectionError;
+  bool get isFindingGame => this == MatchmakingStep.findingGame;
+  bool get isGameFound => this == MatchmakingStep.gameFound;
+  bool get isReady => this == MatchmakingStep.ready;
+  bool get isAwaitingOpponentReady => this == MatchmakingStep.awaitingOpponentReady;
+  bool get isOpponentDeclined => this == MatchmakingStep.opponentDeclined;
+  bool get isEndMatchmaking => this == MatchmakingStep.endMatchmaking;
+}
+
+/// state that matchmaking is currently in. This is sent to the server.
+@JsonSerializable()
+class ClientMatchmakingState {
+  ClientMatchmakingState({required this.matchmakingStep, required this.clientId});
+
+  @JsonKey(name: 'MatchmakingStep')
+  final MatchmakingStep matchmakingStep;
+  @JsonKey(name: 'ClientId')
+  final String clientId;
+  // final Map<String, dynamic>? data;
+
+  /// Connect the generated [_$PersonFromJson] function to the `fromJson`
+  /// factory.
+  factory ClientMatchmakingState.fromJson(Map<String, dynamic> json) =>
+      _$ClientMatchmakingStateFromJson(json);
+
+  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  @override
+  Map<String, dynamic> toJson() => _$ClientMatchmakingStateToJson(this);
 }

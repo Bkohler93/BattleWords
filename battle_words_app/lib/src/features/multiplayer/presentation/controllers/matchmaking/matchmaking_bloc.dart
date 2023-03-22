@@ -16,18 +16,18 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
           matchmakingRepo.stateStream,
           onData: (state) {
             if (state.runtimeType == ServerMatchmakingState) {
-              switch (state.status) {
-                case ServerMatchmakingStatus.connectionError:
+              switch (state.matchmakingStep) {
+                case MatchmakingStep.connectionError:
                   return MatchmakingConnectionError();
-                case ServerMatchmakingStatus.findingGame:
+                case MatchmakingStep.findingGame:
                   return MatchmakingFindingGame();
-                case ServerMatchmakingStatus.gameFound:
+                case MatchmakingStep.gameFound:
                   return MatchmakingFoundGame();
-                case ServerMatchmakingStatus.opponentDeclined:
+                case MatchmakingStep.opponentDeclined:
                   return MatchmakingOpponentTimeout();
-                case ServerMatchmakingStatus.ready:
+                case MatchmakingStep.ready:
                   return MatchmakingReady();
-                case ServerMatchmakingStatus.endMatchmaking:
+                case MatchmakingStep.endMatchmaking:
                   matchmakingRepo.stopListening();
                   return MatchmakingStartGame();
                 default:

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -167,6 +168,10 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	//TODO handle authentication here to save uid in Client's uid field.
 	_, msg, err := conn.ReadMessage()
 
+	var stateMatchmaking ClientStateMatchmaking
+
+	err = json.Unmarshal(msg, &stateMatchmaking)
+
 	// remove client from room on websocket read error
 	if err != nil {
 		fmt.Println("Did not receieve auth from client")
@@ -177,7 +182,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		room: room,
 		conn: conn,
 		send: make(chan []byte, 256),
-		uid:  string(msg), //! <-- This shouldnt work yet, need to filter out the uid from the msg first
+		uid:  stateMatchmaking.ClientId, //! <-- This shouldnt work yet, need to filter out the uid from the msg first
 	}
 
 	//Client is also sent to the Room stored above via the client.room.place channel, which accepts *Client
