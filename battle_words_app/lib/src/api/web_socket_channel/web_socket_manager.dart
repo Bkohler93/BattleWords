@@ -17,6 +17,7 @@ class WebSocketManager {
   static final WebSocketManager _instance = WebSocketManager._internal();
 
   late WebSocketChannel _channel;
+  bool isConnected = false;
   final _behaviorSubject = BehaviorSubject<String>();
 
   factory WebSocketManager() => _instance;
@@ -41,6 +42,8 @@ class WebSocketManager {
       WebSocket ws = await WebSocket.connect(wsUrl.toString()).timeout(
         const Duration(seconds: 5),
       );
+
+      isConnected = true;
 
       _channel = IOWebSocketChannel(ws);
 

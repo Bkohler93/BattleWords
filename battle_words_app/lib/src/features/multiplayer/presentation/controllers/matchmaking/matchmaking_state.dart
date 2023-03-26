@@ -13,6 +13,7 @@ extension MachmakingStateX on MatchmakingState {
   bool get isMatchmakingReady => runtimeType == MatchmakingReady;
   bool get isMatchmakingConnectionError => runtimeType == MatchmakingConnectionError;
   bool get isMatchmakingOpponentTimeout => runtimeType == MatchmakingOpponentTimeout;
+  bool get isMatchmakingAwaitingOpponentReady => runtimeType == MatchmakingAwaitingOpponentReady;
   bool get isMatchmakingStartGame => runtimeType == MatchmakingStartGame;
   bool get isMatchmakingConnecting => runtimeType == MatchmakingConnecting;
 }
@@ -21,6 +22,8 @@ extension MachmakingStateX on MatchmakingState {
 class MatchmakingFindingGame extends MatchmakingState {}
 
 class MatchmakingFoundGame extends MatchmakingState {}
+
+class MatchmakingAwaitingOpponentReady extends MatchmakingState {}
 
 class MatchmakingReady extends MatchmakingState {}
 

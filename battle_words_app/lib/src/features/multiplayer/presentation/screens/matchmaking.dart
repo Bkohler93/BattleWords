@@ -1,6 +1,6 @@
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/multiplayer/data/matchmaking_repository.dart';
-import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
+import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/matchmaking/matchmaking_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +38,16 @@ class _MatchmakingViewState extends State<MatchmakingView> {
   Widget build(BuildContext context) {
     return ScreenLayout(
       menuPage: false,
-      child: BlocBuilder<MatchmakingBloc, MatchmakingState>(
+      child: BlocConsumer<MatchmakingBloc, MatchmakingState>(
+        listener: (context, state) {
+          if (state.isMatchmakingStartGame) {
+            //wait for animations to complete before navigating
+            Future.delayed(const Duration(seconds: 1), () {
+              //TODO send to multiplayer game page
+              context.go('/multiplayer/setup');
+            });
+          }
+        },
         builder: (context, state) {
           final matchmakingBloc = BlocProvider.of<MatchmakingBloc>(context);
           if (state.isMatchmakingFindingGame) {
@@ -64,7 +73,6 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                       "Ready",
                     ),
                     onPressed: () {
-                      print("pressed reaady button");
                       matchmakingBloc.add(PressPlayButton());
                     },
                   )
@@ -76,7 +84,7 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Text("Awaiting opponent to ready up"),
+                Text("Waiting for opponent"),
               ],
             ));
           } else if (state.isMatchmakingOpponentTimeout) {
@@ -90,11 +98,6 @@ class _MatchmakingViewState extends State<MatchmakingView> {
               ],
             ));
           } else if (state.isMatchmakingStartGame) {
-            //wait for animations to complete on starting game
-            Future.delayed(const Duration(seconds: 1), () {
-              //TODO send to multiplayer game page
-              //context.go('multiplayer-game')
-            });
             return Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -125,6 +128,14 @@ class _MatchmakingViewState extends State<MatchmakingView> {
                   },
                   child: const Text("Return to Multiplayer Home"),
                 )
+              ],
+            ));
+          } else if (state.isMatchmakingAwaitingOpponentReady) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text("Waiting for opponent"),
               ],
             ));
           } else {

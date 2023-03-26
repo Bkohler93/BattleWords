@@ -23,7 +23,7 @@ Widget screenRoute(
         width: double.infinity,
         child: Text(
           linkName,
-          textAlign: TextAlign.start,
+          textAlign: TextAlign.center,
           style: _defaultMenuTextStyle(),
         ),
       ),

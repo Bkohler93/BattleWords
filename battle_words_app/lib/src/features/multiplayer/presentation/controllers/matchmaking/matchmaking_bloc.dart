@@ -23,6 +23,8 @@ class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
                   return MatchmakingFindingGame();
                 case MatchmakingStep.gameFound:
                   return MatchmakingFoundGame();
+                case MatchmakingStep.awaitingOpponentReady:
+                  return MatchmakingAwaitingOpponentReady();
                 case MatchmakingStep.opponentDeclined:
                   return MatchmakingOpponentTimeout();
                 case MatchmakingStep.ready:

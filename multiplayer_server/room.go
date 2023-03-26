@@ -10,10 +10,14 @@ type Room struct {
 	client_two *Client
 	game       *Game
 
-	process    chan []byte //data received from clients
-	place      chan *Client
-	remove     chan *Client
-	gameUpdate chan *ClientStateInGame //Game uses this channel to send states for clients to view current state of game
+	process chan []byte //data received from clients
+	place   chan *Client
+	remove  chan *Client
+
+	//channels to receive updates from Game to be sent to clients
+	gameUpdate        chan *ServerStateInGame //Game uses this channel to send states for clients to view current state of game
+	matchmakingUpdate chan *ServerStateMatchmaking
+	setupUpdate       chan *ServerStateSetup
 
 	//TODO FIGURE OUT HOW TO ASSOCIATE ROOM WITH A GAME (look over how hub/client/room all connect to each other)
 	// createGame chan *Game
@@ -31,8 +35,14 @@ func newRoom(hub *Hub) *Room {
 		process: make(chan []byte),
 		place:   make(chan *Client),
 		remove:  make(chan *Client),
-		hub:     hub,
-		isOpen:  true,
+
+		//channels to receive updates from Game to be sent from server to clients
+		gameUpdate:        make(chan *ServerStateInGame),
+		matchmakingUpdate: make(chan *ServerStateMatchmaking),
+		setupUpdate:       make(chan *ServerStateSetup),
+
+		hub:    hub,
+		isOpen: true,
 	}
 }
 
@@ -76,8 +86,24 @@ func (r *Room) run() {
 					panic(err)
 				}
 
+				//Create game here since both players have joined
+				r.game = &Game{
+					room:      r,
+					isDone:    false,
+					setup:     make(chan *ClientStateSetup),
+					play:      make(chan *ClientStateInGame),
+					matchmake: make(chan *ClientStateMatchmaking),
+
+					//! change uid's to player chosen names eventually
+					playerOneId: r.client_one.uid,
+					playerTwoId: r.client_two.uid,
+				}
+				go r.game.run()
+				// fmt.Println("Send response to clients")
+
 				r.client_one.send <- responseByte
 				r.client_two.send <- responseByte
+
 			}
 
 		case action := <-r.process:
@@ -90,29 +116,60 @@ func (r *Room) run() {
 				err = json.Unmarshal(action, &clientStateSetup)
 				if err != nil {
 					err = json.Unmarshal(action, &clientStateInGame)
+
+					if err != nil {
+						// this should never happen
+						panic(err)
+					}
+					fmt.Printf("InGame state received from client %s \t step %s\n", clientStateInGame.ClientID, clientStateInGame.InGameStep)
+					r.game.play <- &clientStateInGame
 				} else {
-					//! at this point r.game has not yet been initialize. WHERE TO INITIALIZE THIS? LOOK AT HOW hub/client/room all connect to each other.
-					// r.game.play <- &clientStateInGame
+					fmt.Printf("Setup state received from client %s \t step %s\n", clientStateSetup.ClientID, clientStateSetup.SetupStep)
+					r.game.setup <- &clientStateSetup
 				}
 			} else {
-				//! at this point r.game has not yet been initialized. WHERE TO INITIALIZE THIS? LOOK AT HOW hub/client/room all connect to each other.
-				// r.game.matchmaking <- &clientStateMatchmaking
+				fmt.Printf("Matchmaking state received from client %s \t step %s\n", clientStateMatchmaking.ClientId, clientStateMatchmaking.MatchmakingStep)
+				r.game.matchmake <- &clientStateMatchmaking
 			}
-			fmt.Println(clientStateMatchmaking.MatchmakingStep)
-			fmt.Println(clientStateMatchmaking.ClientId)
+		case serverMatchmakingState := <-r.matchmakingUpdate:
+			fmt.Println("Sending updated matchmaking state to client(s)")
+			fmt.Println(serverMatchmakingState)
+			if serverMatchmakingState.isSendToBoth {
+				responseBye, err := json.Marshal(serverMatchmakingState)
+				if err != nil {
+					panic(err)
+				}
+				r.client_one.send <- responseBye
+				r.client_two.send <- responseBye
+			}
+			if serverMatchmakingState.ClientId == r.client_one.uid {
+				responseByte, err := json.Marshal(serverMatchmakingState)
+				if err != nil {
+					panic(err)
+				}
+				r.client_one.send <- responseByte
+			}
+			if serverMatchmakingState.ClientId == r.client_two.uid {
+				responseByte, err := json.Marshal(serverMatchmakingState)
+				if err != nil {
+					panic(err)
+				}
+				r.client_two.send <- responseByte
+			}
 
-			//determine what type of action (matchmaking, setup, tap key, guess word, continue, etc.)
-			//TODO
+		case serverSetupState := <-r.setupUpdate:
+			fmt.Println("Sending updated setup state to client(s)")
+			fmt.Println(serverSetupState)
+			responseByte, err := json.Marshal(serverSetupState)
+			if err != nil {
+				panic(err)
+			}
+			r.client_one.send <- responseByte
+			r.client_two.send <- responseByte
 
-			//perform game logic using r.game and associated method with action and update state accordingly
-			//TODO
-
-			//send the visual state of the game with only the required data for the user to use all in-game functionality
-			//TODO
-
-			//* actions are resent to both clients.
-			// r.client_one.send <- action
-			// r.client_two.send <- action
+		case serverGameState := <-r.gameUpdate:
+			fmt.Println("Sending new game state to clients")
+			fmt.Println(serverGameState)
 		}
 	}
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:battle_words/src/features/auth/auth.dart';
-import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
+import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
 
 class MatchmakingRepository {
@@ -18,19 +18,18 @@ class MatchmakingRepository {
 
   /// connects websocket to server, listens for changes and converts incoming data from web socket into MatchmakingServerStatus. Sends status through webSocketManagerController's stream.
   connect() async {
-    await webSocketManager.connect();
+    if (!webSocketManager.isConnected) {
+      await webSocketManager.connect();
+    }
 
     // Listens to the webSocketManager's state stream but only adds a new state to the bloc if it is a MatchmakingServerState
     webSocketManager.stream.listen(
       (serverResponse) {
         try {
           final data = jsonDecode(serverResponse);
-
           ServerMatchmakingState state = ServerMatchmakingState.fromJson(data);
-
           streamController.sink.add(state);
         } catch (err) {
-          print(err);
           print('Skipping, state is not a ServerMatchmakingState');
           // Do nothing, the data received is not a MatchmakingServerState
         }

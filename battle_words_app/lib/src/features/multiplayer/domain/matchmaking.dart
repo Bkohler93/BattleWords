@@ -5,10 +5,12 @@ part 'matchmaking.g.dart';
 /// state that matchmaking is currently in. This is received from the server
 @JsonSerializable()
 class ServerMatchmakingState {
-  ServerMatchmakingState({required this.matchmakingStep});
+  ServerMatchmakingState({required this.matchmakingStep, this.clientId});
 
   @JsonKey(name: 'MatchmakingStep')
   final MatchmakingStep matchmakingStep;
+  @JsonKey(name: 'ClientId')
+  final String? clientId;
 
   /// Connect the generated [_$PersonFromJson] function to the `fromJson`
   /// factory.

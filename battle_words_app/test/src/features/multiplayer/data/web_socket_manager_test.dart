@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:battle_words/src/features/multiplayer/data/web_socket_manager.dart';
+import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
