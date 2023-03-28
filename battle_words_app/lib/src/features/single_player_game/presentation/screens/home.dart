@@ -6,6 +6,7 @@ import 'package:battle_words/src/features/home_screen/home.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/screens/game.dart';
+import 'package:battle_words/src/features/single_player_game/presentation/widgets/tutorial.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,29 +51,7 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
               context: context,
               barrierDismissible: false,
               builder: (_) {
-                return Scaffold(
-                  body: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 200,
-                          child: Text("Tutorial goes here"),
-                        ),
-                        TextButton(
-                          child: const Text('dismiss'),
-                          onPressed: () {
-                            BlocProvider.of<SettingsCubit>(context)
-                                .updateSettings(isFirstLaunch: false);
-                            SchedulerBinding.instance.addPostFrameCallback((_) {
-                              Navigator.pop(context);
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return SinglePlayerTutorial();
               },
             );
           });

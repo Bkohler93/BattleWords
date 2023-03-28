@@ -25,10 +25,8 @@ final ThemeData themeData = ThemeData(
     ),
     applyElevationOverlayColor: null,
     bannerTheme: null,
-    bottomAppBarColor: null,
     bottomAppBarTheme: null,
     bottomNavigationBarTheme: null,
-    backgroundColor: colorScheme.background,
     bottomSheetTheme: null,
     brightness: null,
     buttonBarTheme: null,
@@ -49,7 +47,6 @@ final ThemeData themeData = ThemeData(
     dividerTheme: null,
     drawerTheme: null,
     elevatedButtonTheme: null,
-    errorColor: null,
     expansionTileTheme: null,
     extensions: null,
     floatingActionButtonTheme: null,
@@ -80,7 +77,6 @@ final ThemeData themeData = ThemeData(
     radioTheme: null,
     scaffoldBackgroundColor: colorScheme.background,
     scrollbarTheme: null,
-    selectedRowColor: null,
     shadowColor: colorScheme.primary,
     sliderTheme: null,
     snackBarTheme: null,
@@ -88,18 +84,35 @@ final ThemeData themeData = ThemeData(
     splashFactory: null,
     switchTheme: null,
     tabBarTheme: null,
-    textButtonTheme: null,
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        textStyle: MaterialStateProperty.all<TextStyle>(
+          TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        backgroundColor: MaterialStateProperty.all<Color>(
+          colorScheme.secondary,
+        ),
+        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+      ),
+    ),
     textSelectionTheme: null,
     textTheme: const TextTheme(
-      bodyText1: TextStyle(),
-      bodyText2: TextStyle(),
-    ).apply(
+            displayLarge: TextStyle(fontSize: 24),
+            displayMedium: TextStyle(fontSize: 16),
+            displaySmall: TextStyle(fontSize: 24),
+            bodyLarge: TextStyle(fontSize: 24),
+            bodyMedium: TextStyle(fontSize: 16),
+            bodySmall: TextStyle(fontSize: 12))
+        .apply(
       bodyColor: colorScheme.surface,
       displayColor: colorScheme.surface,
     ),
     timePickerTheme: null,
     toggleButtonsTheme: null,
-    toggleableActiveColor: null,
     tooltipTheme: null,
     typography: null,
     unselectedWidgetColor: null,

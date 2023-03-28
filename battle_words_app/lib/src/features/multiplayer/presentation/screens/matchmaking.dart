@@ -1,18 +1,24 @@
 import 'package:battle_words/src/common/widgets/page_layout.dart';
-import 'package:battle_words/src/features/multiplayer/data/repository.dart';
+import 'package:battle_words/src/features/multiplayer/data/matchmaking_repository.dart';
+import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/matchmaking/matchmaking_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 
 class MatchmakingScreen extends StatelessWidget {
   const MatchmakingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MatchmakingBloc>(
-      create: (context) => MatchmakingBloc(matchmakingRepo: RepositoryProvider.of(context))
-        ..add(InitializeMatchmaking()),
-      child: const MatchmakingView(),
+    return RepositoryProvider(
+      create: (context) => MatchmakingRepository(webSocketManager: WebSocketManager()),
+      child: BlocProvider<MatchmakingBloc>(
+        create: (context) =>
+            MatchmakingBloc(matchmakingRepo: RepositoryProvider.of<MatchmakingRepository>(context))
+              ..add(InitializeMatchmaking()),
+        child: const MatchmakingView(),
+      ),
     );
   }
 }
@@ -32,35 +38,59 @@ class _MatchmakingViewState extends State<MatchmakingView> {
   Widget build(BuildContext context) {
     return ScreenLayout(
       menuPage: false,
-      child: BlocBuilder<MatchmakingBloc, MatchmakingState>(
+      child: BlocConsumer<MatchmakingBloc, MatchmakingState>(
+        listener: (context, state) {
+          if (state.isMatchmakingStartGame) {
+            //wait for animations to complete before navigating
+            Future.delayed(const Duration(seconds: 1), () {
+              //TODO send to multiplayer game page
+              context.go('/multiplayer/setup');
+            });
+          }
+        },
         builder: (context, state) {
-          if (state.isMatchmakingSearching) {
+          final matchmakingBloc = BlocProvider.of<MatchmakingBloc>(context);
+          if (state.isMatchmakingFindingGame) {
             return Center(
-              child: Column(children: const [
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
                 Text("Finding match"),
+              ]),
+            );
+          } else if (state.isMatchmakingConnecting) {
+            return Center(
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
+                Text("Connecting"),
               ]),
             );
           } else if (state.isMatchmakingFoundGame) {
             return Center(
-                child: Column(children: [
-              const Text("Found Game"),
-              TextButton(
-                child: const Text(
-                  "Ready",
-                ),
-                onPressed: () => print("pressed reaady button"),
-              )
-            ]));
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Found Game"),
+                  TextButton(
+                    child: const Text(
+                      "Ready",
+                    ),
+                    onPressed: () {
+                      matchmakingBloc.add(PressPlayButton());
+                    },
+                  )
+                ],
+              ),
+            );
           } else if (state.isMatchmakingReady) {
             return Center(
                 child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Text("Awaiting opponent to ready up"),
+                Text("Waiting for opponent"),
               ],
             ));
           } else if (state.isMatchmakingOpponentTimeout) {
             return Center(
                 child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Text(
                   "Opponent failed to respond in time",
@@ -68,21 +98,51 @@ class _MatchmakingViewState extends State<MatchmakingView> {
               ],
             ));
           } else if (state.isMatchmakingStartGame) {
-            //wait for animations to complete on starting game
-            Future.delayed(const Duration(seconds: 1), () {
-              //TODO send to multiplayer game page
-              //context.go('multiplayer-game')
-            });
             return Center(
                 child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: const [
                 Text("Starting Game"),
+              ],
+            ));
+          } else if (state.isMatchmakingConnectionError) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Could not connect to server"),
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        matchmakingBloc.add(RetryMatchmaking());
+                      },
+                      icon: const Icon(Icons.refresh),
+                    ),
+                    const Text("Retry")
+                  ],
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.go('/multiplayer');
+                  },
+                  child: const Text("Return to Multiplayer Home"),
+                )
+              ],
+            ));
+          } else if (state.isMatchmakingAwaitingOpponentReady) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text("Waiting for opponent"),
               ],
             ));
           } else {
             return Center(
                 child: Column(
-              children: const [Text("Error")],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [Text("Unknown Error")],
             ));
           }
         },

@@ -1,15 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type Room struct {
 	client_one *Client
 	client_two *Client
 	game       *Game
 
-	process chan []byte // receive from clients to process a GameAction made by client
+	process chan []byte //data received from clients
 	place   chan *Client
 	remove  chan *Client
+
+	//channels to receive updates from Game to be sent to clients
+	gameUpdate        chan *ServerStateInGame //Game uses this channel to send states for clients to view current state of game
+	matchmakingUpdate chan *ServerStateMatchmaking
+	setupUpdate       chan *ServerStateSetup
+
+	//TODO FIGURE OUT HOW TO ASSOCIATE ROOM WITH A GAME (look over how hub/client/room all connect to each other)
+	// createGame chan *Game
 
 	hub *Hub
 
@@ -20,12 +31,18 @@ func newRoom(hub *Hub) *Room {
 	return &Room{
 		client_one: nil,
 		client_two: nil,
-		game:       newGame(),
-		process:    make(chan []byte),
-		place:      make(chan *Client),
-		remove:     make(chan *Client),
-		hub:        hub,
-		isOpen:     true,
+		// game:       newGame(),
+		process: make(chan []byte),
+		place:   make(chan *Client),
+		remove:  make(chan *Client),
+
+		//channels to receive updates from Game to be sent from server to clients
+		gameUpdate:        make(chan *ServerStateInGame),
+		matchmakingUpdate: make(chan *ServerStateMatchmaking),
+		setupUpdate:       make(chan *ServerStateSetup),
+
+		hub:    hub,
+		isOpen: true,
 	}
 }
 
@@ -40,32 +57,113 @@ func (r *Room) run() {
 		case _ = <-r.remove:
 			// determine which client has been received, if it is client_one that means this room should Close.
 			//
+			fmt.Println("=== removing client and closing room")
 			//* right now this closes the room if either user disconnects/presses Home. This leaves the other player in a frozen state but when an iteration with game flow comes in, the process of removing the room will align with the game loop. Right now it's a little weird.
 			r.hub.closeRoom <- r
 		case client := <-r.place:
-			//assign incoming client as client_one if available, otherwise client_two
+
 			if r.client_one == nil {
 				fmt.Println("=== a room received its first client")
 				r.client_one = client
+
+				response := &ServerStateMatchmaking{MatchmakingStep: "FindingGame"}
+				responseByte, err := json.Marshal(response)
+				if err != nil {
+					panic(err)
+				}
+
+				r.client_one.send <- responseByte
+
 			} else {
 				fmt.Println("=== a room received its second client")
 				r.client_two = client
 				r.isOpen = false
+
+				response := &ServerStateMatchmaking{MatchmakingStep: "GameFound"}
+				responseByte, err := json.Marshal(response)
+
+				if err != nil {
+					panic(err)
+				}
+
+				//Create game here since both players have joined
+				r.game = &Game{
+					room:      r,
+					isDone:    false,
+					setup:     make(chan *ClientStateSetup),
+					play:      make(chan *ClientStateInGame),
+					matchmake: make(chan *ClientStateMatchmaking),
+
+					//! change uid's to player chosen names eventually
+					playerOneId: r.client_one.uid,
+					playerTwoId: r.client_two.uid,
+				}
+				go r.game.run()
+				// fmt.Println("Send response to clients")
+
+				r.client_one.send <- responseByte
+				r.client_two.send <- responseByte
+
 			}
+
 		case action := <-r.process:
-			fmt.Println("received an action")
-			//determine what type of action (tap key, guess word, continue, etc.)
-			//TODO
+			var clientStateMatchmaking ClientStateMatchmaking
+			var clientStateSetup ClientStateSetup
+			var clientStateInGame ClientStateInGame
 
-			//perform game logic using r.game and associated method with action and update state accordingly
-			//TODO
+			err := json.Unmarshal(action, &clientStateMatchmaking)
+			if err != nil {
+				err = json.Unmarshal(action, &clientStateSetup)
+				if err != nil {
+					err = json.Unmarshal(action, &clientStateInGame)
 
-			//send the visual state of the game with only the required data for the user to use all in-game functionality
-			//TODO
+					if err != nil {
+						// this should never happen
+						panic(err)
+					}
+					r.game.play <- &clientStateInGame
+				} else {
+					r.game.setup <- &clientStateSetup
+				}
+			} else {
+				fmt.Printf("Matchmaking state received from client %s \t step %s\n", clientStateMatchmaking.ClientId, clientStateMatchmaking.MatchmakingStep)
+				r.game.matchmake <- &clientStateMatchmaking
+			}
+		case serverMatchmakingState := <-r.matchmakingUpdate:
+			if serverMatchmakingState.isSendToBoth {
+				responseBye, err := json.Marshal(serverMatchmakingState)
+				if err != nil {
+					panic(err)
+				}
+				r.client_one.send <- responseBye
+				r.client_two.send <- responseBye
+			}
+			if serverMatchmakingState.ClientId == r.client_one.uid {
+				responseByte, err := json.Marshal(serverMatchmakingState)
+				if err != nil {
+					panic(err)
+				}
+				r.client_one.send <- responseByte
+			}
+			if serverMatchmakingState.ClientId == r.client_two.uid {
+				responseByte, err := json.Marshal(serverMatchmakingState)
+				if err != nil {
+					panic(err)
+				}
+				r.client_two.send <- responseByte
+			}
 
-			//* actions are resent to both clients.
-			r.client_one.send <- action
-			r.client_two.send <- action
+		case serverSetupState := <-r.setupUpdate:
+			responseByte, err := json.Marshal(serverSetupState)
+			if err != nil {
+				panic(err)
+			}
+			r.client_one.send <- responseByte
+			r.client_two.send <- responseByte
+
+		case serverGameState := <-r.gameUpdate:
+			fmt.Println("Sending new game state to clients")
+			fmt.Println(serverGameState)
 		}
 	}
 }

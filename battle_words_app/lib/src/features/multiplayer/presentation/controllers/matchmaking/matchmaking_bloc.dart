@@ -1,6 +1,5 @@
-import 'package:battle_words/src/features/multiplayer/data/repository.dart';
+import 'package:battle_words/src/features/multiplayer/data/matchmaking_repository.dart';
 import 'package:battle_words/src/features/multiplayer/domain/matchmaking.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -10,35 +9,57 @@ part 'matchmaking_state.dart';
 class MatchmakingBloc extends Bloc<MatchmakingEvent, MatchmakingState> {
   final MatchmakingRepository matchmakingRepo;
 
-  MatchmakingBloc({required this.matchmakingRepo}) : super(MatchmakingSearching()) {
+  MatchmakingBloc({required this.matchmakingRepo}) : super(MatchmakingConnecting()) {
+    on<FindMatch>(
+      (event, emit) async {
+        await emit.forEach(
+          matchmakingRepo.stateStream,
+          onData: (state) {
+            if (state.runtimeType == ServerMatchmakingState) {
+              switch (state.matchmakingStep) {
+                case MatchmakingStep.connectionError:
+                  return MatchmakingConnectionError();
+                case MatchmakingStep.findingGame:
+                  return MatchmakingFindingGame();
+                case MatchmakingStep.gameFound:
+                  return MatchmakingFoundGame();
+                case MatchmakingStep.awaitingOpponentReady:
+                  return MatchmakingAwaitingOpponentReady();
+                case MatchmakingStep.opponentDeclined:
+                  return MatchmakingOpponentTimeout();
+                case MatchmakingStep.ready:
+                  return MatchmakingReady();
+                case MatchmakingStep.endMatchmaking:
+                  matchmakingRepo.stopListening();
+                  return MatchmakingStartGame();
+                default:
+                  return MatchmakingConnectionError();
+              }
+            } else {
+              return MatchmakingConnecting();
+            }
+          },
+          onError: (error, stackTrace) {
+            return MatchmakingConnectionError();
+          },
+        );
+      },
+    );
     on<InitializeMatchmaking>((event, emit) async {
-      await emit.forEach(matchmakingRepo.onNewState, onData: (status) {
-        switch (status.status) {
-          case MatchmakingStatus.gameFound:
-            return MatchmakingFoundGame();
-          case MatchmakingStatus.ready:
-            return MatchmakingReady();
-          case MatchmakingStatus.connectionError:
-            return MatchmakingConnectionError();
-          case MatchmakingStatus.opponentDeclined:
-            return MatchmakingOpponentTimeout();
-          case MatchmakingStatus.startingGame:
-            return MatchmakingStartGame();
-          default:
-            return MatchmakingConnectionError();
-        }
-      });
-    }, transformer: restartable()); //restart process if new data is received
-
-    on<PressPlayButton>((event, emit) {
-      //send to server "ready"
-
-      //emit MatchmakingReady
+      emit(MatchmakingConnecting());
+      await matchmakingRepo.connect();
+      add(FindMatch());
     });
-    on<RetryMatchmaking>((event, emit) {
-      //emit MatchmakingSearching state
 
-      //disconnect websocket, reconnect to server
+    on<PressPlayButton>((event, emit) async {
+      //send to server "ready"
+      await matchmakingRepo.sendReady();
+    });
+
+    //! RetryMatchmaking needs to be implemented
+    on<RetryMatchmaking>((event, emit) async {
+      emit(MatchmakingConnecting());
+      await matchmakingRepo.reconnect();
     });
   }
 }

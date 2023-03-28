@@ -12,3 +12,5 @@ class InitializeMatchmaking extends MatchmakingEvent {}
 class PressPlayButton extends MatchmakingEvent {}
 
 class RetryMatchmaking extends MatchmakingEvent {}
+
+class FindMatch extends MatchmakingEvent {}
