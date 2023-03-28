@@ -121,10 +121,8 @@ func (r *Room) run() {
 						// this should never happen
 						panic(err)
 					}
-					fmt.Printf("InGame state received from client %s \t step %s\n", clientStateInGame.ClientID, clientStateInGame.InGameStep)
 					r.game.play <- &clientStateInGame
 				} else {
-					fmt.Printf("Setup state received from client %s \t step %s\n", clientStateSetup.ClientID, clientStateSetup.SetupStep)
 					r.game.setup <- &clientStateSetup
 				}
 			} else {
@@ -132,8 +130,6 @@ func (r *Room) run() {
 				r.game.matchmake <- &clientStateMatchmaking
 			}
 		case serverMatchmakingState := <-r.matchmakingUpdate:
-			fmt.Println("Sending updated matchmaking state to client(s)")
-			fmt.Println(serverMatchmakingState)
 			if serverMatchmakingState.isSendToBoth {
 				responseBye, err := json.Marshal(serverMatchmakingState)
 				if err != nil {
@@ -158,8 +154,6 @@ func (r *Room) run() {
 			}
 
 		case serverSetupState := <-r.setupUpdate:
-			fmt.Println("Sending updated setup state to client(s)")
-			fmt.Println(serverSetupState)
 			responseByte, err := json.Marshal(serverSetupState)
 			if err != nil {
 				panic(err)

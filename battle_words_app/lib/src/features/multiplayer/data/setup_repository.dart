@@ -30,7 +30,6 @@ class SetupRepository {
           ServerSetupState state = ServerSetupState.fromJson(data);
           streamController.sink.add(state);
         } catch (err) {
-          print('Skipping, state is not a ServerMatchmakingState');
           // Do nothing, the data received is not a MatchmakingServerState
         }
       },
@@ -38,7 +37,6 @@ class SetupRepository {
         final ServerSetupState status = ServerSetupState(
           setupStep: SetupStep.error,
         );
-        log(err.toString());
         streamController.sink.addError(status);
       },
     );
