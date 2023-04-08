@@ -1,8 +1,12 @@
+import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/multiplayer/data/setup_repository.dart';
 import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/setup/setup_bloc.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/widgets/game_board_setup_view.dart';
+import 'package:battle_words/src/features/multiplayer/presentation/widgets/word_select_button.dart';
+import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
+import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +20,12 @@ class SetupScreen extends StatelessWidget {
     return RepositoryProvider(
       create: (context) => SetupRepository(webSocketManager: WebSocketManager()),
       child: BlocProvider<SetupBloc>(
-        create: (context) => SetupBloc(setupRepo: RepositoryProvider.of<SetupRepository>(context))
-          ..add(InitializeSetup()),
+        create: (context) => SetupBloc(
+          setupRepo: RepositoryProvider.of<SetupRepository>(context),
+          hiddenWordsRepo: HiddenWordsRepository(
+            store: RepositoryProvider.of<ObjectBoxStore>(context),
+          ),
+        )..add(InitializeSetup()),
         child: const SetupView(),
       ),
     );
@@ -33,8 +41,8 @@ class SetupView extends StatelessWidget {
       menuPage: false,
       child: BlocListener<SetupBloc, SetupState>(
         listener: (context, state) {
-          if (state.isServerSaidHi) {
-            print("server said hi!");
+          if (state.status.isStartSetup) {
+            print("start setup!");
           }
         },
         child: Column(
@@ -42,18 +50,27 @@ class SetupView extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Icon(Icons.person),
-                Text(
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(Icons.pending),
+                    const Icon(Icons.person),
+                  ],
+                ),
+                const Text(
                   style: TextStyle(
                     fontSize: 30,
                   ),
                   "Setup",
                 ),
-                Icon(Icons.pause),
+                IconButton(
+                  icon: const Icon(Icons.pause),
+                  onPressed: () => BlocProvider.of<SetupBloc>(context).add(PressedPauseButton()),
+                ),
               ],
             ),
-            GameBoardSetupView(),
+            const GameBoardSetupView(),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
               child: Text(
@@ -61,56 +78,29 @@ class SetupView extends StatelessWidget {
                 "Select and place each word below on your opponent's game board",
               ),
             ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextButton(
-                    onPressed: () => throw UnimplementedError("Implement button press"),
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        Size(70.w, 40),
-                      ),
-                    ),
-                    child: const Text("Sauce"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: TextButton(
-                    onPressed: () => throw UnimplementedError("Implement button press"),
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        Size(70.w, 40),
-                      ),
-                    ),
-                    child: const Text("Sauce"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: TextButton(
-                    onPressed: () => throw UnimplementedError("Implement button press"),
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        Size(70.w, 40),
-                      ),
-                    ),
-                    child: const Text("Sauce"),
-                  ),
-                ),
-              ],
+            BlocSelector<SetupBloc, SetupState, List<HiddenWord>>(
+              selector: (state) => state.hiddenWords,
+              builder: (context, state) {
+                return Column(
+                  children:
+                      List<Widget>.generate(state.length, (i) => WordSelectButton(word: state[i])),
+                );
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Icon(Icons.refresh_rounded),
-                TextButton(
-                  onPressed: () => throw UnimplementedError("implement confirm button"),
-                  child: Text("Confirm"),
+                IconButton(
+                  icon: const Icon(Icons.refresh_rounded),
+                  onPressed: () => BlocProvider.of<SetupBloc>(context).add(PressedRefreshButton()),
                 ),
-                Icon(
-                  Icons.undo_rounded,
+                TextButton(
+                  onPressed: () => BlocProvider.of<SetupBloc>(context).add(PressedConfirmButton()),
+                  child: const Text("Confirm"),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.undo_rounded),
+                  onPressed: () => BlocProvider.of<SetupBloc>(context).add(PressedUndoButton()),
                 ),
               ],
             )

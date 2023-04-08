@@ -14,3 +14,11 @@ class PressButton extends SetupEvent {}
 class RetrySetup extends SetupEvent {}
 
 class StartSetup extends SetupEvent {}
+
+class PressedPauseButton extends SetupEvent {}
+
+class PressedRefreshButton extends SetupEvent {}
+
+class PressedUndoButton extends SetupEvent {}
+
+class PressedConfirmButton extends SetupEvent {}
