@@ -1,10 +1,6 @@
 import 'package:battle_words/src/api/shared_preferences/cubit/settings_cubit.dart';
-import 'package:battle_words/src/features/single_player_game/domain/game_tile.dart';
-import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
-import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SinglePlayerTutorial extends StatelessWidget {
@@ -17,7 +13,7 @@ class SinglePlayerTutorial extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 200,
               child: Column(children: [
                 Text(

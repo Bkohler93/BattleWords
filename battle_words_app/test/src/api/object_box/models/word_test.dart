@@ -6,9 +6,9 @@ void main() {
     final word = Word(length: 3, text: "bar");
 
     test('Word() constructor returns valid Word entity with default id', () {
-      final matchLength = 3;
-      final matchText = "bar";
-      final matchId = 0;
+      const matchLength = 3;
+      const matchText = "bar";
+      const matchId = 0;
 
       final actualLength = word.length;
       final actualText = word.text;
@@ -20,7 +20,7 @@ void main() {
     });
 
     test('Word.toString() prints a correctly formatted string', () {
-      final matchText = "Word{id: 0, text: bar, length: 3}";
+      const matchText = "Word{id: 0, text: bar, length: 3}";
       final actualText = word.toString();
 
       expect(actualText, matchText);

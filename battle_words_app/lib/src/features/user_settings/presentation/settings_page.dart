@@ -13,7 +13,7 @@ class SettingsPageState extends State<SettingsPage> {
     return SafeArea(
       child: Scaffold(
         floatingActionButton: ElevatedButton(
-          child: Icon(Icons.home),
+          child: const Icon(Icons.home),
           onPressed: () => Navigator.of(context).pop(),
         ),
         body: const Text(

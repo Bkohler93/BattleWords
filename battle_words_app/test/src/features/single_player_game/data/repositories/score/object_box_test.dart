@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:battle_words/src/api/object_box/models/single_player_score.dart';
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/bloc/single_player_bloc.dart';
@@ -13,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   const MethodChannel channel = MethodChannel("plugins.flutter.io/path_provider_macos");
-  TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
     return ".";
   });
@@ -37,7 +35,7 @@ void main() {
     test("setScoreState(state) sets a new state in  the store", () {
       final scoreRepository = SinglePlayerScoreObjectBoxRepository(storeReference: storeReference);
 
-      final newState =
+      const newState =
           SinglePlayerScoreState(currentWinStreak: 2, highestWinStreak: 3, totalGamesWon: 5);
 
       scoreRepository.setScoreState(newState);

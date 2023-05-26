@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:battle_words/src/features/auth/auth.dart';
 import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';

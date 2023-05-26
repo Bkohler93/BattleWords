@@ -1,8 +1,11 @@
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'hidden_word.g.dart';
+
+extension HiddenWordInit on HiddenWord {
+  bool get isInit => word == "no";
+}
 
 @JsonSerializable()
 class HiddenWord {

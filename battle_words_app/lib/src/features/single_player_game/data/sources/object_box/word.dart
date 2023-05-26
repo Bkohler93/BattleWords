@@ -8,7 +8,7 @@ extension WordAccessor on ObjectBoxStore {
 
     final results = query.find();
 
-    var word;
+    Word word;
 
     while (true) {
       word = results[Random().nextInt(results.length - 1)];

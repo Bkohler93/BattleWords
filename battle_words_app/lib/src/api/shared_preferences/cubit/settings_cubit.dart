@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 part 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
-  SettingsCubit() : super(SettingsState());
+  SettingsCubit() : super(const SettingsState());
 
   late final SharedPreferences sharedPreferences;
 

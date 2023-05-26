@@ -64,7 +64,7 @@ class GameBoardTileWidget extends StatelessWidget {
                 ),
               ),
               child: state.tileStatus == TileStatus.hidden
-                  ? Text("")
+                  ? const Text("")
                   : Text(
                       state.letter.toUpperCase(),
                       style: TextStyle(

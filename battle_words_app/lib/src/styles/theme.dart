@@ -87,7 +87,7 @@ final ThemeData themeData = ThemeData(
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         textStyle: MaterialStateProperty.all<TextStyle>(
-          TextStyle(
+          const TextStyle(
             fontSize: 16,
           ),
         ),
@@ -95,7 +95,7 @@ final ThemeData themeData = ThemeData(
           colorScheme.secondary,
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
     ),

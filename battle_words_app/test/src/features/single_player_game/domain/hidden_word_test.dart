@@ -1,15 +1,14 @@
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
-import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("HiddenWords tests", () {
     test("HiddenWord(word, letterCoords) creates a HiddenWord with default properties", () {
-      final matchIsWordFound = false;
-      final matchDirection = Direction.unassigned;
-      final matchLength = 4;
-      final matchWord = "that";
-      final matchAreEachLetterNotFound = true;
+      const matchIsWordFound = false;
+      const matchDirection = Direction.unassigned;
+      const matchLength = 4;
+      const matchWord = "that";
+      const matchAreEachLetterNotFound = true;
 
       final hiddenWord = HiddenWord(word: "that");
       final actualIsWordFound = hiddenWord.isWordFound;
@@ -29,16 +28,16 @@ void main() {
 
   group("Direction enum tests", () {
     test("Direction.isVertical returns true on a vertical direction", () {
-      final direction = Direction.vertical;
-      final matchIsVertical = true;
+      const direction = Direction.vertical;
+      const matchIsVertical = true;
       final actualIsVertical = direction.isVertical;
 
       expect(actualIsVertical, matchIsVertical);
     });
 
     test("Direction.isUnassigned returns false on a vertical direction", () {
-      final direction = Direction.vertical;
-      final matchIsUnassigned = false;
+      const direction = Direction.vertical;
+      const matchIsUnassigned = false;
       final actualIsUnassigned = direction.isUnassigned;
 
       expect(actualIsUnassigned, matchIsUnassigned);

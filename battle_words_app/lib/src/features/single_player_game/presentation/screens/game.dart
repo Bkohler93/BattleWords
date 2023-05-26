@@ -12,7 +12,6 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/moves_remaining_display.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/pause_menu.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/word_status_indicator.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -85,9 +84,9 @@ class SinglePlayerView extends StatelessWidget {
             return Stack(
               alignment: Alignment.center,
               children: [
-                Column(
+                const Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
+                  children: [
                     MovesRemaining(),
                     GameBoardView(),
                     WordStatusIndicatorRow(),

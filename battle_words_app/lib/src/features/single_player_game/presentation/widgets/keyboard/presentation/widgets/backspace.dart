@@ -28,7 +28,7 @@ class BackspaceKey extends StatelessWidget {
               onTap: () {
                 onBackspace?.call();
               },
-              child: Center(
+              child: const Center(
                 child: Icon(
                   Icons.backspace,
                   color: Colors.white,

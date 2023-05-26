@@ -2,15 +2,12 @@ import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/api/shared_preferences/cubit/settings_cubit.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/common/widgets/screen_route_link.dart';
-import 'package:battle_words/src/features/home_screen/home.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/score/interface.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/controllers/score/score_cubit.dart';
-import 'package:battle_words/src/features/single_player_game/presentation/screens/game.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/tutorial.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sizer/sizer.dart';
 
 class SinglePlayerHomePage extends StatelessWidget {
   const SinglePlayerHomePage({super.key});
@@ -24,7 +21,7 @@ class SinglePlayerHomePage extends StatelessWidget {
           create: ((context) => SinglePlayerScoreCubit(
                 repository: RepositoryProvider.of<SinglePlayerScoreObjectBoxRepository>(context),
               )),
-          child: SinglePlayerHomeView()),
+          child: const SinglePlayerHomeView()),
     );
   }
 }
@@ -51,7 +48,7 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
               context: context,
               barrierDismissible: false,
               builder: (_) {
-                return SinglePlayerTutorial();
+                return const SinglePlayerTutorial();
               },
             );
           });
@@ -143,7 +140,7 @@ class SinglePlayerHomeViewState extends State<SinglePlayerHomeView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(),
+                    const SizedBox(),
                     screenRoute(
                       '/single-player/play',
                       "Play",

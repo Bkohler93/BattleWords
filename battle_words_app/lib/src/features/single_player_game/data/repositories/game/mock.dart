@@ -12,7 +12,6 @@ class MockSinglePlayerRepository implements ISinglePlayerRepository {
 
   @override
   FutureOr<void> updateGameByGuessingWord({required String word}) {
-    ;
   }
 
   @override

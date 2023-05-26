@@ -51,14 +51,14 @@ class _MatchmakingViewState extends State<MatchmakingView> {
         builder: (context, state) {
           final matchmakingBloc = BlocProvider.of<MatchmakingBloc>(context);
           if (state.isMatchmakingFindingGame) {
-            return Center(
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            return const Center(
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text("Finding match"),
               ]),
             );
           } else if (state.isMatchmakingConnecting) {
-            return Center(
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            return const Center(
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text("Connecting"),
               ]),
             );
@@ -80,28 +80,28 @@ class _MatchmakingViewState extends State<MatchmakingView> {
               ),
             );
           } else if (state.isMatchmakingReady) {
-            return Center(
+            return const Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text("Waiting for opponent"),
               ],
             ));
           } else if (state.isMatchmakingOpponentTimeout) {
-            return Center(
+            return const Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
                   "Opponent failed to respond in time",
                 )
               ],
             ));
           } else if (state.isMatchmakingStartGame) {
-            return Center(
+            return const Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text("Starting Game"),
               ],
             ));
@@ -131,18 +131,18 @@ class _MatchmakingViewState extends State<MatchmakingView> {
               ],
             ));
           } else if (state.isMatchmakingAwaitingOpponentReady) {
-            return Center(
+            return const Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text("Waiting for opponent"),
               ],
             ));
           } else {
-            return Center(
+            return const Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [Text("Unknown Error")],
+              children: [Text("Unknown Error")],
             ));
           }
         },

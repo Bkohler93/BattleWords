@@ -1,13 +1,15 @@
 part of 'setup_bloc.dart';
 
 class SetupState extends Equatable {
+  final bool placeWordToggle;
   final List<HiddenWord> hiddenWords;
   final bool placementIsValid;
-  final SetupGameBoard gameBoard;
+  final List<List<SetupGameBoardTile>> gameBoard;
   final SetupGameBoardTile selectedTile;
   final HiddenWord selectedWord;
   final List<HiddenWord> selectedWords; // treat as stack of hidden words, only pop/push
   final SetupStatus status;
+  final SelectedGameCoords selectedCoords;
 
   const SetupState(
       {required this.hiddenWords,
@@ -16,16 +18,20 @@ class SetupState extends Equatable {
       required this.selectedTile,
       required this.selectedWord,
       required this.selectedWords,
-      required this.status});
+      required this.status,
+      required this.selectedCoords,
+      required this.placeWordToggle});
 
   SetupState copyWith(
       {List<HiddenWord>? hiddenWords,
       bool? placementIsValid,
-      SetupGameBoard? gameBoard,
+      List<List<SetupGameBoardTile>>? gameBoard,
       SetupGameBoardTile? selectedTile,
       HiddenWord? selectedWord,
       List<HiddenWord>? selectedWords,
-      SetupStatus? status}) {
+      SetupStatus? status,
+      SelectedGameCoords? selectedCoords,
+      bool? placeWordToggle}) {
     return SetupState(
       hiddenWords: hiddenWords ?? this.hiddenWords,
       placementIsValid: placementIsValid ?? this.placementIsValid,
@@ -34,21 +40,34 @@ class SetupState extends Equatable {
       selectedWord: selectedWord ?? this.selectedWord,
       selectedWords: selectedWords ?? this.selectedWords,
       status: status ?? this.status,
+      selectedCoords: selectedCoords ?? this.selectedCoords,
+      placeWordToggle: placeWordToggle ?? this.placeWordToggle,
     );
   }
 
   factory SetupState.initial() => SetupState(
       hiddenWords: const [],
       placementIsValid: true,
-      gameBoard: const SetupGameBoard(gameBoard: []),
+      gameBoard: List.generate(6, (index) => List.generate(6, (index2) => SetupGameBoardTile())),
       selectedTile: SetupGameBoardTile(),
       selectedWord: HiddenWord(word: "no"),
       selectedWords: const [],
-      status: SetupStatus.startSetup);
+      status: SetupStatus.startSetup,
+      placeWordToggle: true,
+      selectedCoords: SelectedGameCoords(null, null));
 
   @override
-  List<Object> get props =>
-      [hiddenWords, placementIsValid, gameBoard, selectedTile, selectedWord, selectedWords, status];
+  List<Object> get props => [
+        placeWordToggle,
+        hiddenWords,
+        placementIsValid,
+        gameBoard,
+        selectedTile,
+        selectedWord,
+        selectedWords,
+        status,
+        selectedCoords
+      ];
 }
 
 enum SetupStatus {
@@ -69,4 +88,15 @@ extension SetupStatusX on SetupStatus {
   bool get isTimeout => this == SetupStatus.timeout;
   bool get isSetupComplete => this == SetupStatus.setupComplete;
   bool get isStartSetup => this == SetupStatus.startSetup;
+}
+
+class SelectedGameCoords {
+  final int? col;
+  final int? row;
+
+  SelectedGameCoords(this.col, this.row);
+}
+
+extension IsGameCoordsSelected on SelectedGameCoords {
+  bool get isSelected => col != null && row != null;
 }

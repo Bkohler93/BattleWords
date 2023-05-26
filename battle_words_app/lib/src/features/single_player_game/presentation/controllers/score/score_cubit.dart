@@ -7,7 +7,7 @@ import 'package:equatable/equatable.dart';
 part 'score_state.dart';
 
 class SinglePlayerScoreCubit extends Cubit<SinglePlayerScoreState> {
-  SinglePlayerScoreCubit({required this.repository}) : super(SinglePlayerScoreState()) {
+  SinglePlayerScoreCubit({required this.repository}) : super(const SinglePlayerScoreState()) {
     _loadScoreData();
   }
   final ISinglePlayerScoreRepository repository;

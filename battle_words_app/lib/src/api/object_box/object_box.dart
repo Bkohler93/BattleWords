@@ -10,6 +10,7 @@ import 'package:battle_words/src/constants/api.dart';
 import 'package:battle_words/src/constants/hidden_word_exceptions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'package:battle_words/src/features/single_player_game/data/sources/object_box/word.dart';
@@ -21,6 +22,7 @@ abstract class IObjectBoxStore {
   ByteData get reference;
   void closeStore();
 }
+// var storeProvider = Provider<ObjectBoxStore>((ref) => )
 
 class ObjectBoxStore implements IObjectBoxStore {
   /// This is used when RepositoryProvider provides this instance.
@@ -117,7 +119,7 @@ class ObjectBoxStore implements IObjectBoxStore {
 class MockObjectBoxStore implements IObjectBoxStore {
   MockObjectBoxStore(); //do not call initialize on mock store
 
-  Future<void> _initialize({ByteData? storeReference}) {
+  Future<void> _initialize() {
     throw UnimplementedError();
   }
 

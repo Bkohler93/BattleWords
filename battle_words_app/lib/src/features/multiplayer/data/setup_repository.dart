@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:battle_words/src/features/auth/auth.dart';
 import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/domain/setup.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+var setupRepositoryProvider = Provider<SetupRepository>(
+  (ref) => SetupRepository(),
+);
 
 class SetupRepository {
-  SetupRepository({required this.webSocketManager});
-  final WebSocketManager webSocketManager;
+  SetupRepository();
+  final WebSocketManager webSocketManager = WebSocketManager();
   StreamController<ServerSetupState> streamController = StreamController();
 
   Stream<ServerSetupState> get stateStream => streamController.stream;

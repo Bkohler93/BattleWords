@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

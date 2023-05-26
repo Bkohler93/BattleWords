@@ -3,9 +3,7 @@ import 'package:battle_words/src/features/single_player_game/domain/game_tile.da
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
 import 'package:battle_words/src/features/single_player_game/domain/tile_coords.dart';
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/domain/letter.dart';
-import 'package:battle_words/src/features/single_player_game/presentation/widgets/keyboard/presentation/keyboard.dart';
 import 'package:battle_words/src/helpers/data_types.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -17,8 +15,8 @@ void main() {
 
     final gameBoardCopy = copyGameBoard(gameBoard);
 
-    final matchNumRows = GAME_BOARD_SIZE;
-    final matchNumCols = GAME_BOARD_SIZE;
+    const matchNumRows = GAME_BOARD_SIZE;
+    const matchNumCols = GAME_BOARD_SIZE;
 
     final actualNumRows = gameBoard.length;
     final actualNumCols = gameBoard[0].length;
@@ -48,9 +46,9 @@ void main() {
       () {
     final testKeyboardLetterMap = createBlankKeyboardLetterMap();
 
-    final matchNumLetters = 26;
-    final matchLetterStatusForEachKey = KeyboardLetterStatus.unchecked;
-    final matchLetters = "qwertyuiopasdfghjklzxcvbnm";
+    const matchNumLetters = 26;
+    const matchLetterStatusForEachKey = KeyboardLetterStatus.unchecked;
+    const matchLetters = "qwertyuiopasdfghjklzxcvbnm";
 
     final actualNumLetters = testKeyboardLetterMap.length;
     final actualLetterStatusForEachKey = testKeyboardLetterMap.values.fold(

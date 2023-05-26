@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/game/interface.dart';
@@ -13,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   const MethodChannel channel = MethodChannel("plugins.flutter.io/path_provider_macos");
-  TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
     return ".";
   });
@@ -89,8 +88,8 @@ void main() {
       await repository.init();
       await repository.isIsolateConnectedStream.first; //wait for isolate connection to complete
 
-      final updateCol = 2;
-      final updateRow = 4;
+      const updateCol = 2;
+      const updateRow = 4;
 
       repository.updateGameByTileTap(col: updateCol, row: updateRow);
 
@@ -125,7 +124,7 @@ void main() {
       if (kDebugMode) {
         print(connected);
       }
-      late final guessWord; //will be determined by first incoming state
+      late final String guessWord; //will be determined by first incoming state
 
       expect(
           repository.gameStateStream,

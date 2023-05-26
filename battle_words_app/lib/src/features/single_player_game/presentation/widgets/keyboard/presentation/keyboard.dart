@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 /// This implementation adds a 'guess' button, updates the UI, and refactors, separating
 /// the keyboard into multiple widgets in the ./widgets directory
 class Keyboard extends StatelessWidget {
-  Keyboard({
+  const Keyboard({
     Key? key,
     required this.onTextInput,
     required this.onBackspace,
@@ -31,7 +31,7 @@ class Keyboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 12.0),
-      child: Container(
+      child: SizedBox(
         height: MediaQuery.of(context).size.height * (2 / 9),
         child: Column(
           children: [
@@ -114,7 +114,7 @@ class Keyboard extends StatelessWidget {
         padding: const EdgeInsets.all(2.0),
         child: Row(
           children: [
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
             TextKey(
               letter: 'a',
               status: letterMap["a"]!,
@@ -160,7 +160,7 @@ class Keyboard extends StatelessWidget {
               letter: "l",
               onTextInput: _textInputHandler,
             ),
-            SizedBox(width: 15),
+            const SizedBox(width: 15),
           ],
         ),
       ),

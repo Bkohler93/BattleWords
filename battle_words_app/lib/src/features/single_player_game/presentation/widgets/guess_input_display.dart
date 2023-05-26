@@ -18,7 +18,7 @@ class GuessInputDisplay extends StatelessWidget {
       child: BlocProvider(
         create: (context) =>
             DisplayStringCubit(repository: RepositoryProvider.of<HiddenWordsRepository>(context)),
-        child: GuessInputDisplayView(),
+        child: const GuessInputDisplayView(),
       ),
     );
   }

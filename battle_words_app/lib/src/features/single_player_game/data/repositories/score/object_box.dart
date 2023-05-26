@@ -42,7 +42,7 @@ class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository 
         totalGamesWon: totalGamesWon,
       );
     } else if (status.isLoss) {
-      final currentWinStreak = 0;
+      const currentWinStreak = 0;
       final totalGamesWon = currentScoreData.totalGamesWon;
       final highestScoreStreak = currentScoreData.highestScoreStreak;
 

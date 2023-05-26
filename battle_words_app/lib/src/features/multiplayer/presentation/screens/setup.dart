@@ -1,16 +1,13 @@
 import 'package:battle_words/src/api/object_box/object_box.dart';
 import 'package:battle_words/src/common/widgets/page_layout.dart';
 import 'package:battle_words/src/features/multiplayer/data/setup_repository.dart';
-import 'package:battle_words/src/api/web_socket_channel/web_socket_manager.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/controllers/setup/setup_bloc.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/widgets/game_board_setup_view.dart';
 import 'package:battle_words/src/features/multiplayer/presentation/widgets/word_select_button.dart';
 import 'package:battle_words/src/features/single_player_game/data/repositories/hidden_words/interface.dart';
 import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
-import 'package:battle_words/src/features/single_player_game/presentation/widgets/game_board_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sizer/sizer.dart';
 
 class SetupScreen extends StatelessWidget {
   const SetupScreen({super.key});
@@ -18,7 +15,7 @@ class SetupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => SetupRepository(webSocketManager: WebSocketManager()),
+      create: (context) => SetupRepository(),
       child: BlocProvider<SetupBloc>(
         create: (context) => SetupBloc(
           setupRepo: RepositoryProvider.of<SetupRepository>(context),
@@ -51,11 +48,11 @@ class SetupView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Stack(
+                const Stack(
                   alignment: Alignment.center,
                   children: [
-                    const Icon(Icons.pending),
-                    const Icon(Icons.person),
+                    Icon(Icons.pending),
+                    Icon(Icons.person),
                   ],
                 ),
                 const Text(
