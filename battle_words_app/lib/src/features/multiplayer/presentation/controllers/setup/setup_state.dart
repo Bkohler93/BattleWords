@@ -1,4 +1,6 @@
-part of 'setup_bloc.dart';
+import 'package:battle_words/src/features/multiplayer/domain/setup_gameboard_tile.dart';
+import 'package:battle_words/src/features/single_player_game/domain/hidden_word.dart';
+import 'package:equatable/equatable.dart';
 
 class SetupState extends Equatable {
   final bool placeWordToggle;

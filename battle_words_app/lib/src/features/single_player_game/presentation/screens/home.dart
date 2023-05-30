@@ -8,15 +8,17 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SinglePlayerHomePage extends StatelessWidget {
+class SinglePlayerHomePage extends ConsumerWidget {
   const SinglePlayerHomePage({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ObjectBoxStore store = ref.watch(objectBoxStoreProvider);
+
     return RepositoryProvider(
       lazy: false,
-      create: (context) => SinglePlayerScoreObjectBoxRepository(
-          storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+      create: (context) => SinglePlayerScoreObjectBoxRepository(store: store),
       child: BlocProvider<SinglePlayerScoreCubit>(
           create: ((context) => SinglePlayerScoreCubit(
                 repository: RepositoryProvider.of<SinglePlayerScoreObjectBoxRepository>(context),

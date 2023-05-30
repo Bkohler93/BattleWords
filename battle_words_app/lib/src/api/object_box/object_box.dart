@@ -27,7 +27,7 @@ abstract class IObjectBoxStore {
 class ObjectBoxStore implements IObjectBoxStore {
   /// This is used when RepositoryProvider provides this instance.
   /// This happens when the app starts so timing **should** not be an issue.
-  Store? store;
+  Store? _store;
 
   late final Box<Word> wordBox;
   late final Box<SinglePlayerScore> singlePlayerScoreBox;
@@ -35,30 +35,13 @@ class ObjectBoxStore implements IObjectBoxStore {
   bool reset = RESET_DATABASE;
   String? directory;
 
-  /// Can not create an instance of ObjectBoxStore with regular constructor
-  ObjectBoxStore._();
-
   @override
-  ByteData get reference => store!.reference;
-
-  ObjectBoxStore.createSync({ByteData? storeReference, this.directory}) {
-    _initialize(storeReference: storeReference);
-  }
-
-  /// Allows for asynchronous initialization. Useful for testing or
-  /// creating a store in a separate isolate.
-  static Future<ObjectBoxStore> createAsync({ByteData? storeReference}) async {
-    final objectBoxStore = ObjectBoxStore._();
-
-    await objectBoxStore._initialize(storeReference: storeReference);
-
-    return objectBoxStore;
-  }
+  ByteData get reference => _store!.reference;
 
   /// Ensures database has been filled with valid words. If not filled, reads the
   /// chosen word list from [assets/wordlists/HIDDEN_WORDS_SOURCE] where HIDDEN_WORDS_SOURCE is a
   /// txt file name.
-  Future<void> _initialize({ByteData? storeReference}) async {
+  Future<void> initialize({ByteData? storeReference}) async {
     if (reset) {
       Directory dir = await getApplicationDocumentsDirectory();
       Directory('${dir.path}/objectbox/').delete(recursive: true).then((FileSystemEntity value) {
@@ -70,18 +53,20 @@ class ObjectBoxStore implements IObjectBoxStore {
     }
 
     if (storeReference != null) {
-      store = Store.fromReference(getObjectBoxModel(), storeReference);
-      wordBox = store!.box<Word>();
-      singlePlayerScoreBox = store!.box<SinglePlayerScore>();
-      singlePlayerGameBox = store!.box<SinglePlayerGameModel>();
-    } else if (store == null) {
+      _store = Store.fromReference(getObjectBoxModel(), storeReference);
+      wordBox = _store!.box<Word>();
+      singlePlayerScoreBox = _store!.box<SinglePlayerScore>();
+      singlePlayerGameBox = _store!.box<SinglePlayerGameModel>();
+    } else if (_store != null) {
+      print("store already open");
+    } else {
       if (directory != null) {
         await Directory('$directory').create(recursive: true);
       }
-      store = await openStore(directory: directory);
-      wordBox = store!.box<Word>();
-      singlePlayerScoreBox = store!.box<SinglePlayerScore>();
-      singlePlayerGameBox = store!.box<SinglePlayerGameModel>();
+      _store = await openStore(directory: directory);
+      wordBox = _store!.box<Word>();
+      singlePlayerScoreBox = _store!.box<SinglePlayerScore>();
+      singlePlayerGameBox = _store!.box<SinglePlayerGameModel>();
     }
 
     //initial launch, initialize score data to all zeros
@@ -105,19 +90,19 @@ class ObjectBoxStore implements IObjectBoxStore {
 
   @override
   void closeStore() {
-    store!.close();
+    _store!.close();
   }
 
   void clearAndCloseStore() {
     singlePlayerScoreBox.removeAll();
     wordBox.removeAll();
     singlePlayerGameBox.removeAll();
-    store!.close();
+    _store!.close();
   }
 }
 
 class MockObjectBoxStore implements IObjectBoxStore {
-  MockObjectBoxStore(); //do not call initialize on mock store
+  MockObjectBoxStore(); //do not call initialize on mock _store
 
   Future<void> _initialize() {
     throw UnimplementedError();
@@ -132,3 +117,10 @@ class MockObjectBoxStore implements IObjectBoxStore {
     // TODO: implement closeStore
   }
 }
+
+final objectBoxStoreProvider = Provider<ObjectBoxStore>((ref) {
+  final objectBoxStore = ObjectBoxStore();
+  ref.onDispose(
+      () => objectBoxStore.closeStore()); // Dispose the store when the provider is disposed
+  return objectBoxStore;
+});

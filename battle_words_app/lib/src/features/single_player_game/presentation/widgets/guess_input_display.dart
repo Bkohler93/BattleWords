@@ -6,15 +6,15 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:battle_words/src/helpers/data_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GuessInputDisplay extends StatelessWidget {
+class GuessInputDisplay extends ConsumerWidget {
   const GuessInputDisplay({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return RepositoryProvider(
-      create: (context) =>
-          HiddenWordsRepository(store: RepositoryProvider.of<ObjectBoxStore>(context)),
+      create: (context) => HiddenWordsRepository(store: ref.watch(objectBoxStoreProvider)),
       child: BlocProvider(
         create: (context) =>
             DisplayStringCubit(repository: RepositoryProvider.of<HiddenWordsRepository>(context)),

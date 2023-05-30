@@ -22,6 +22,11 @@ class HiddenWordsRepository implements IHiddenWordsRepository {
 
   @override
   void closeStore() {
-    store.store!.close();
+    store.closeStore();
   }
 }
+
+final hiddenWordsRepositoryProvider =
+    ProviderFamily<HiddenWordsRepository, ObjectBoxStore>((ref, store) {
+  return HiddenWordsRepository(store: store);
+});

@@ -14,15 +14,16 @@ import 'package:battle_words/src/features/single_player_game/presentation/widget
 import 'package:battle_words/src/features/single_player_game/presentation/widgets/word_status_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SinglePlayerPage extends StatefulWidget {
+class SinglePlayerPage extends ConsumerStatefulWidget {
   const SinglePlayerPage({super.key});
 
   @override
-  State<SinglePlayerPage> createState() => _SinglePlayerPageState();
+  SinglePlayerPageState createState() => SinglePlayerPageState();
 }
 
-class _SinglePlayerPageState extends State<SinglePlayerPage> {
+class SinglePlayerPageState extends ConsumerState<SinglePlayerPage> {
   // void resetGame() {
   //   if (kDebugMode) {
   //     print("resetting game");
@@ -38,12 +39,12 @@ class _SinglePlayerPageState extends State<SinglePlayerPage> {
           // lazy: false,
           //Isolate is created when SinglePlayerIsolateRepository is created
           create: (context) => SinglePlayerObjectBoxRepository(
-              store: RepositoryProvider.of<ObjectBoxStore>(context),
-              storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+              store: ref.watch(objectBoxStoreProvider),
+              storeReference: ref.watch(objectBoxStoreProvider.select((value) => value.reference))),
         ),
         RepositoryProvider(
-          create: (context) => SinglePlayerScoreObjectBoxRepository(
-              storeReference: RepositoryProvider.of<ObjectBoxStore>(context).reference),
+          create: (context) =>
+              SinglePlayerScoreObjectBoxRepository(store: ref.watch(objectBoxStoreProvider)),
         ),
       ],
       child: MultiBlocProvider(

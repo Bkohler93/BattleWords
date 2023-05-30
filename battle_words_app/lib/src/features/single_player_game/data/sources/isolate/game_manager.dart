@@ -26,7 +26,7 @@ class GameManager {
     _listen();
   }
 
-  IHiddenWordsRepository? hiddenWordsRepository;
+  IHiddenWordsRepository hiddenWordsRepository;
   final SendPort toRepositoryPort;
   final ReceivePort fromRepositoryPort;
   final IsolateObjectBoxRepository objectBoxRepository;
@@ -69,7 +69,7 @@ class GameManager {
 
   void _initializeGame() {
     printIsolate("Initializing game");
-    final List<HiddenWord> hiddenWords = hiddenWordsRepository!.fetchHiddenWords();
+    final List<HiddenWord> hiddenWords = hiddenWordsRepository.fetchHiddenWords();
 
     //arrange words on board
     GameBoard gameBoard = List.generate(

@@ -1,10 +1,8 @@
 part of 'interface.dart';
 
 class SinglePlayerScoreObjectBoxRepository extends ISinglePlayerScoreRepository {
-  SinglePlayerScoreObjectBoxRepository({required ByteData storeReference}) {
-    store = ObjectBoxStore.createSync(storeReference: storeReference);
-  }
-  late final ObjectBoxStore store;
+  SinglePlayerScoreObjectBoxRepository({required this.store});
+  final ObjectBoxStore store;
 
   @override
   SinglePlayerScoreState getScoreState() {
